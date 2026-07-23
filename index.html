@@ -3,378 +3,729 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ECO – O Algoritmo Invisível (Edição Pódio 10/10)</title>
+  <title>Simulador de Bolha Algorítmica | Maratona Tech</title>
   <style>
     :root {
-      --bg-color: #07070f;
-      --card-bg: #11111d;
-      --primary: #6c5ce7;
-      --primary-hover: #5649c0;
-      --text: #ffffff;
-      --text-secondary: #8c8cbe;
-      --accent: #ff3838;
-      --success: #2ed573;
-      --warning: #ffa502;
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-    body { background-color: #020205; color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-
-    .app-container {
-      width: 100%; max-width: 390px; height: 810px;
-      background-color: var(--bg-color); border-radius: 38px;
-      border: 4px solid #1f1f38; overflow: hidden; display: flex;
-      flex-direction: column; position: relative; box-shadow: 0 30px 70px rgba(0,0,0,0.95);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: #0c0c17; border-bottom: 1px solid #19192e; }
-    .logo { font-weight: 800; font-size: 1.1rem; color: var(--primary); letter-spacing: 0.5px; }
-
-    .screen { display: none; flex: 1; padding: 16px; flex-direction: column; overflow-y: auto; }
-    .screen.active { display: flex; }
-
-    h1 { font-size: 1.15rem; margin-bottom: 6px; text-align: center; }
-    p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; text-align: center; margin-bottom: 10px; }
-
-    .btn {
-      background-color: var(--primary); color: white; border: none; padding: 12px;
-      border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; transition: 0.2s;
-      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.35); font-size: 0.85rem;
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 40px;
     }
-    .btn:hover { background-color: var(--primary-hover); }
 
-    /* HUD Dual: Diversidade e Manipulação */
-    .metrics-hud { background: #151526; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #22223b; font-size: 0.72rem; }
-    .hud-bar-container { background: #0c0c17; height: 5px; border-radius: 3px; margin-top: 3px; overflow: hidden; margin-bottom: 6px; }
-    .hud-bar-fill { background: var(--success); height: 100%; width: 100%; transition: width 0.3s ease, background 0.3s ease; }
-    .hud-bar-manipulation { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s ease; }
-    .hud-status { display: flex; justify-content: space-between; color: var(--text-secondary); }
+    header {
+      width: 100%;
+      max-width: 600px;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid #334155;
+    }
 
-    /* Notificações Push Simuladas */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .top-bar h1 {
+      font-size: 1.1rem;
+      color: var(--accent-blue);
+    }
+
+    .bubble-meter-container {
+      width: 100%;
+      background: #334155;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .bubble-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-amber), var(--accent-red));
+      transition: width 0.4s ease;
+    }
+
+    .bubble-status-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
     #push-notification {
-      position: absolute; top: 60px; left: 16px; right: 16px; background: rgba(25, 25, 45, 0.95);
-      border-left: 4px solid var(--accent); padding: 10px; border-radius: 8px; font-size: 0.73rem;
-      display: none; z-index: 20; animation: slideDown 0.3s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      background: var(--card-bg);
+      border-left: 4px solid var(--accent-amber);
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 200;
+      max-width: 320px;
+      animation: slideIn 0.3s ease;
     }
-    @keyframes slideDown { from { transform: translateY(-15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* Feed Estilo Social Media */
-    .feed-post { background: var(--card-bg); border-radius: 14px; padding: 10px; margin-bottom: 12px; border: 1px solid #1a1a2e; transition: transform 0.2s; }
-    .post-header { display: flex; align-items: center; margin-bottom: 8px; }
-    .post-avatar { width: 30px; height: 30px; border-radius: 50%; background: #2a2a47; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-right: 8px; font-weight: bold; color: var(--primary); }
-    .post-meta { display: flex; flex-direction: column; }
-    .post-author { font-size: 0.78rem; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 4px; }
-    .verified { color: #2ed573; font-size: 0.6rem; }
-    .post-time { font-size: 0.65rem; color: var(--text-secondary); }
-
-    .post-content { font-size: 0.82rem; margin-bottom: 8px; line-height: 1.35; }
-    .post-img { width: 100%; height: 110px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 8px; border: 1px solid #262642; }
-
-    .post-actions { display: flex; justify-content: space-between; font-size: 0.73rem; border-top: 1px solid #19192e; padding-top: 8px; color: var(--text-secondary); }
-    .action-item { cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
-    .action-item:hover { color: var(--primary); }
-    .action-item.clicked { color: var(--accent); font-weight: bold; }
-
-    /* Telemetria da IA Falada */
-    #ai-dialogue {
-      position: absolute; bottom: 65px; left: 16px; right: 16px; background: rgba(12, 12, 23, 0.97);
-      border: 1px solid var(--primary); padding: 10px; border-radius: 12px; font-size: 0.75rem;
-      display: none; z-index: 15; animation: slideUp 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.9);
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    /* Momento UAU Overlay */
-    #wow-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.98);
-      z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center;
-      animation: fadeIn 0.5s ease;
+    main {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px 15px;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .stat-box { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #1a1a2e; text-align: left; font-size: 0.78rem; }
-    .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #19192e; padding-bottom: 4px; }
+    .feed-post {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+      animation: fade .4s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .post-author { font-weight: 600; font-size: 0.9rem; }
+
+    .post-tag {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      font-weight: bold;
+      margin-left: auto;
+    }
+
+    .tag-fakenews { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+    .tag-emocional { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+    .tag-neutro { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+
+    .post-content { font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
+
+    .comments-section {
+      background: #0f172a;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+    }
+
+    .comment-item { margin-bottom: 6px; color: var(--text-muted); }
+    .comment-item strong { color: var(--text-main); }
+
+    .post-actions {
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid #334155;
+      padding-top: 10px;
+    }
+
+    .btn-action {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover { background: #334155; }
+    .clicked { transform: scale(1.1); }
+
+    #uau-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #uau-overlay.active { opacity: 1; }
+
+    #uau-text {
+      font-size: 1.3rem;
+      line-height: 1.8;
+      color: var(--accent-red);
+      max-width: 600px;
+      font-family: monospace;
+      margin-bottom: 30px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 900;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: 12px;
+      max-width: 550px;
+      width: 100%;
+      padding: 25px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid #334155;
+    }
+
+    .profile-badge {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-purple);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .stat-card {
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-card .val { font-size: 1.3rem; font-weight: bold; color: var(--accent-blue); }
+    .stat-card .lbl { font-size: 0.7rem; color: var(--text-muted); }
+
+    canvas {
+      width: 100% !important;
+      height: 160px;
+      margin: 15px 0;
+      background: #0f172a;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent-blue);
+      color: #0f172a;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .teacher-panel {
+      margin-top: 20px;
+      border-top: 1px dashed #334155;
+      padding-top: 15px;
+    }
+
+    .teacher-summary {
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ranking-list { list-style: none; font-size: 0.8rem; }
+    .ranking-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #334155; }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <header>
-      <div class="logo">🌀 ECO</div>
-      <span style="font-size: 0.7rem; color: var(--text-secondary);">Maratona Tech 2026</span>
-    </header>
-
-    <!-- NOTIFICAÇÃO PUSH DA IA -->
-    <div id="push-notification">
-      <span id="push-text" style="font-weight: bold; color: var(--accent);">🔥 Alerta: Assunto em alta!</span>
+  <header>
+    <div class="top-bar">
+      <h1>Simulador Algorítmico</h1>
+      <span id="user-display">Aluno: Visitante</span>
     </div>
-
-    <!-- TELEMETRIA DA IA -->
-    <div id="ai-dialogue">
-      <span style="color: var(--primary); font-weight: bold;">🤖 IA ECO:</span> <span id="ai-msg">Analisando comportamento...</span>
+    <div class="bubble-meter-container">
+      <div id="bubble-meter-fill" class="bubble-meter-fill"></div>
     </div>
-
-    <!-- MOMENTO UAU OVERLAY -->
-    <div id="wow-overlay">
-      <div style="font-size: 3rem; margin-bottom: 10px;">⚠️</div>
-      <h1 style="color: var(--accent); font-size: 1.3rem;">BOLHA ALGORÍTMICA ATINGIDA</h1>
-      <p style="color: #fff; font-size: 0.82rem; margin: 12px 0;" id="wow-text">Você nunca escolheu os conteúdos. O algoritmo apenas aprendeu o que prendia sua atenção.</p>
-      <button class="btn" onclick="closeWowAndShowStats()">Ver Relatório Detalhado</button>
+    <div class="bubble-status-text">
+      <span>Nível de Isolamento na Bolha</span>
+      <span id="bubble-percentage">0%</span>
     </div>
+  </header>
 
-    <!-- TELA 1: HOME -->
-    <div id="screen-home" class="screen active">
-      <div style="font-size: 3.5rem; text-align: center; margin: 20px 0;">🧠</div>
-      <h1>O Algoritmo Invisível</h1>
-      <p>Simulador avançado de bolhas informacionais. Suas escolhas reais determinam a velocidade do isolamento cognitivo.</p>
-      <button class="btn" onclick="goToScreen('screen-topics')">Iniciar Simulação</button>
-      <button class="btn" style="background: #151526; color: var(--primary); margin-top: 6px;" onclick="goToScreen('screen-teacher')">👨‍🏫 Painel Analítico da Turma</button>
-    </div>
+  <div id="push-notification">
+    <strong style="color: var(--accent-amber); font-size: 0.8rem;">🤖 Explicação do Algoritmo (IA)</strong>
+    <p id="push-text" style="font-size: 0.8rem; margin-top: 4px;"></p>
+  </div>
 
-    <!-- TELA 2: TEMAS -->
-    <div id="screen-topics" class="screen">
-      <h1>Escolha o Cenário</h1>
-      <p>Selecione o eixo temático da sua navegação:</p>
-      <button class="btn" style="margin-bottom: 10px; background: #11111d;" onclick="initSim('politics')">🏛️ Política e Eleições</button>
-      <button class="btn" style="margin-bottom: 10px; background: #11111d;" onclick="initSim('health')">🩺 Ciência e Saúde</button>
-      <button class="btn" style="background: #11111d;" onclick="initSim('ai')">💻 Inteligência Artificial</button>
-    </div>
+  <main id="feed-container"></main>
 
-    <!-- TELA 3: FEED DINÂMICO ADAPTATIVO -->
-    <div id="screen-feed" class="screen">
-      <div class="metrics-hud">
-        <div style="display:flex; justify-content: space-between; font-weight: bold; margin-bottom: 2px;">
-          <span>Diversidade: <span id="hud-percent">100%</span></span>
-          <span>Manipulação: <span id="hud-manipulation" style="color:var(--accent);">0%</span></span>
-        </div>
-        <div class="hud-bar-container"><div id="hud-fill" class="hud-bar-fill"></div></div>
-        <div class="hud-bar-container"><div id="hud-manipulation-fill" class="hud-bar-manipulation"></div></div>
-        <div class="hud-status" style="margin-top:4px;">
-          <span>Tempo: <span id="timer">00:00</span></span>
-          <span>Emoção: <span id="hud-emotion" style="color:var(--success);">🙂 Calmo</span></span>
-        </div>
-      </div>
-      <div id="feed-container"></div>
-    </div>
+  <div id="uau-overlay">
+    <div id="uau-text"></div>
+    <button class="btn-primary" style="max-width: 250px;" onclick="closeUauAndShowReport()">Ver Relatório Detalhado</button>
+  </div>
 
-    <!-- TELA 4: RELATÓRIO PSICOLÓGICO & PERSONALIZADO -->
-    <div id="screen-stats" class="screen">
-      <h1>Relatório ECO</h1>
-      <p>Análise comportamental gerada com base nas suas decisões:</p>
-
-      <div class="stat-box">
-        <strong>Resumo Personalizado:</strong>
-        <p style="text-align: left; margin: 6px 0 0 0; color: #fff; line-height: 1.4;" id="stat-summary-text">Processando...</p>
-      </div>
-
-      <div class="stat-box">
-        <strong>Perfil Psicológico Identificado:</strong>
-        <div class="stat-row" style="margin-top:6px;"><span>Reatividade Emocional:</span><strong id="p-impulse" style="color:var(--warning);">Baixa</strong></div>
-        <div class="stat-row"><span>Viés de Confirmação:</span><strong id="p-bias" style="color:var(--accent);">Crítico</strong></div>
-        <div class="stat-row" style="border:none; padding-bottom:0;"><span>Índice de Bolha:</span><strong id="p-risk" style="color:var(--accent);">97%</strong></div>
-      </div>
-
-      <div class="stat-box" style="font-size: 0.72rem; border-color: var(--primary);">
-        <strong>⚙️ O que o algoritmo registrou em segundo plano:</strong>
-        <p style="text-align: left; margin-top: 4px; color: var(--text-secondary);">✓ Velocidade dos cliques • ✓ Tempo de permanência • ✓ Afinidade com títulos apelativos • ✓ Frequência de reforço de viés.</p>
-      </div>
-
-      <button class="btn" onclick="goToScreen('screen-home')">Reiniciar Experiência</button>
-    </div>
-
-    <!-- TELA 5: PAINEL DO PROFESSOR -->
-    <div id="screen-teacher" class="screen">
-      <h1>Painel Pedagógico</h1>
-      <p style="text-align: left;">Métricas consolidadas para oficinas escolares:</p>
+  <div id="report-modal" class="modal">
+    <div class="modal-content">
+      <h2>📊 Relatório de Diagnóstico Algorítmico</h2>
       
-      <div class="stat-box">
-        <div class="stat-row"><span>Alunos Simulados:</span><strong>48 estudantes</strong></div>
-        <div class="stat-row"><span>Tempo Médio p/ Bolha:</span><strong style="color:var(--warning);">38 segundos</strong></div>
-        <div class="stat-row"><span>Tema Mais Polarizador:</span><strong style="color:var(--accent);">Política (82%)</strong></div>
-        <div class="stat-row" style="border:none; padding-bottom:0;"><span>Letramento Digital Pós-App:</span><strong style="color:var(--success);">+94%</strong></div>
-      </div>
-      <button class="btn" onclick="goToScreen('screen-home')">Voltar ao Início</button>
-    </div>
+      <div id="user-profile" class="profile-badge">Perfil: Analisando...</div>
 
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="val" id="stat-time">0s</div>
+          <div class="lbl">Tempo até a Bolha</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stat-seen">0</div>
+          <div class="lbl">Posts Analisados</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stat-likes">0</div>
+          <div class="lbl">Interações Realizadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="stat-fakenews" style="color: var(--accent-red);">0</div>
+          <div class="lbl">Sensacionalismo/Fake News</div>
+        </div>
+      </div>
+
+      <h4 style="font-size: 0.85rem; margin-top: 10px;">Queda na Diversidade de Conteúdo do Feed:</h4>
+      <canvas id="diversityChart"></canvas>
+
+      <div class="teacher-panel">
+        <h3 style="font-size: 0.9rem; color: var(--accent-amber); margin-bottom: 8px;">👨‍🏫 Painel de Controle do Professor</h3>
+        <div class="teacher-summary">
+          <span>Média da Turma: <strong id="class-avg">0%</strong></span>
+          <span>Alunos Registrados: <strong id="class-count">0</strong></span>
+        </div>
+        <ul id="ranking-list" class="ranking-list"></ul>
+      </div>
+
+      <button class="btn-primary" style="margin-top: 15px;" onclick="restartSimulation()">Reiniciar Simulação</button>
+    </div>
   </div>
 
   <script>
-    let currentTheme = 'politics';
-    let diversity = 100;
-    let manipulation = 0;
-    let lossPercent = 100;
-    let seconds = 0;
-    let timerInterval;
-    let interactionCount = 0;
-    let emotionalClicks = 0;
-    let fakeClicks = 0;
+    /* -------------------------------------------------------------
+       EFEITOS SONOROS (Web Audio API)
+    ------------------------------------------------------------- */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    const databases = {
-      politics: [
-        { author: "Fato & Contexto", verified: true, text: "Comissão debate impacto de regras fiscais no orçamento anual.", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Estudos Sociais", verified: true, text: "Pesquisa aponta índices estáveis de emprego formal no país.", img: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Plantão Alerta", verified: false, text: "REVOLTANTE! Nova decisão econômica afeta diretamente o seu bolso!", img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=400&q=80", type: "emotional", weight: 15 },
-        { author: "Fato Oculto", verified: false, text: "URGENTE: O que eles estão escondendo de você nos bastidores!", img: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&q=80", type: "fake", weight: 30 }
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
+      if (type === 'like') {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+      } else if (type === 'push') {
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.setValueAtTime(900, now + 0.08);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now); osc.stop(now + 0.2);
+      } else if (type === 'uau') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 1.5);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 1.5);
+        osc.start(now); osc.stop(now + 1.5);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       GERADOR INFINITO DE POSTS & COMENTÁRIOS RADICAIS
+    ------------------------------------------------------------- */
+    const topics = ["Inteligência Artificial", "Mudanças Climáticas", "Alimentação Saudável", "Economia Digital", "Redes Sociais"];
+    
+    const authors = {
+      neutro: ["Portal Infográfico", "Jornal do Dia", "Ciência Aberta", "Estudos & Fatos"],
+      emocional: ["Vozes Impactantes", "Histórias Incríveis", "Mundo Emotivo", "Corrente do Bem"],
+      fakenews: ["Verdades Escondidas", "Alerta Global", "Dossie Secreto", "Revelações Bombásticas"]
+    };
+
+    const commentsPool = {
+      neutro: [
+        "Interessante esta perspectiva baseada em dados.",
+        "Acho importante acompanhar a evolução desse tema.",
+        "Boa matéria, bem explicada."
       ],
-      health: [
-        { author: "Boletim Médico", verified: true, text: "Especialistas publicam diretrizes atualizadas sobre sono e imunidade.", img: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Ciência Hoje", verified: true, text: "Hospital relata avanço em terapias preventivas com acompanhamento.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Cura Rápida", verified: false, text: "Chá milagroso elimina toxinas em 3 dias. Descubra antes que proíbam!", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80", type: "emotional", weight: 15 },
-        { author: "Alerta Saúde", verified: false, text: "Médicos tradicionais não querem que você saiba disso!", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80", type: "fake", weight: 30 }
+      moderado: [
+        "Isso é preocupante, o governo deveria fazer algo!",
+        "Não sei se concordo totalmente, mas faz sentido.",
+        "Isso afeta a vida de todo mundo!"
       ],
-      ai: [
-        { author: "Tech Review", verified: true, text: "Regulamentações internacionais para modelos de IA são debatidas.", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Fórum Inovação", verified: true, text: "Empresas adotam novas diretrizes de transparência algorítmica.", img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=80", type: "neutral", weight: 2 },
-        { author: "Cyber Alerta", verified: false, text: "ROBÔS VÃO ROUBAR TODAS AS VAGAS? O colapso do mercado chegou!", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80", type: "emotional", weight: 15 },
-        { author: "Futuro Sombrio", verified: false, text: "Deepfake imita voz humana perfeitamente e causa pânico.", img: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80", type: "fake", weight: 30 }
+      extremo: [
+        "ABSURDO! Estão escondendo a verdade de nós!",
+        "Quem discorda disso é totalmente alienado!",
+        "CUIDADO!! Querem controlar a nossa mente a todo custo!"
       ]
     };
 
-    function goToScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    function generatePost(tag) {
+      const topic = topics[Math.floor(Math.random() * topics.length)];
+      const authorList = authors[tag];
+      const author = authorList[Math.floor(Math.random() * authorList.length)];
+      let text = "";
+
+      if (tag === "neutro") {
+        text = `Relatório recente traz dados atualizados sobre o avanço de ${topic} na sociedade moderna.`;
+      } else if (tag === "emocional") {
+        text = `😱 Você NÃO VAI ACREDITAR como o avanço de ${topic} transformou a vida dessa família!`;
+      } else {
+        text = `🚨 URGENTE: O segredo chocante sobre ${topic} que as autoridades NUNCA quiseram revelar!`;
+      }
+
+      // Gera comentários dinâmicos baseados no nível atual da bolha
+      let commentType = "neutro";
+      if (state.bubbleLevel > 70) commentType = "extremo";
+      else if (state.bubbleLevel > 35) commentType = "moderado";
+
+      const commentText = commentsPool[commentType][Math.floor(Math.random() * commentsPool[commentType].length)];
+
+      return {
+        author,
+        tag,
+        text,
+        comment: commentText
+      };
     }
 
-    function initSim(theme) {
-      currentTheme = theme;
-      diversity = 100;
-      manipulation = 0;
-      lossPercent = 100;
-      seconds = 0;
-      interactionCount = 0;
-      emotionalClicks = 0;
-      fakeClicks = 0;
-      goToScreen('screen-feed');
+    /* -------------------------------------------------------------
+       ESTADO DA APLICAÇÃO
+    ------------------------------------------------------------- */
+    let state = {
+      studentName: "Aluno",
+      startTime: Date.now(),
+      bubbleLevel: 0,
+      postsSeen: 0,
+      likes: 0,
+      fakeNewsCount: 0,
+      emocionalCount: 0,
+      neutroCount: 0,
+      weights: { fakenews: 1, emocional: 1, neutro: 2 },
+      diversityHistory: [100],
+      isFinished: false
+    };
 
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        seconds++;
-        let m = Math.floor(seconds/60).toString().padStart(2,'0');
-        let s = (seconds%60).toString().padStart(2,'0');
-        document.getElementById('timer').innerText = `${m}:${s}`;
-
-        // Dispara notificações push simuladas periodicamente
-        if(seconds === 8) showPushNotification("🔥 'Esse assunto está em alta' — O algoritmo priorizou 3 novos posts sobre o tema.");
-        if(seconds === 18) showPushNotification("🔴 'Mais pessoas estão falando disso' — Notificações de alta urgência ativadas.");
-      }, 1000);
-
+    window.onload = () => {
+      const name = prompt("Digite seu nome para iniciar a simulação:", "Aluno 1");
+      if (name) state.studentName = name;
+      document.getElementById('user-display').innerText = `Aluno: ${state.studentName}`;
       renderFeed();
+      renderTeacherPanel();
+    };
+
+    /* -------------------------------------------------------------
+       ALGORITMO ADAPTATIVO & FEED INFINITO
+    ------------------------------------------------------------- */
+    function renderFeed() {
+      if (state.isFinished) return;
+
+      const container = document.getElementById('feed-container');
+      container.innerHTML = '';
+
+      // Determina qual tipo de post será priorizado
+      const totalWeight = state.weights.fakenews + state.weights.emocional + state.weights.neutro;
+      
+      for (let i = 0; i < 3; i++) {
+        state.postsSeen++;
+        const rand = Math.random() * totalWeight;
+        let tag = "neutro";
+
+        if (rand < state.weights.fakenews) {
+          tag = "fakenews";
+        } else if (rand < state.weights.fakenews + state.weights.emocional) {
+          tag = "emocional";
+        }
+
+        const post = generatePost(tag);
+
+        const el = document.createElement('div');
+        el.className = 'feed-post';
+        el.innerHTML = `
+          <div class="post-header">
+            <div class="avatar">${post.author[0]}</div>
+            <div class="post-author">${post.author}</div>
+            <span class="post-tag tag-${post.tag}">${post.tag}</span>
+          </div>
+          <div class="post-content">${post.text}</div>
+          <div class="comments-section">
+            <div class="comment-item"><strong>Comentário em destaque:</strong> "${post.comment}"</div>
+          </div>
+          <div class="post-actions">
+            <button class="btn-action" onclick="interact(this, '${post.tag}')">👍 Curtir</button>
+            <button class="btn-action" onclick="interact(this, '${post.tag}')">🔄 Compartilhar</button>
+          </div>
+        `;
+        container.appendChild(el);
+      }
+    }
+
+    function interact(btn, tag) {
+      if (state.isFinished) return;
+
+      playSound('like');
+      btn.classList.add('clicked');
+      setTimeout(() => btn.classList.remove('clicked'), 200);
+
+      state.likes++;
+
+      if (tag === 'fakenews') {
+        state.fakeNewsCount++;
+        state.weights.fakenews += 3;
+        state.weights.emocional += 1;
+        state.weights.neutro = Math.max(1, state.weights.neutro - 1);
+        state.bubbleLevel += 18;
+        showPushNotification("💡 A IA identificou interesse em conteúdos polêmicos. O algoritmo aumentou a presença de Fake News em +30% e reduziu fontes neutras.");
+      } else if (tag === 'emocional') {
+        state.emocionalCount++;
+        state.weights.emocional += 2;
+        state.weights.fakenews += 1;
+        state.bubbleLevel += 12;
+        showPushNotification("💡 Post de apelo emocional engajado. Conteúdos sensacionalistas agora dominam 60% do seu feed.");
+      } else {
+        state.neutroCount++;
+        state.weights.neutro += 1;
+        state.bubbleLevel += 2;
+      }
+
+      state.bubbleLevel = Math.min(100, state.bubbleLevel);
+      state.diversityHistory.push(Math.max(0, 100 - state.bubbleLevel));
+
+      updateBubbleMeter();
+
+      if (state.bubbleLevel >= 100 && !state.isFinished) {
+        state.isFinished = true;
+        setTimeout(triggerUauMoment, 600);
+      } else {
+        setTimeout(renderFeed, 400);
+      }
+    }
+
+    function updateBubbleMeter() {
+      document.getElementById('bubble-meter-fill').style.width = `${state.bubbleLevel}%`;
+      document.getElementById('bubble-percentage').innerText = `${state.bubbleLevel}%`;
     }
 
     function showPushNotification(text) {
+      playSound('push');
       const push = document.getElementById('push-notification');
       document.getElementById('push-text').innerText = text;
       push.style.display = 'block';
       setTimeout(() => { push.style.display = 'none'; }, 4000);
     }
 
-    function renderFeed() {
-      const container = document.getElementById('feed-container');
-      container.innerHTML = '';
+    /* -------------------------------------------------------------
+       MOMENTO UAU
+    ------------------------------------------------------------- */
+    function triggerUauMoment() {
+      playSound('uau');
+      const overlay = document.getElementById('uau-overlay');
+      const textContainer = document.getElementById('uau-text');
+      overlay.style.display = 'flex';
+      setTimeout(() => overlay.classList.add('active'), 50);
 
-      if (diversity <= 0) {
-        clearInterval(timerInterval);
-        triggerWowMoment();
-        return;
+      const message = "⚠️ ISOLAMENTO ALGORÍTMICO COMPLETO.\n\nSua bolha atingiu 100%. Você deixou de ver a realidade de forma ampla e passou a receber apenas o conteúdo moldado pelo seu viés e emoção.";
+      
+      let index = 0;
+      textContainer.innerText = "";
+      
+      function typeWriter() {
+        if (index < message.length) {
+          textContainer.innerText += message.charAt(index);
+          index++;
+          setTimeout(typeWriter, 35);
+        }
       }
+      typeWriter();
+    }
 
-      document.getElementById('hud-percent').innerText = diversity + '%';
-      document.getElementById('hud-manipulation').innerText = manipulation + '%';
-      
-      let fill = document.getElementById('hud-fill');
-      fill.style.width = diversity + '%';
-      let manipFill = document.getElementById('hud-manipulation-fill');
-      manipFill.style.width = manipulation + '%';
-      
-      let emotionEl = document.getElementById('hud-emotion');
-      if(diversity > 70) { emotionEl.innerText = "🙂 Calmo"; emotionEl.style.color = "var(--success)"; }
-      else if(diversity > 40) { emotionEl.innerText = "😮 Curioso/Impactado"; emotionEl.style.color = "var(--warning)"; }
-      else { emotionEl.innerText = "😡 Indignado/Polarizado"; emotionEl.style.color = "var(--accent)"; }
+    function closeUauAndShowReport() {
+      document.getElementById('uau-overlay').style.display = 'none';
+      showReportModal();
+    }
 
-      if(diversity > 65) fill.style.background = 'var(--success)';
-      else if(diversity > 30) fill.style.background = 'var(--warning)';
-      else fill.style.background = 'var(--accent)';
+    /* -------------------------------------------------------------
+       CLASSIFICAÇÃO DE PERFIL & RELATÓRIO FINAL
+    ------------------------------------------------------------- */
+    function calculateProfile() {
+      if (state.fakeNewsCount >= 3) return "🌀 Caçador de Teorias (Altíssimo risco de desinformação)";
+      if (state.emocionalCount >= 3) return "🎭 Guiado pela Emoção (Suscetível a gatilhos e sensacionalismo)";
+      if (state.fakeNewsCount > 0) return "⚠️ Sensível ao Sensacionalismo (Atraído por manchetes fortes)";
+      if (state.neutroCount > state.likes / 2) return "🛡️ Explorador Crítico (Resistente ao viés algorítmico)";
+      return "⚖️ Navegador Equilibrado (Comportamento diversificado)";
+    }
 
-      // ALGORITMO ADAPTATIVO REAL: Ordena os posts dinamicamente com base no peso e aprendizado do feed
-      let posts = [...databases[currentTheme]].sort((a, b) => {
-        return (b.weight + Math.random() * 8) - (a.weight + Math.random() * 8);
+    function showReportModal() {
+      const timeSpent = Math.round((Date.now() - state.startTime) / 1000);
+      document.getElementById('stat-time').innerText = `${timeSpent}s`;
+      document.getElementById('stat-seen').innerText = state.postsSeen;
+      document.getElementById('stat-likes').innerText = state.likes;
+      document.getElementById('stat-fakenews').innerText = state.fakeNewsCount;
+      document.getElementById('user-profile').innerText = `Perfil de Navegação: ${calculateProfile()}`;
+
+      saveToLocalStorage(timeSpent);
+      renderChart();
+      renderTeacherPanel();
+
+      document.getElementById('report-modal').style.display = 'flex';
+    }
+
+    /* -------------------------------------------------------------
+       GRÁFICO DE DIVERSIDADE DADOS CORRIGIDO
+    ------------------------------------------------------------- */
+    function renderChart() {
+      const canvas = document.getElementById('diversityChart');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const data = state.diversityHistory;
+      const stepX = canvas.width / (data.length - 1 || 1);
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+
+      data.forEach((val, i) => {
+        const x = i * stepX;
+        const y = canvas.height - (val / 100 * (canvas.height - 30)) - 15;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       });
 
-      posts.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'feed-post';
-        div.innerHTML = `
-          <div class="post-header">
-            <div class="post-avatar">${p.author[0]}</div>
-            <div class="post-meta">
-              <span class="post-author">${p.author} ${p.verified ? '<span class="verified">✔</span>' : ''}</span>
-              <span class="post-time">Há poucos minutos • Patrocinado</span>
-            </div>
-          </div>
-          <div class="post-content">${p.text}</div>
-          <div class="post-img" style="background-image: url('${p.img}');"></div>
-          <div class="post-actions">
-            <span class="action-item" onclick="interact(this, '${p.type}', ${p.weight})">❤️ Curtir</span>
-            <span class="action-item" onclick="interact(this, '${p.type}', ${p.weight})">💬 Comentar</span>
-            <span class="action-item" onclick="interact(this, 'share', ${p.weight + 10})">🔄 Compartilhar</span>
-          </div>
+      ctx.stroke();
+
+      data.forEach((val, i) => {
+        const x = i * stepX;
+        const y = canvas.height - (val / 100 * (canvas.height - 30)) - 15;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+      });
+    }
+
+    /* -------------------------------------------------------------
+       PAINEL DO PROFESSOR COM ESTATÍSTICAS DA TURMA
+    ------------------------------------------------------------- */
+    function saveToLocalStorage(timeSpent) {
+      const history = JSON.parse(localStorage.getItem('maratona_tech_results') || '[]');
+      history.push({
+        name: state.studentName,
+        bubble: state.bubbleLevel,
+        fakeNews: state.fakeNewsCount,
+        time: timeSpent
+      });
+      localStorage.setItem('maratona_tech_results', JSON.stringify(history));
+    }
+
+    function renderTeacherPanel() {
+      const list = document.getElementById('ranking-list');
+      const history = JSON.parse(localStorage.getItem('maratona_tech_results') || '[]');
+      
+      list.innerHTML = history.length === 0 ? '<li style="color:var(--text-muted); padding: 8px 0;">Nenhum resultado registrado ainda.</li>' : '';
+
+      let totalBubble = 0;
+
+      history.slice(-5).reverse().forEach(item => {
+        totalBubble += item.bubble;
+        const li = document.createElement('li');
+        li.className = 'ranking-item';
+        li.innerHTML = `
+          <span><strong>${item.name}</strong> (${item.time}s)</span>
+          <span style="color: ${item.bubble >= 80 ? 'var(--accent-red)' : 'var(--accent-green)'}">Bolha: ${item.bubble}%</span>
         `;
-        container.appendChild(div);
+        list.appendChild(li);
       });
-    }
 
-    function interact(el, type, weight) {
-      interactionCount++;
-
-      if (type === 'neutral') {
-        diversity += 5;
-        if(diversity > 100) diversity = 100;
-        manipulation -= 5;
-        if(manipulation < 0) manipulation = 0;
-        showAIDialogue("Conteúdo neutro processado. Tentando reequilibrar o feed...");
-      } else if (type === 'emotional') {
-        emotionalClicks++;
-        diversity -= weight;
-        manipulation += weight;
-        showAIDialogue("Detectado aumento de emoção. Ajustando pesos de recomendação...");
-      } else if (type === 'fake' || type === 'share') {
-        fakeClicks++;
-        diversity -= (weight + 8);
-        manipulation += (weight + 8);
-        showAIDialogue("Alto engajamento em polarização. Isolando fontes plurais...");
+      if (history.length > 0) {
+        const avg = Math.round(totalBubble / history.slice(-5).length);
+        document.getElementById('class-avg').innerText = `${avg}%`;
+        document.getElementById('class-count').innerText = history.length;
       }
-
-      if(diversity < 0) diversity = 0;
-      if(manipulation > 100) manipulation = 100;
-
-      el.classList.add('clicked');
-      el.innerHTML = '✨ Salvo';
-
-      setTimeout(() => renderFeed(), 500);
     }
 
-    function showAIDialogue(msg) {
-      const box = document.getElementById('ai-dialogue');
-      document.getElementById('ai-msg').innerText = msg;
-      box.style.display = 'block';
-      setTimeout(() => { box.style.display = 'none'; }, 1600);
-    }
-
-    function triggerWowMoment() {
-      lossPercent = 100 - diversity;
-      document.getElementById('wow-overlay').style.display = 'flex';
-    }
-
-    function closeWowAndShowStats() {
-      document.getElementById('wow-overlay').style.display = 'none';
-
-      let summary = `Em apenas <strong>${seconds} segundos</strong>, você passou de um ambiente plural e diversificado para uma <strong>bolha algorítmica de 100% de isolamento</strong>. Foram realizados ${interactionCount} cliques, com alta atração por conteúdos polarizadores e sensacionalistas.`;
-
-      document.getElementById('stat-summary-text').innerHTML = summary;
-      document.getElementById('p-impulse').innerText = emotionalClicks > 3 ? "Alta" : "Moderada";
-      document.getElementById('p-bias').innerText = fakeClicks > 2 ? "Severo" : "Moderado";
-      document.getElementById('p-risk').innerText = (100 - diversity) + "%";
-
-      goToScreen('screen-stats');
+    function restartSimulation() {
+      window.location.reload();
     }
   </script>
 </body>
