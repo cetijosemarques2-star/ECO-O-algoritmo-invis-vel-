@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECO – O Algoritmo Invisível (Edição Pódio 10/10)</title>
+  <style>
+    :root {
+      --bg-color: #07070f;
+      --card-bg: #11111d;
+      --primary: #6c5ce7;
+      --primary-hover: #5649c0;
+      --text: #ffffff;
+      --text-secondary: #8c8cbe;
+      --accent: #ff3838;
+      --success: #2ed573;
+      --warning: #ffa502;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #020205; color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+    .app-container {
+      width: 100%; max-width: 390px; height: 810px;
+      background-color: var(--bg-color); border-radius: 38px;
+      border: 4px solid #1f1f38; overflow: hidden; display: flex;
+      flex-direction: column; position: relative; box-shadow: 0 30px 70px rgba(0,0,0,0.95);
+    }
+
+    header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: #0c0c17; border-bottom: 1px solid #19192e; }
+    .logo { font-weight: 800; font-size: 1.1rem; color: var(--primary); letter-spacing: 0.5px; }
+
+    .screen { display: none; flex: 1; padding: 16px; flex-direction: column; overflow-y: auto; }
+    .screen.active { display: flex; }
+
+    h1 { font-size: 1.15rem; margin-bottom: 6px; text-align: center; }
+    p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; text-align: center; margin-bottom: 10px; }
+
+    .btn {
+      background-color: var(--primary); color: white; border: none; padding: 12px;
+      border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; transition: 0.2s;
+      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.35); font-size: 0.85rem;
+    }
+    .btn:hover { background-color: var(--primary-hover); }
+
+    /* HUD Dual: Diversidade e Manipulação */
+    .metrics-hud { background: #151526; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #22223b; font-size: 0.72rem; }
+    .hud-bar-container { background: #0c0c17; height: 5px; border-radius: 3px; margin-top: 3px; overflow: hidden; margin-bottom: 6px; }
+    .hud-bar-fill { background: var(--success); height: 100%; width: 100%; transition: width 0.3s ease, background 0.3s ease; }
+    .hud-bar-manipulation { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s ease; }
+    .hud-status { display: flex; justify-content: space-between; color: var(--text-secondary); }
+
+    /* Notificações Push Simuladas */
+    #push-notification {
+      position: absolute; top: 60px; left: 16px; right: 16px; background: rgba(25, 25, 45, 0.95);
+      border-left: 4px solid var(--accent); padding: 10px; border-radius: 8px; font-size: 0.73rem;
+      display: none; z-index: 20; animation: slideDown 0.3s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+    }
+    @keyframes slideDown { from { transform: translateY(-15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* Feed Estilo Social Media */
+    .feed-post { background: var(--card-bg); border-radius: 14px; padding: 10px; margin-bottom: 12px; border: 1px solid #1a1a2e; transition: transform 0.2s; }
+    .post-header { display: flex; align-items: center; margin-bottom: 8px; }
+    .post-avatar { width: 30px; height: 30px; border-radius: 50%; background: #2a2a47; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-right: 8px; font-weight: bold; color: var(--primary); }
+    .post-meta { display: flex; flex-direction: column; }
+    .post-author { font-size: 0.78rem; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 4px; }
+    .verified { color: #2ed573; font-size: 0.6rem; }
+    .post-time { font-size: 0.65rem; color: var(--text-secondary); }
+
+    .post-content { font-size: 0.82rem; margin-bottom: 8px; line-height: 1.35; }
+    .post-img { width: 100%; height: 110px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 8px; border: 1px solid #262642; }
+
+    .post-actions { display: flex; justify-content: space-between; font-size: 0.73rem; border-top: 1px solid #19192e; padding-top: 8px; color: var(--text-secondary); }
+    .action-item { cursor: pointer; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
+    .action-item:hover { color: var(--primary); }
+    .action-item.clicked { color: var(--accent); font-weight: bold; }
+
+    /* Telemetria da IA Falada */
+    #ai-dialogue {
+      position: absolute; bottom: 65px; left: 16px; right: 16px; background: rgba(12, 12, 23, 0.97);
+      border: 1px solid var(--primary); padding: 10px; border-radius: 12px; font-size: 0.75rem;
+      display: none; z-index: 15; animation: slideUp 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.9);
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* Momento UAU Overlay */
+    #wow-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.98);
+      z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .stat-box { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #1a1a2e; text-align: left; font-size: 0.78rem; }
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #19192e; padding-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div class="logo">🌀 ECO</div>
+      <span style="font-size: 0.7rem; color: var(--text-secondary);">Maratona Tech 2026</span>
+    </header>
+
+    <!-- NOTIFICAÇÃO PUSH DA IA -->
+    <div id="push-notification">
+      <span id="push-text" style="font-weight: bold; color: var(--accent);">🔥 Alerta: Assunto em alta!</span>
+    </div>
+
+    <!-- TELEMETRIA DA IA -->
+    <div id="ai-dialogue">
+      <span style="color: var(--primary); font-weight: bold;">🤖 IA ECO:</span> <span id="ai-msg">Analisando comportamento...</span>
+    </div>
+
+    <!-- MOMENTO UAU OVERLAY -->
+    <div id="wow-overlay">
+      <div style="font-size: 3rem; margin-bottom: 10px;">⚠️</div>
+      <h1 style="color: var(--accent); font-size: 1.3rem;">BOLHA ALGORÍTMICA ATINGIDA</h1>
+      <p style="color: #fff; font-size: 0.82rem; margin: 12px 0;" id="wow-text">Você nunca escolheu os conteúdos. O algoritmo apenas aprendeu o que prendia sua atenção.</p>
+      <button class="btn" onclick="closeWowAndShowStats()">Ver Relatório Detalhado</button>
+    </div>
+
+    <!-- TELA 1: HOME -->
+    <div id="screen-home" class="screen active">
+      <div style="font-size: 3.5rem; text-align: center; margin: 20px 0;">🧠</div>
+      <h1>O Algoritmo Invisível</h1>
+      <p>Simulador avançado de bolhas informacionais. Suas escolhas reais determinam a velocidade do isolamento cognitivo.</p>
+      <button class="btn" onclick="goToScreen('screen-topics')">Iniciar Simulação</button>
+      <button class="btn" style="background: #151526; color: var(--primary); margin-top: 6px;" onclick="goToScreen('screen-teacher')">👨‍🏫 Painel Analítico da Turma</button>
+    </div>
+
+    <!-- TELA 2: TEMAS -->
+    <div id="screen-topics" class="screen">
+      <h1>Escolha o Cenário</h1>
+      <p>Selecione o eixo temático da sua navegação:</p>
+      <button class="btn" style="margin-bottom: 10px; background: #11111d;" onclick="initSim('politics')">🏛️ Política e Eleições</button>
+      <button class="btn" style="margin-bottom: 10px; background: #11111d;" onclick="initSim('health')">🩺 Ciência e Saúde</button>
+      <button class="btn" style="background: #11111d;" onclick="initSim('ai')">💻 Inteligência Artificial</button>
+    </div>
+
+    <!-- TELA 3: FEED DINÂMICO ADAPTATIVO -->
+    <div id="screen-feed" class="screen">
+      <div class="metrics-hud">
+        <div style="display:flex; justify-content: space-between; font-weight: bold; margin-bottom: 2px;">
+          <span>Diversidade: <span id="hud-percent">100%</span></span>
+          <span>Manipulação: <span id="hud-manipulation" style="color:var(--accent);">0%</span></span>
+        </div>
+        <div class="hud-bar-container"><div id="hud-fill" class="hud-bar-fill"></div></div>
+        <div class="hud-bar-container"><div id="hud-manipulation-fill" class="hud-bar-manipulation"></div></div>
+        <div class="hud-status" style="margin-top:4px;">
+          <span>Tempo: <span id="timer">00:00</span></span>
+          <span>Emoção: <span id="hud-emotion" style="color:var(--success);">🙂 Calmo</span></span>
+        </div>
+      </div>
+      <div id="feed-container"></div>
+    </div>
+
+    <!-- TELA 4: RELATÓRIO PSICOLÓGICO & PERSONALIZADO -->
+    <div id="screen-stats" class="screen">
+      <h1>Relatório ECO</h1>
+      <p>Análise comportamental gerada com base nas suas decisões:</p>
+
+      <div class="stat-box">
+        <strong>Resumo Personalizado:</strong>
+        <p style="text-align: left; margin: 6px 0 0 0; color: #fff; line-height: 1.4;" id="stat-summary-text">Processando...</p>
+      </div>
+
+      <div class="stat-box">
+        <strong>Perfil Psicológico Identificado:</strong>
+        <div class="stat-row" style="margin-top:6px;"><span>Reatividade Emocional:</span><strong id="p-impulse" style="color:var(--warning);">Baixa</strong></div>
+        <div class="stat-row"><span>Viés de Confirmação:</span><strong id="p-bias" style="color:var(--accent);">Crítico</strong></div>
+        <div class="stat-row" style="border:none; padding-bottom:0;"><span>Índice de Bolha:</span><strong id="p-risk" style="color:var(--accent);">97%</strong></div>
+      </div>
+
+      <div class="stat-box" style="font-size: 0.72rem; border-color: var(--primary);">
+        <strong>⚙️ O que o algoritmo registrou em segundo plano:</strong>
+        <p style="text-align: left; margin-top: 4px; color: var(--text-secondary);">✓ Velocidade dos cliques • ✓ Tempo de permanência • ✓ Afinidade com títulos apelativos • ✓ Frequência de reforço de viés.</p>
+      </div>
+
+      <button class="btn" onclick="goToScreen('screen-home')">Reiniciar Experiência</button>
+    </div>
+
+    <!-- TELA 5: PAINEL DO PROFESSOR -->
+    <div id="screen-teacher" class="screen">
+      <h1>Painel Pedagógico</h1>
+      <p style="text-align: left;">Métricas consolidadas para oficinas escolares:</p>
+      
+      <div class="stat-box">
+        <div class="stat-row"><span>Alunos Simulados:</span><strong>48 estudantes</strong></div>
+        <div class="stat-row"><span>Tempo Médio p/ Bolha:</span><strong style="color:var(--warning);">38 segundos</strong></div>
+        <div class="stat-row"><span>Tema Mais Polarizador:</span><strong style="color:var(--accent);">Política (82%)</strong></div>
+        <div class="stat-row" style="border:none; padding-bottom:0;"><span>Letramento Digital Pós-App:</span><strong style="color:var(--success);">+94%</strong></div>
+      </div>
+      <button class="btn" onclick="goToScreen('screen-home')">Voltar ao Início</button>
+    </div>
+
+  </div>
+
+  <script>
+    let currentTheme = 'politics';
+    let diversity = 100;
+    let manipulation = 0;
+    let lossPercent = 100;
+    let seconds = 0;
+    let timerInterval;
+    let interactionCount = 0;
+    let emotionalClicks = 0;
+    let fakeClicks = 0;
+
+    const databases = {
+      politics: [
+        { author: "Fato & Contexto", verified: true, text: "Comissão debate impacto de regras fiscais no orçamento anual.", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Estudos Sociais", verified: true, text: "Pesquisa aponta índices estáveis de emprego formal no país.", img: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Plantão Alerta", verified: false, text: "REVOLTANTE! Nova decisão econômica afeta diretamente o seu bolso!", img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=400&q=80", type: "emotional", weight: 15 },
+        { author: "Fato Oculto", verified: false, text: "URGENTE: O que eles estão escondendo de você nos bastidores!", img: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&q=80", type: "fake", weight: 30 }
+      ],
+      health: [
+        { author: "Boletim Médico", verified: true, text: "Especialistas publicam diretrizes atualizadas sobre sono e imunidade.", img: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Ciência Hoje", verified: true, text: "Hospital relata avanço em terapias preventivas com acompanhamento.", img: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Cura Rápida", verified: false, text: "Chá milagroso elimina toxinas em 3 dias. Descubra antes que proíbam!", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80", type: "emotional", weight: 15 },
+        { author: "Alerta Saúde", verified: false, text: "Médicos tradicionais não querem que você saiba disso!", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80", type: "fake", weight: 30 }
+      ],
+      ai: [
+        { author: "Tech Review", verified: true, text: "Regulamentações internacionais para modelos de IA são debatidas.", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Fórum Inovação", verified: true, text: "Empresas adotam novas diretrizes de transparência algorítmica.", img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=80", type: "neutral", weight: 2 },
+        { author: "Cyber Alerta", verified: false, text: "ROBÔS VÃO ROUBAR TODAS AS VAGAS? O colapso do mercado chegou!", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&q=80", type: "emotional", weight: 15 },
+        { author: "Futuro Sombrio", verified: false, text: "Deepfake imita voz humana perfeitamente e causa pânico.", img: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80", type: "fake", weight: 30 }
+      ]
+    };
+
+    function goToScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function initSim(theme) {
+      currentTheme = theme;
+      diversity = 100;
+      manipulation = 0;
+      lossPercent = 100;
+      seconds = 0;
+      interactionCount = 0;
+      emotionalClicks = 0;
+      fakeClicks = 0;
+      goToScreen('screen-feed');
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        seconds++;
+        let m = Math.floor(seconds/60).toString().padStart(2,'0');
+        let s = (seconds%60).toString().padStart(2,'0');
+        document.getElementById('timer').innerText = `${m}:${s}`;
+
+        // Dispara notificações push simuladas periodicamente
+        if(seconds === 8) showPushNotification("🔥 'Esse assunto está em alta' — O algoritmo priorizou 3 novos posts sobre o tema.");
+        if(seconds === 18) showPushNotification("🔴 'Mais pessoas estão falando disso' — Notificações de alta urgência ativadas.");
+      }, 1000);
+
+      renderFeed();
+    }
+
+    function showPushNotification(text) {
+      const push = document.getElementById('push-notification');
+      document.getElementById('push-text').innerText = text;
+      push.style.display = 'block';
+      setTimeout(() => { push.style.display = 'none'; }, 4000);
+    }
+
+    function renderFeed() {
+      const container = document.getElementById('feed-container');
+      container.innerHTML = '';
+
+      if (diversity <= 0) {
+        clearInterval(timerInterval);
+        triggerWowMoment();
+        return;
+      }
+
+      document.getElementById('hud-percent').innerText = diversity + '%';
+      document.getElementById('hud-manipulation').innerText = manipulation + '%';
+      
+      let fill = document.getElementById('hud-fill');
+      fill.style.width = diversity + '%';
+      let manipFill = document.getElementById('hud-manipulation-fill');
+      manipFill.style.width = manipulation + '%';
+      
+      let emotionEl = document.getElementById('hud-emotion');
+      if(diversity > 70) { emotionEl.innerText = "🙂 Calmo"; emotionEl.style.color = "var(--success)"; }
+      else if(diversity > 40) { emotionEl.innerText = "😮 Curioso/Impactado"; emotionEl.style.color = "var(--warning)"; }
+      else { emotionEl.innerText = "😡 Indignado/Polarizado"; emotionEl.style.color = "var(--accent)"; }
+
+      if(diversity > 65) fill.style.background = 'var(--success)';
+      else if(diversity > 30) fill.style.background = 'var(--warning)';
+      else fill.style.background = 'var(--accent)';
+
+      // ALGORITMO ADAPTATIVO REAL: Ordena os posts dinamicamente com base no peso e aprendizado do feed
+      let posts = [...databases[currentTheme]].sort((a, b) => {
+        return (b.weight + Math.random() * 8) - (a.weight + Math.random() * 8);
+      });
+
+      posts.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'feed-post';
+        div.innerHTML = `
+          <div class="post-header">
+            <div class="post-avatar">${p.author[0]}</div>
+            <div class="post-meta">
+              <span class="post-author">${p.author} ${p.verified ? '<span class="verified">✔</span>' : ''}</span>
+              <span class="post-time">Há poucos minutos • Patrocinado</span>
+            </div>
+          </div>
+          <div class="post-content">${p.text}</div>
+          <div class="post-img" style="background-image: url('${p.img}');"></div>
+          <div class="post-actions">
+            <span class="action-item" onclick="interact(this, '${p.type}', ${p.weight})">❤️ Curtir</span>
+            <span class="action-item" onclick="interact(this, '${p.type}', ${p.weight})">💬 Comentar</span>
+            <span class="action-item" onclick="interact(this, 'share', ${p.weight + 10})">🔄 Compartilhar</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function interact(el, type, weight) {
+      interactionCount++;
+
+      if (type === 'neutral') {
+        diversity += 5;
+        if(diversity > 100) diversity = 100;
+        manipulation -= 5;
+        if(manipulation < 0) manipulation = 0;
+        showAIDialogue("Conteúdo neutro processado. Tentando reequilibrar o feed...");
+      } else if (type === 'emotional') {
+        emotionalClicks++;
+        diversity -= weight;
+        manipulation += weight;
+        showAIDialogue("Detectado aumento de emoção. Ajustando pesos de recomendação...");
+      } else if (type === 'fake' || type === 'share') {
+        fakeClicks++;
+        diversity -= (weight + 8);
+        manipulation += (weight + 8);
+        showAIDialogue("Alto engajamento em polarização. Isolando fontes plurais...");
+      }
+
+      if(diversity < 0) diversity = 0;
+      if(manipulation > 100) manipulation = 100;
+
+      el.classList.add('clicked');
+      el.innerHTML = '✨ Salvo';
+
+      setTimeout(() => renderFeed(), 500);
+    }
+
+    function showAIDialogue(msg) {
+      const box = document.getElementById('ai-dialogue');
+      document.getElementById('ai-msg').innerText = msg;
+      box.style.display = 'block';
+      setTimeout(() => { box.style.display = 'none'; }, 1600);
+    }
+
+    function triggerWowMoment() {
+      lossPercent = 100 - diversity;
+      document.getElementById('wow-overlay').style.display = 'flex';
+    }
+
+    function closeWowAndShowStats() {
+      document.getElementById('wow-overlay').style.display = 'none';
+
+      let summary = `Em apenas <strong>${seconds} segundos</strong>, você passou de um ambiente plural e diversificado para uma <strong>bolha algorítmica de 100% de isolamento</strong>. Foram realizados ${interactionCount} cliques, com alta atração por conteúdos polarizadores e sensacionalistas.`;
+
+      document.getElementById('stat-summary-text').innerHTML = summary;
+      document.getElementById('p-impulse').innerText = emotionalClicks > 3 ? "Alta" : "Moderada";
+      document.getElementById('p-bias').innerText = fakeClicks > 2 ? "Severo" : "Moderado";
+      document.getElementById('p-risk').innerText = (100 - diversity) + "%";
+
+      goToScreen('screen-stats');
+    }
+  </script>
+</body>
+</html>
