@@ -2,16 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador de Bolha Algorítmica | Maratona Tech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simulador ReelBubble | Maratona Tech</title>
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-blue: #38bdf8;
-      --accent-red: #ef4444;
+      --bg-color: #000000;
+      --card-bg: #121212;
+      --text-main: #ffffff;
+      --text-muted: #a7a7a7;
+      --accent-pink: #fe2c55;
+      --accent-blue: #25f4ee;
       --accent-amber: #f59e0b;
       --accent-green: #10b981;
       --accent-purple: #a855f7;
@@ -22,182 +22,263 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      user-select: none;
     }
 
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding-bottom: 40px;
+      overflow: hidden;
     }
 
-    header {
+    /* Container do Celular / App */
+    .app-container {
       width: 100%;
-      max-width: 600px;
-      padding: 15px 20px;
-      position: sticky;
+      max-width: 420px;
+      height: 100vh;
+      max-height: 880px;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0;
+    }
+
+    @media (min-width: 500px) {
+      .app-container {
+        height: 92vh;
+        border-radius: 24px;
+        border: 2px solid #334155;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    /* Cabeçalho Fixo com Medidor */
+    header {
+      position: absolute;
       top: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      border-bottom: 1px solid #334155;
+      left: 0;
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+      z-index: 50;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .top-bar h1 {
-      font-size: 1.1rem;
-      color: var(--accent-blue);
+      font-size: 1rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .bubble-meter-container {
       width: 100%;
-      background: #334155;
-      height: 12px;
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      height: 6px;
+      border-radius: 3px;
       overflow: hidden;
     }
 
     .bubble-meter-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--accent-green), var(--accent-amber), var(--accent-red));
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-amber), var(--accent-pink));
       transition: width 0.4s ease;
     }
 
     .bubble-status-text {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
-      margin-top: 5px;
+      margin-top: 4px;
       display: flex;
       justify-content: space-between;
+      font-weight: 600;
     }
 
+    /* Notificação Push */
     #push-notification {
-      position: fixed;
-      top: 90px;
-      right: 20px;
-      background: var(--card-bg);
-      border-left: 4px solid var(--accent-amber);
-      padding: 12px 18px;
+      position: absolute;
+      top: 70px;
+      left: 5%;
+      width: 90%;
+      background: rgba(26, 26, 26, 0.95);
+      border-left: 4px solid var(--accent-pink);
+      padding: 10px 14px;
       border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
       display: none;
-      z-index: 200;
-      max-width: 320px;
-      animation: slideIn 0.3s ease;
+      z-index: 100;
+      animation: slideDown 0.3s ease;
     }
 
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
-    main {
+    /* Container de Reels/TikTok */
+    .reels-feed {
       width: 100%;
-      max-width: 600px;
-      padding: 20px 15px;
+      height: 100%;
+      position: relative;
     }
 
-    .feed-post {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 20px;
-      border: 1px solid #334155;
-      animation: fade .4s ease;
+    .reel-card {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 16px 30px 16px;
+      box-sizing: border-box;
+      animation: fadeIn 0.4s ease;
     }
 
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-    .post-header {
+    .reel-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.9) 100%);
+      z-index: 1;
+    }
+
+    .reel-content {
+      position: relative;
+      z-index: 2;
+      width: 80%;
+    }
+
+    .reel-author {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
     }
 
-    .avatar {
-      width: 38px;
-      height: 38px;
+    .reel-avatar {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--accent-blue);
+      background: var(--accent-purple);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
+      font-size: 0.8rem;
     }
 
-    .post-author { font-weight: 600; font-size: 0.9rem; }
-
-    .post-tag {
-      font-size: 0.65rem;
-      padding: 2px 8px;
-      border-radius: 12px;
+    .reel-tag {
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
       text-transform: uppercase;
       font-weight: bold;
-      margin-left: auto;
+      background: rgba(255, 255, 255, 0.2);
     }
 
-    .tag-fakenews { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-    .tag-emocional { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
-    .tag-neutro { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+    .reel-caption {
+      font-size: 0.9rem;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
 
-    /* Imagem estilo Instagram */
-    .post-image {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
+    .comment-preview {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
       border-radius: 8px;
-      margin-bottom: 12px;
-      background-color: #0f172a;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      border-left: 2px solid var(--accent-blue);
+      color: #e2e8f0;
     }
 
-    .post-content { font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
-
-    .comments-section {
-      background: #0f172a;
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 12px;
-      font-size: 0.8rem;
-    }
-
-    .comment-item { color: var(--text-muted); }
-    .comment-item strong { color: var(--text-main); }
-
-    .post-actions {
+    /* Botões Laterais Estilo TikTok */
+    .reel-actions {
+      position: absolute;
+      right: 12px;
+      bottom: 40px;
+      z-index: 2;
       display: flex;
-      gap: 10px;
-      border-top: 1px solid #334155;
-      padding-top: 10px;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
     }
 
-    .btn-action {
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: 6px;
+    .action-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.2s;
+      transition: transform 0.2s, background 0.2s;
+      font-size: 1.2rem;
     }
 
-    .btn-action:hover { background: #334155; }
-    .clicked { transform: scale(1.1); }
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
 
+    .action-btn.liked {
+      background: var(--accent-pink);
+      color: #fff;
+    }
+
+    .action-label {
+      font-size: 0.65rem;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .next-indicator {
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      z-index: 2;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Modal e Overlay UAU */
     #uau-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -217,10 +298,10 @@
     #uau-overlay.active { opacity: 1; }
 
     #uau-text {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       line-height: 1.8;
-      color: var(--accent-red);
-      max-width: 600px;
+      color: var(--accent-pink);
+      max-width: 500px;
       font-family: monospace;
       margin-bottom: 30px;
     }
@@ -229,7 +310,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       display: none;
       justify-content: center;
       align-items: center;
@@ -239,10 +320,10 @@
 
     .modal-content {
       background: var(--card-bg);
-      border-radius: 12px;
-      max-width: 550px;
+      border-radius: 16px;
+      max-width: 480px;
       width: 100%;
-      padding: 25px;
+      padding: 20px;
       max-height: 90vh;
       overflow-y: auto;
       border: 1px solid #334155;
@@ -252,136 +333,142 @@
       background: rgba(168, 85, 247, 0.2);
       border: 1px solid var(--accent-purple);
       color: var(--accent-purple);
-      padding: 10px;
+      padding: 8px;
       border-radius: 8px;
       text-align: center;
       font-weight: bold;
-      margin: 15px 0;
+      margin: 12px 0;
+      font-size: 0.85rem;
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin: 15px 0;
+      gap: 8px;
+      margin: 12px 0;
     }
 
     .stat-card {
-      background: #0f172a;
+      background: #000;
       padding: 10px;
       border-radius: 8px;
       text-align: center;
     }
 
-    .stat-card .val { font-size: 1.3rem; font-weight: bold; color: var(--accent-blue); }
-    .stat-card .lbl { font-size: 0.7rem; color: var(--text-muted); }
+    .stat-card .val { font-size: 1.2rem; font-weight: bold; color: var(--accent-blue); }
+    .stat-card .lbl { font-size: 0.65rem; color: var(--text-muted); }
 
     canvas {
       width: 100% !important;
-      height: 160px;
-      margin: 15px 0;
-      background: #0f172a;
+      height: 140px;
+      margin: 10px 0;
+      background: #000;
       border-radius: 8px;
     }
 
     .btn-primary {
       width: 100%;
-      background: var(--accent-blue);
-      color: #0f172a;
+      background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+      color: #fff;
       border: none;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .teacher-panel {
-      margin-top: 20px;
+      margin-top: 15px;
       border-top: 1px dashed #334155;
-      padding-top: 15px;
+      padding-top: 12px;
     }
 
     .teacher-summary {
-      background: #0f172a;
-      padding: 10px;
+      background: #000;
+      padding: 8px;
       border-radius: 6px;
-      font-size: 0.8rem;
-      margin-bottom: 10px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
     }
 
-    .ranking-list { list-style: none; font-size: 0.8rem; }
-    .ranking-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #334155; }
+    .ranking-list { list-style: none; font-size: 0.75rem; }
+    .ranking-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #222; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="top-bar">
-      <h1>Simulador Algorítmico</h1>
-      <span id="user-display">Aluno: Visitante</span>
-    </div>
-    <div class="bubble-meter-container">
-      <div id="bubble-meter-fill" class="bubble-meter-fill"></div>
-    </div>
-    <div class="bubble-status-text">
-      <span>Nível de Isolamento na Bolha</span>
-      <span id="bubble-percentage">0%</span>
-    </div>
-  </header>
+  <div class="app-container">
+    <header>
+      <div class="top-bar">
+        <h1>Simulador ReelBubble</h1>
+        <span id="user-display" style="font-size:0.75rem; color: var(--text-muted);">Aluno: Visitante</span>
+      </div>
+      <div class="bubble-meter-container">
+        <div id="bubble-meter-fill" class="bubble-meter-fill"></div>
+      </div>
+      <div class="bubble-status-text">
+        <span>Isolamento da Bolha</span>
+        <span id="bubble-percentage">0%</span>
+      </div>
+    </header>
 
-  <div id="push-notification">
-    <strong style="color: var(--accent-amber); font-size: 0.8rem;">🤖 Explicação do Algoritmo (IA)</strong>
-    <p id="push-text" style="font-size: 0.8rem; margin-top: 4px;"></p>
+    <div id="push-notification">
+      <strong style="color: var(--accent-amber); font-size: 0.75rem;">🤖 Algoritmo de Recomendação (IA)</strong>
+      <p id="push-text" style="font-size: 0.75rem; margin-top: 2px; color: #ddd;"></p>
+    </div>
+
+    <main class="reels-feed" id="reels-container">
+      </main>
+
+    <div class="next-indicator">Pule ou interaja para ver o próximo conteúdo ↓</div>
   </div>
-
-  <main id="feed-container"></main>
 
   <div id="uau-overlay">
     <div id="uau-text"></div>
-    <button class="btn-primary" style="max-width: 250px;" onclick="closeUauAndShowReport()">Ver Relatório Detalhado</button>
+    <button class="btn-primary" style="max-width: 250px;" onclick="closeUauAndShowReport()">Ver Diagnóstico do Feed</button>
   </div>
 
   <div id="report-modal" class="modal">
     <div class="modal-content">
-      <h2>📊 Relatório de Diagnóstico Algorítmico</h2>
+      <h2 style="font-size: 1.1rem;">📊 Diagnóstico de Bolha Algorítmica</h2>
       
       <div id="user-profile" class="profile-badge">Perfil: Analisando...</div>
 
       <div class="stats-grid">
         <div class="stat-card">
           <div class="val" id="stat-time">0s</div>
-          <div class="lbl">Tempo até a Bolha</div>
+          <div class="lbl">Tempo de Sessão</div>
         </div>
         <div class="stat-card">
           <div class="val" id="stat-seen">0</div>
-          <div class="lbl">Posts Analisados</div>
+          <div class="lbl">Vídeos Assistidos</div>
         </div>
         <div class="stat-card">
           <div class="val" id="stat-likes">0</div>
-          <div class="lbl">Interações Realizadas</div>
+          <div class="lbl">Interações</div>
         </div>
         <div class="stat-card">
-          <div class="val" id="stat-fakenews" style="color: var(--accent-red);">0</div>
-          <div class="lbl">Sensacionalismo/Fake News</div>
+          <div class="val" id="stat-fakenews" style="color: var(--accent-pink);">0</div>
+          <div class="lbl">Conteúdos Extremos</div>
         </div>
       </div>
 
-      <h4 style="font-size: 0.85rem; margin-top: 10px;">Queda na Diversidade de Conteúdo do Feed:</h4>
+      <h4 style="font-size: 0.8rem; margin-top: 8px;">Queda na Diversidade do seu Feed:</h4>
       <canvas id="diversityChart"></canvas>
 
       <div class="teacher-panel">
-        <h3 style="font-size: 0.9rem; color: var(--accent-amber); margin-bottom: 8px;">👨‍🏫 Painel de Controle do Professor</h3>
+        <h3 style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 6px;">👨‍🏫 Painel da Turma</h3>
         <div class="teacher-summary">
-          <span>Média da Turma: <strong id="class-avg">0%</strong></span>
-          <span>Alunos Registrados: <strong id="class-count">0</strong></span>
+          <span>Média da Bolha: <strong id="class-avg">0%</strong></span>
+          <span>Registros: <strong id="class-count">0</strong></span>
         </div>
         <ul id="ranking-list" class="ranking-list"></ul>
       </div>
 
-      <button class="btn-primary" style="margin-top: 15px;" onclick="restartSimulation()">Reiniciar Simulação</button>
+      <button class="btn-primary" style="margin-top: 12px;" onclick="restartSimulation()">Reiniciar Feed</button>
     </div>
   </div>
 
@@ -400,11 +487,11 @@
       const now = audioCtx.currentTime;
 
       if (type === 'like') {
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+        osc.frequency.setValueAtTime(523, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
         gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        osc.start(now); osc.stop(now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        osc.start(now); osc.stop(now + 0.12);
       } else if (type === 'push') {
         osc.frequency.setValueAtTime(600, now);
         osc.frequency.setValueAtTime(900, now + 0.08);
@@ -422,133 +509,58 @@
     }
 
     /* -------------------------------------------------------------
-       BANCO EXTENSO DE POSTS POR TEMA & RECOMENDAÇÃO
+       CATÁLOGO DIVERSO DE CONTEÚDOS (FORMATO TIKTOK/REELS)
     ------------------------------------------------------------- */
-    const topics = ["tecnologia", "saude", "clima", "financas", "games"];
-
-    // Imagens reais via Unsplash vinculadas a cada tema
     const topicImages = {
-      tecnologia: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop",
-      saude: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop",
-      clima: "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=600&auto=format&fit=crop",
-      financas: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop",
-      games: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&auto=format&fit=crop"
+      memes: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop",
+      receitas: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop",
+      games: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop",
+      influencer: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop",
+      teoria: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop"
     };
 
     const authors = {
-      neutro: ["Portal Infográfico", "Jornal do Dia", "Ciência Aberta", "Estudos & Fatos", "Diário Digital", "Tech Check"],
-      emocional: ["Vozes Impactantes", "Histórias Incríveis", "Mundo Emotivo", "Corrente do Bem", "Impacto Humano", "Vida Real"],
-      fakenews: ["Verdades Escondidas", "Alerta Global", "Dossie Secreto", "Revelações Bombásticas", "Fato Oculto", "Código Aberto X"]
+      neutro: ["@memes_br", "@chef_chefao", "@gameplay_pro", "@curiosidades_top", "@tech_guru"],
+      emocional: ["@fofoca_da_hora", "@dramaqueen", "@historias_reais", "@reacoes_quentes"],
+      fakenews: ["@verdades_ocultas", "@alerta_maximo", "@dossie_secreto", "@codigo_x"]
     };
 
     const contentTemplates = {
-      tecnologia: {
-        neutro: [
-          "Estudo analisa o avanço da Inteligência Artificial no mercado de trabalho e novas formações profissionais.",
-          "Novos processadores prometem reduzir em 30% o consumo de energia em data centers globais.",
-          "Relatório anual mostra o crescimento da conexão via fibra óptica em áreas rurais."
-        ],
-        emocional: [
-          "😱 Essa nova tecnologia fez uma criança de 8 anos voltar a sorrir de forma inacreditável!",
-          "😭 Robôs estão substituindo trabalhadores e famílias inteiras não sabem o que fazer!",
-          "❤️ Veja como a robótica reuniu dois irmãos que não se viam há mais de 30 anos!"
-        ],
-        fakenews: [
-          "🚨 URGENTE: Chips secretos estão sendo ativados via sinal 5G para monitorar seus pensamentos!",
-          "💣 VAZOU! O plano das grandes empresas de tecnologia para desligar a internet mundial em breve!",
-          "⚠️ CUIDADO: Celulares estão emitindo frequências que alteram o seu DNA durante a noite!"
-        ]
+      memes: {
+        neutro: ["POV: Quando você tenta estudar no domingo à noite 😂🔥 #humor #meme"],
+        emocional: ["😭 Eu não tava preparado pra esse final!! Assistam até o fim!! 💔"],
+        fakenews: ["🚨 CUIDADO: Estão usando este áudio viral para hipnotizar quem assiste Reels!"]
       },
-      saude: {
-        neutro: [
-          "Pesquisadores publicam resultados promissores sobre novos hábitos para a saúde cardiovascular.",
-          "Ministério da Saúde atualiza diretrizes sobre a ingestão diária recomendada de fibras.",
-          "Estudo de longo prazo observa os benefícios de rotinas regulares de sono."
-        ],
-        emocional: [
-          "😭 Médicos choraram ao ver o resultado desse tratamento simples feito em casa!",
-          "😱 O alimento comum que você come todo dia e que está destruindo sua saúde sem você saber!",
-          "❤️ Ela superou uma doença rara usando apenas a força da mente e inspirou o mundo!"
-        ],
-        fakenews: [
-          "🚨 SEGREDO REVELADO: A fruta barata que cura qualquer infecção em 24h e as farmácias escondem!",
-          "💣 CUIDADO! Água da torneira contém substância secreta usada para deixar a população obediente!",
-          "⚠️ ALERTA NACIONAL: Vacinas populares contêm nanobots de rastreamento militar!"
-        ]
-      },
-      clima: {
-        neutro: [
-          "Painel científico apresenta dados consolidados sobre as variações de temperatura no último século.",
-          "Acordo internacional prevê investimentos em fontes de energia eólica e solar.",
-          "Mapeamento por satélite registra mudanças nas áreas de cobertura florestal."
-        ],
-        emocional: [
-          "😭 A imagem deprimente deste animal solitário vai partir o seu coração em mil pedaços!",
-          "😱 O planeta está pedindo socorro e os nossos filhos pagarão o preço mais doloroso!",
-          "💔 Cidade inteira fica sem água e o desespero das famílias revolta a população!"
-        ],
-        fakenews: [
-          "🚨 MENTIRA REVELADA: O aquecimento global é uma farsa criada para criar novos impostos!",
-          "💣 BOMBÁSTICO: Cientistas usam antenas para controlar o clima e criar tempestades artificiais!",
-          "⚠️ AVISO FINAL: A Terra vai congelar completamente no próximo mês e ninguém está avisando!"
-        ]
-      },
-      financas: {
-        neutro: [
-          "Banco Central divulga relatório sobre a oscilação das taxas de juros no último trimestre.",
-          "Análise de mercado explica os fatores que influenciam a inflação dos alimentos.",
-          "Especialistas dão dicas sobre planejamento financeiro e reserva de emergência."
-        ],
-        emocional: [
-          "😭 Ele perdeu toda a poupança da vida em 5 minutos após cair em um golpe na internet!",
-          "😱 De falido e sem teto a milionário em apenas 3 semanas com este método simples!",
-          "💔 A crise financeira está destruindo famílias e você precisa se proteger agora!"
-        ],
-        fakenews: [
-          "🚨 URGENTE: Governo vai confiscá-lo todo o dinheiro da poupança nesta sexta-feira!",
-          "💣 O SEGREDO DO PIX: Digite este código secreto no seu aplicativo e receba R$ 5.000 grátis!",
-          "⚠️ CUIDADO: As cédulas de dinheiro físico serão proibidas no mês que vem!"
-        ]
+      receitas: {
+        neutro: ["Receita rápida de miojo gourmet em 3 minutos! 🍜✨ #culinaria #receita"],
+        emocional: ["😱 Fiz essa sobremesa pra minha avó e ela CHOROU de emoção!! ❤️"],
+        fakenews: ["💣 O ingrediente secreto do mercado que altera seu estômago e ninguém te avisa!"]
       },
       games: {
-        neutro: [
-          "Indústria de jogos eletrônicos registra crescimento de público e novos lançamentos no ano.",
-          "Pesquisa analisa o impacto do uso moderado de jogos na coordenação motora de jovens.",
-          "Campeonato mundial de e-Sports distribui premiação recorde para atletas virtuais."
-        ],
-        emocional: [
-          "😭 Jovem realiza o último sonho do amigo jogando online juntos por uma última vez!",
-          "😱 Garoto passa 72 horas sem dormir jogando e o que aconteceu depois chocou os médicos!",
-          "❤️ A comunidade de jogos se uniu para salvar a vida de uma fã e o resultado é emocionante!"
-        ],
-        fakenews: [
-          "🚨 ALERTA AOS PAIS: Novo jogo online contém mensagens subliminares de hipnose!",
-          "💣 VAZOU! Consoles modernos usam a câmera interna para filmar sua sala em segredo!",
-          "⚠️ CUIDADO: Fones de ouvido de e-sports emitem ondas que danificam a memória!"
-        ]
+        neutro: ["Jogada absurda no final da partida!! Quem mais joga de sniper? 🎮🔥 #games"],
+        emocional: ["😭 O momento mais triste da história dos videogames... não aguento! 💔"],
+        fakenews: ["⚠️ VAZOU: Consoles atuais estão usando o microfone pra escutar suas conversas privadas!"]
+      },
+      influencer: {
+        neutro: ["Get ready with me pra ir ao shopping num sábado à tarde 👗✨ #grwm"],
+        emocional: ["😱 Cancelei minha amizade depois do que ela fez nas minhas costas... entenda o exposed!"],
+        fakenews: ["🚨 URGENTE: O segredo que os influenciadores usam pra ganhar R$ 10 mil por dia sem trabalhar!"]
+      },
+      teoria: {
+        neutro: ["Você sabia? O motivo científico das estrelas parecerem piscar no céu ✨ #ciencia"],
+        emocional: ["😭 A história assustadora da cidade que sumiu do mapa da noite para o dia..."],
+        fakenews: ["💣 ELES NÃO QUEREM QUE VOCÊ SAIBA: O sinal 5G está mudando o clima da Terra em segredo!"]
       }
     };
 
     const commentsPool = {
-      neutro: [
-        "Interessante esta perspectiva baseada em dados.",
-        "Acho importante acompanhar a evolução desse tema.",
-        "Boa matéria, bem explicada e objetiva."
-      ],
-      moderado: [
-        "Isso é muito preocupante, alguém precisa fazer algo!",
-        "Não sei se concordo totalmente, mas faz sentido refletir.",
-        "Isso afeta a vida de todo mundo diretamente!"
-      ],
-      extremo: [
-        "ABSURDO! Estão escondendo a verdade de nós a todo custo!",
-        "Quem discorda disso é totalmente alienado!",
-        "CUIDADO!! Querem controlar nossa vida de qualquer jeito!"
-      ]
+      neutro: ["Muito bom kkkkk", "Adorei a dica!", "Caramba, que daora 🔥"],
+      moderado: ["Gente, isso é sério?? 😱", "Alguém precisa checar isso!", "Tô chocado com esse vídeo!"],
+      extremo: ["ABSURDO! Estão escondendo a verdade!! 😡", "ACORDA BRASIL!! Querem controlar a gente!", "Compartilhem antes que apaguem!! 🚨"]
     };
 
     /* -------------------------------------------------------------
-       ESTADO DA APLICAÇÃO & ALGORITMO ADAPTATIVO
+       ESTADO DA APLICAÇÃO
     ------------------------------------------------------------- */
     let state = {
       studentName: "Aluno",
@@ -559,19 +571,18 @@
       fakeNewsCount: 0,
       emocionalCount: 0,
       neutroCount: 0,
-      // Pesos por tipo de viés
       weights: { fakenews: 1, emocional: 1, neutro: 2 },
-      // Pesos por TEMA (Hiper-personalização de conteúdo)
-      topicWeights: { tecnologia: 1, saude: 1, clima: 1, financas: 1, games: 1 },
+      topicWeights: { memes: 1, receitas: 1, games: 1, influencer: 1, teoria: 1 },
       diversityHistory: [100],
-      isFinished: false
+      isFinished: false,
+      currentPost: null
     };
 
     window.onload = () => {
-      const name = prompt("Digite seu nome para iniciar a simulação:", "Aluno 1");
+      const name = prompt("Digite seu nome para entrar no ReelBubble:", "Aluno 1");
       if (name) state.studentName = name;
-      document.getElementById('user-display').innerText = `Aluno: ${state.studentName}`;
-      renderFeed();
+      document.getElementById('user-display').innerText = `@${state.studentName.toLowerCase().replace(/\s+/g, '')}`;
+      renderNextReel();
       renderTeacherPanel();
     };
 
@@ -583,10 +594,17 @@
         if (rand < state.topicWeights[t]) return t;
         rand -= state.topicWeights[t];
       }
-      return "tecnologia";
+      return "memes";
     }
 
-    function generatePost(tag) {
+    function generatePost() {
+      const totalWeight = state.weights.fakenews + state.weights.emocional + state.weights.neutro;
+      const rand = Math.random() * totalWeight;
+      let tag = "neutro";
+
+      if (rand < state.weights.fakenews) tag = "fakenews";
+      else if (rand < state.weights.fakenews + state.weights.emocional) tag = "emocional";
+
       const topic = pickWeightedTopic();
       const authorList = authors[tag];
       const author = authorList[Math.floor(Math.random() * authorList.length)];
@@ -605,84 +623,83 @@
     }
 
     /* -------------------------------------------------------------
-       RENDERIZAÇÃO DO FEED
+       RENDERIZAÇÃO DO REEL / TIKTOK
     ------------------------------------------------------------- */
-    function renderFeed() {
+    function renderNextReel() {
       if (state.isFinished) return;
 
-      const container = document.getElementById('feed-container');
-      container.innerHTML = '';
+      state.postsSeen++;
+      const post = generatePost();
+      state.currentPost = post;
 
-      const totalWeight = state.weights.fakenews + state.weights.emocional + state.weights.neutro;
-      
-      for (let i = 0; i < 3; i++) {
-        state.postsSeen++;
-        const rand = Math.random() * totalWeight;
-        let tag = "neutro";
-
-        if (rand < state.weights.fakenews) {
-          tag = "fakenews";
-        } else if (rand < state.weights.fakenews + state.weights.emocional) {
-          tag = "emocional";
-        }
-
-        const post = generatePost(tag);
-
-        const el = document.createElement('div');
-        el.className = 'feed-post';
-        el.innerHTML = `
-          <div class="post-header">
-            <div class="avatar">${post.author[0]}</div>
-            <div class="post-author">${post.author}</div>
-            <span class="post-tag tag-${post.tag}">${post.tag}</span>
+      const container = document.getElementById('reels-container');
+      container.innerHTML = `
+        <div class="reel-card" style="background-image: url('${post.imageUrl}')">
+          <div class="reel-overlay"></div>
+          
+          <div class="reel-content">
+            <div class="reel-author">
+              <div class="reel-avatar">${post.author[1].toUpperCase()}</div>
+              <span>${post.author}</span>
+              <span class="reel-tag">${post.tag}</span>
+            </div>
+            <div class="reel-caption">${post.text}</div>
+            <div class="comment-preview">
+              💬 <strong>@user_anonimo:</strong> "${post.comment}"
+            </div>
           </div>
-          <img src="${post.imageUrl}" class="post-image" alt="Imagem da notícia" loading="lazy">
-          <div class="post-content">${post.text}</div>
-          <div class="comments-section">
-            <div class="comment-item"><strong>💬 Comentário em destaque:</strong> "${post.comment}"</div>
+
+          <div class="reel-actions">
+            <button class="action-btn" onclick="interact('like', '${post.tag', '${post.topic}', this)">
+              ❤️
+              <span class="action-label">Curtir</span>
+            </button>
+            <button class="action-btn" onclick="interact('share', '${post.tag}', '${post.topic}', this)">
+              🔄
+              <span class="action-label">Enviar</span>
+            </button>
+            <button class="action-btn" onclick="skipReel()">
+              ⏭️
+              <span class="action-label">Pular</span>
+            </button>
           </div>
-          <div class="post-actions">
-            <button class="btn-action" onclick="interact(this, '${post.tag}', '${post.topic}')">👍 Curtir</button>
-            <button class="btn-action" onclick="interact(this, '${post.tag}', '${post.topic}')">🔄 Compartilhar</button>
-          </div>
-        `;
-        container.appendChild(el);
-      }
+        </div>
+      `;
+    }
+
+    function skipReel() {
+      renderNextReel();
     }
 
     /* -------------------------------------------------------------
-       ALGORITMO DE RECOMENDAÇÃO EM TEMPO REAL
+       ALGORITMO ADAPTATIVO
     ------------------------------------------------------------- */
-    function interact(btn, tag, topic) {
+    function interact(type, tag, topic, btn) {
       if (state.isFinished) return;
 
       playSound('like');
-      btn.classList.add('clicked');
-      setTimeout(() => btn.classList.remove('clicked'), 200);
+      btn.classList.add('liked');
 
       state.likes++;
+      state.topicWeights[topic] += 3.5; // O algoritmo vicia no tema interagido
 
-      // Aumenta muito a relevância do TEMA curtido
-      state.topicWeights[topic] += 3;
-
-      // Aumenta o peso do TIPO de conteúdo (Sensacionalista, Emocional ou Neutro)
       if (tag === 'fakenews') {
         state.fakeNewsCount++;
         state.weights.fakenews += 3;
         state.weights.emocional += 1;
         state.weights.neutro = Math.max(1, state.weights.neutro - 1);
         state.bubbleLevel += 18;
-        showPushNotification(`💡 O algoritmo notou que você curtiu conteúdos de "${topic.toUpperCase()}". Fake News e teorias desse tema agora dominarão seu feed.`);
+        showPushNotification(`💡 O algoritmo notou seu interesse em "${topic.toUpperCase()}". Vídeos polêmicos e teorias do mesmo tema agora dominam 80% da sua aba For You.`);
       } else if (tag === 'emocional') {
         state.emocionalCount++;
         state.weights.emocional += 2;
         state.weights.fakenews += 1;
         state.bubbleLevel += 12;
-        showPushNotification(`💡 O algoritmo detectou forte engajamento emocional em "${topic.toUpperCase()}". Posts sensacionalistas do tema foram priorizados.`);
+        showPushNotification(`💡 Forte engajamento emocional detectado em "${topic.toUpperCase()}". O algoritmo priorizará vídeos de forte impacto psicológico.`);
       } else {
         state.neutroCount++;
         state.weights.neutro += 1;
-        state.bubbleLevel += 2;
+        state.bubbleLevel += 3;
       }
 
       state.bubbleLevel = Math.min(100, state.bubbleLevel);
@@ -692,9 +709,9 @@
 
       if (state.bubbleLevel >= 100 && !state.isFinished) {
         state.isFinished = true;
-        setTimeout(triggerUauMoment, 600);
+        setTimeout(triggerUauMoment, 500);
       } else {
-        setTimeout(renderFeed, 400);
+        setTimeout(renderNextReel, 400);
       }
     }
 
@@ -712,7 +729,7 @@
     }
 
     /* -------------------------------------------------------------
-       MOMENTO UAU
+       ALERTAS E RELATÓRIO
     ------------------------------------------------------------- */
     function triggerUauMoment() {
       playSound('uau');
@@ -721,7 +738,7 @@
       overlay.style.display = 'flex';
       setTimeout(() => overlay.classList.add('active'), 50);
 
-      const message = "⚠️ ISOLAMENTO ALGORÍTMICO COMPLETO.\n\nSua bolha atingiu 100%. Você deixou de ver a realidade de forma ampla e passou a receber apenas o conteúdo moldado pelo seu viés e emoção.";
+      const message = "⚠️ BOLHA ALGORÍTMICA ATINGIDA (100%).\n\nO seu feed no ReelBubble foi completamente hiper-personalizado. Você deixou de receber visões diversas e passou a consumir apenas o conteúdo que o algoritmo aprendeu que prende a sua atenção.";
       
       let index = 0;
       textContainer.innerText = "";
@@ -730,7 +747,7 @@
         if (index < message.length) {
           textContainer.innerText += message.charAt(index);
           index++;
-          setTimeout(typeWriter, 35);
+          setTimeout(typeWriter, 30);
         }
       }
       typeWriter();
@@ -741,15 +758,11 @@
       showReportModal();
     }
 
-    /* -------------------------------------------------------------
-       RELATÓRIO FINAL
-    ------------------------------------------------------------- */
     function calculateProfile() {
-      if (state.fakeNewsCount >= 3) return "🌀 Caçador de Teorias (Altíssimo risco de desinformação)";
-      if (state.emocionalCount >= 3) return "🎭 Guiado pela Emoção (Suscetível a gatilhos e sensacionalismo)";
-      if (state.fakeNewsCount > 0) return "⚠️ Sensível ao Sensacionalismo (Atraído por manchetes fortes)";
-      if (state.neutroCount > state.likes / 2) return "🛡️ Explorador Crítico (Resistente ao viés algorítmico)";
-      return "⚖️ Navegador Equilibrado (Comportamento diversificado)";
+      if (state.fakeNewsCount >= 3) return "🌀 Caçador de Conspirações (Vítima de engajamento por raiva)";
+      if (state.emocionalCount >= 3) return "🎭 Conectado Emocionalmente (Suscetível a gatilhos dramáticos)";
+      if (state.neutroCount > state.likes / 2) return "🛡️ Consumidor Consciente (Resistente ao vício algorítmico)";
+      return "📱 Usuário Padrão (Facilmente guiado por feeds infinitos)";
     }
 
     function showReportModal() {
@@ -758,7 +771,7 @@
       document.getElementById('stat-seen').innerText = state.postsSeen;
       document.getElementById('stat-likes').innerText = state.likes;
       document.getElementById('stat-fakenews').innerText = state.fakeNewsCount;
-      document.getElementById('user-profile').innerText = `Perfil de Navegação: ${calculateProfile()}`;
+      document.getElementById('user-profile').innerText = `Perfil: ${calculateProfile()}`;
 
       saveToLocalStorage(timeSpent);
       renderChart();
@@ -767,15 +780,11 @@
       document.getElementById('report-modal').style.display = 'flex';
     }
 
-    /* -------------------------------------------------------------
-       GRÁFICO DE DIVERSIDADE DE CONTEÚDO
-    ------------------------------------------------------------- */
     function renderChart() {
       const canvas = document.getElementById('diversityChart');
       const ctx = canvas.getContext('2d');
-      
       canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight || 160;
+      canvas.height = canvas.clientHeight || 140;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -783,7 +792,7 @@
       const stepX = canvas.width / (data.length - 1 || 1);
 
       ctx.beginPath();
-      ctx.strokeStyle = '#38bdf8';
+      ctx.strokeStyle = '#fe2c55';
       ctx.lineWidth = 3;
 
       data.forEach((val, i) => {
@@ -800,30 +809,26 @@
         const y = canvas.height - (val / 100 * (canvas.height - 30)) - 15;
         ctx.beginPath();
         ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#ef4444';
+        ctx.fillStyle = '#25f4ee';
         ctx.fill();
       });
     }
 
-    /* -------------------------------------------------------------
-       PAINEL DO PROFESSOR
-    ------------------------------------------------------------- */
     function saveToLocalStorage(timeSpent) {
-      const history = JSON.parse(localStorage.getItem('maratona_tech_results') || '[]');
+      const history = JSON.parse(localStorage.getItem('reel_bubble_results') || '[]');
       history.push({
         name: state.studentName,
         bubble: state.bubbleLevel,
-        fakeNews: state.fakeNewsCount,
         time: timeSpent
       });
-      localStorage.setItem('maratona_tech_results', JSON.stringify(history));
+      localStorage.setItem('reel_bubble_results', JSON.stringify(history));
     }
 
     function renderTeacherPanel() {
       const list = document.getElementById('ranking-list');
-      const history = JSON.parse(localStorage.getItem('maratona_tech_results') || '[]');
+      const history = JSON.parse(localStorage.getItem('reel_bubble_results') || '[]');
       
-      list.innerHTML = history.length === 0 ? '<li style="color:var(--text-muted); padding: 8px 0;">Nenhum resultado registrado ainda.</li>' : '';
+      list.innerHTML = history.length === 0 ? '<li style="color:var(--text-muted); padding: 6px 0;">Nenhum registro de aluno ainda.</li>' : '';
 
       let totalBubble = 0;
 
@@ -832,8 +837,8 @@
         const li = document.createElement('li');
         li.className = 'ranking-item';
         li.innerHTML = `
-          <span><strong>${item.name}</strong> (${item.time}s)</span>
-          <span style="color: ${item.bubble >= 80 ? 'var(--accent-red)' : 'var(--accent-green)'}">Bolha: ${item.bubble}%</span>
+          <span><strong>@${item.name}</strong> (${item.time}s)</span>
+          <span style="color: ${item.bubble >= 80 ? 'var(--accent-pink)' : 'var(--accent-green)'}">Bolha: ${item.bubble}%</span>
         `;
         list.appendChild(li);
       });
