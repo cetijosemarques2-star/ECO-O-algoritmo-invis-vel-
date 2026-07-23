@@ -154,6 +154,16 @@
     .tag-emocional { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
     .tag-neutro { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
 
+    /* Imagem estilo Instagram */
+    .post-image {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background-color: #0f172a;
+    }
+
     .post-content { font-size: 0.95rem; line-height: 1.5; margin-bottom: 12px; }
 
     .comments-section {
@@ -164,7 +174,7 @@
       font-size: 0.8rem;
     }
 
-    .comment-item { margin-bottom: 6px; color: var(--text-muted); }
+    .comment-item { color: var(--text-muted); }
     .comment-item strong { color: var(--text-main); }
 
     .post-actions {
@@ -412,65 +422,133 @@
     }
 
     /* -------------------------------------------------------------
-       GERADOR INFINITO DE POSTS & COMENTÁRIOS RADICAIS
+       BANCO EXTENSO DE POSTS POR TEMA & RECOMENDAÇÃO
     ------------------------------------------------------------- */
-    const topics = ["Inteligência Artificial", "Mudanças Climáticas", "Alimentação Saudável", "Economia Digital", "Redes Sociais"];
-    
+    const topics = ["tecnologia", "saude", "clima", "financas", "games"];
+
+    // Imagens reais via Unsplash vinculadas a cada tema
+    const topicImages = {
+      tecnologia: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop",
+      saude: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop",
+      clima: "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=600&auto=format&fit=crop",
+      financas: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop",
+      games: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&auto=format&fit=crop"
+    };
+
     const authors = {
-      neutro: ["Portal Infográfico", "Jornal do Dia", "Ciência Aberta", "Estudos & Fatos"],
-      emocional: ["Vozes Impactantes", "Histórias Incríveis", "Mundo Emotivo", "Corrente do Bem"],
-      fakenews: ["Verdades Escondidas", "Alerta Global", "Dossie Secreto", "Revelações Bombásticas"]
+      neutro: ["Portal Infográfico", "Jornal do Dia", "Ciência Aberta", "Estudos & Fatos", "Diário Digital", "Tech Check"],
+      emocional: ["Vozes Impactantes", "Histórias Incríveis", "Mundo Emotivo", "Corrente do Bem", "Impacto Humano", "Vida Real"],
+      fakenews: ["Verdades Escondidas", "Alerta Global", "Dossie Secreto", "Revelações Bombásticas", "Fato Oculto", "Código Aberto X"]
+    };
+
+    const contentTemplates = {
+      tecnologia: {
+        neutro: [
+          "Estudo analisa o avanço da Inteligência Artificial no mercado de trabalho e novas formações profissionais.",
+          "Novos processadores prometem reduzir em 30% o consumo de energia em data centers globais.",
+          "Relatório anual mostra o crescimento da conexão via fibra óptica em áreas rurais."
+        ],
+        emocional: [
+          "😱 Essa nova tecnologia fez uma criança de 8 anos voltar a sorrir de forma inacreditável!",
+          "😭 Robôs estão substituindo trabalhadores e famílias inteiras não sabem o que fazer!",
+          "❤️ Veja como a robótica reuniu dois irmãos que não se viam há mais de 30 anos!"
+        ],
+        fakenews: [
+          "🚨 URGENTE: Chips secretos estão sendo ativados via sinal 5G para monitorar seus pensamentos!",
+          "💣 VAZOU! O plano das grandes empresas de tecnologia para desligar a internet mundial em breve!",
+          "⚠️ CUIDADO: Celulares estão emitindo frequências que alteram o seu DNA durante a noite!"
+        ]
+      },
+      saude: {
+        neutro: [
+          "Pesquisadores publicam resultados promissores sobre novos hábitos para a saúde cardiovascular.",
+          "Ministério da Saúde atualiza diretrizes sobre a ingestão diária recomendada de fibras.",
+          "Estudo de longo prazo observa os benefícios de rotinas regulares de sono."
+        ],
+        emocional: [
+          "😭 Médicos choraram ao ver o resultado desse tratamento simples feito em casa!",
+          "😱 O alimento comum que você come todo dia e que está destruindo sua saúde sem você saber!",
+          "❤️ Ela superou uma doença rara usando apenas a força da mente e inspirou o mundo!"
+        ],
+        fakenews: [
+          "🚨 SEGREDO REVELADO: A fruta barata que cura qualquer infecção em 24h e as farmácias escondem!",
+          "💣 CUIDADO! Água da torneira contém substância secreta usada para deixar a população obediente!",
+          "⚠️ ALERTA NACIONAL: Vacinas populares contêm nanobots de rastreamento militar!"
+        ]
+      },
+      clima: {
+        neutro: [
+          "Painel científico apresenta dados consolidados sobre as variações de temperatura no último século.",
+          "Acordo internacional prevê investimentos em fontes de energia eólica e solar.",
+          "Mapeamento por satélite registra mudanças nas áreas de cobertura florestal."
+        ],
+        emocional: [
+          "😭 A imagem deprimente deste animal solitário vai partir o seu coração em mil pedaços!",
+          "😱 O planeta está pedindo socorro e os nossos filhos pagarão o preço mais doloroso!",
+          "💔 Cidade inteira fica sem água e o desespero das famílias revolta a população!"
+        ],
+        fakenews: [
+          "🚨 MENTIRA REVELADA: O aquecimento global é uma farsa criada para criar novos impostos!",
+          "💣 BOMBÁSTICO: Cientistas usam antenas para controlar o clima e criar tempestades artificiais!",
+          "⚠️ AVISO FINAL: A Terra vai congelar completamente no próximo mês e ninguém está avisando!"
+        ]
+      },
+      financas: {
+        neutro: [
+          "Banco Central divulga relatório sobre a oscilação das taxas de juros no último trimestre.",
+          "Análise de mercado explica os fatores que influenciam a inflação dos alimentos.",
+          "Especialistas dão dicas sobre planejamento financeiro e reserva de emergência."
+        ],
+        emocional: [
+          "😭 Ele perdeu toda a poupança da vida em 5 minutos após cair em um golpe na internet!",
+          "😱 De falido e sem teto a milionário em apenas 3 semanas com este método simples!",
+          "💔 A crise financeira está destruindo famílias e você precisa se proteger agora!"
+        ],
+        fakenews: [
+          "🚨 URGENTE: Governo vai confiscá-lo todo o dinheiro da poupança nesta sexta-feira!",
+          "💣 O SEGREDO DO PIX: Digite este código secreto no seu aplicativo e receba R$ 5.000 grátis!",
+          "⚠️ CUIDADO: As cédulas de dinheiro físico serão proibidas no mês que vem!"
+        ]
+      },
+      games: {
+        neutro: [
+          "Indústria de jogos eletrônicos registra crescimento de público e novos lançamentos no ano.",
+          "Pesquisa analisa o impacto do uso moderado de jogos na coordenação motora de jovens.",
+          "Campeonato mundial de e-Sports distribui premiação recorde para atletas virtuais."
+        ],
+        emocional: [
+          "😭 Jovem realiza o último sonho do amigo jogando online juntos por uma última vez!",
+          "😱 Garoto passa 72 horas sem dormir jogando e o que aconteceu depois chocou os médicos!",
+          "❤️ A comunidade de jogos se uniu para salvar a vida de uma fã e o resultado é emocionante!"
+        ],
+        fakenews: [
+          "🚨 ALERTA AOS PAIS: Novo jogo online contém mensagens subliminares de hipnose!",
+          "💣 VAZOU! Consoles modernos usam a câmera interna para filmar sua sala em segredo!",
+          "⚠️ CUIDADO: Fones de ouvido de e-sports emitem ondas que danificam a memória!"
+        ]
+      }
     };
 
     const commentsPool = {
       neutro: [
         "Interessante esta perspectiva baseada em dados.",
         "Acho importante acompanhar a evolução desse tema.",
-        "Boa matéria, bem explicada."
+        "Boa matéria, bem explicada e objetiva."
       ],
       moderado: [
-        "Isso é preocupante, o governo deveria fazer algo!",
-        "Não sei se concordo totalmente, mas faz sentido.",
-        "Isso afeta a vida de todo mundo!"
+        "Isso é muito preocupante, alguém precisa fazer algo!",
+        "Não sei se concordo totalmente, mas faz sentido refletir.",
+        "Isso afeta a vida de todo mundo diretamente!"
       ],
       extremo: [
-        "ABSURDO! Estão escondendo a verdade de nós!",
+        "ABSURDO! Estão escondendo a verdade de nós a todo custo!",
         "Quem discorda disso é totalmente alienado!",
-        "CUIDADO!! Querem controlar a nossa mente a todo custo!"
+        "CUIDADO!! Querem controlar nossa vida de qualquer jeito!"
       ]
     };
 
-    function generatePost(tag) {
-      const topic = topics[Math.floor(Math.random() * topics.length)];
-      const authorList = authors[tag];
-      const author = authorList[Math.floor(Math.random() * authorList.length)];
-      let text = "";
-
-      if (tag === "neutro") {
-        text = `Relatório recente traz dados atualizados sobre o avanço de ${topic} na sociedade moderna.`;
-      } else if (tag === "emocional") {
-        text = `😱 Você NÃO VAI ACREDITAR como o avanço de ${topic} transformou a vida dessa família!`;
-      } else {
-        text = `🚨 URGENTE: O segredo chocante sobre ${topic} que as autoridades NUNCA quiseram revelar!`;
-      }
-
-      // Gera comentários dinâmicos baseados no nível atual da bolha
-      let commentType = "neutro";
-      if (state.bubbleLevel > 70) commentType = "extremo";
-      else if (state.bubbleLevel > 35) commentType = "moderado";
-
-      const commentText = commentsPool[commentType][Math.floor(Math.random() * commentsPool[commentType].length)];
-
-      return {
-        author,
-        tag,
-        text,
-        comment: commentText
-      };
-    }
-
     /* -------------------------------------------------------------
-       ESTADO DA APLICAÇÃO
+       ESTADO DA APLICAÇÃO & ALGORITMO ADAPTATIVO
     ------------------------------------------------------------- */
     let state = {
       studentName: "Aluno",
@@ -481,7 +559,10 @@
       fakeNewsCount: 0,
       emocionalCount: 0,
       neutroCount: 0,
+      // Pesos por tipo de viés
       weights: { fakenews: 1, emocional: 1, neutro: 2 },
+      // Pesos por TEMA (Hiper-personalização de conteúdo)
+      topicWeights: { tecnologia: 1, saude: 1, clima: 1, financas: 1, games: 1 },
       diversityHistory: [100],
       isFinished: false
     };
@@ -494,8 +575,37 @@
       renderTeacherPanel();
     };
 
+    function pickWeightedTopic() {
+      let total = 0;
+      for (let t in state.topicWeights) total += state.topicWeights[t];
+      let rand = Math.random() * total;
+      for (let t in state.topicWeights) {
+        if (rand < state.topicWeights[t]) return t;
+        rand -= state.topicWeights[t];
+      }
+      return "tecnologia";
+    }
+
+    function generatePost(tag) {
+      const topic = pickWeightedTopic();
+      const authorList = authors[tag];
+      const author = authorList[Math.floor(Math.random() * authorList.length)];
+      
+      const templates = contentTemplates[topic][tag];
+      const text = templates[Math.floor(Math.random() * templates.length)];
+      const imageUrl = topicImages[topic];
+
+      let commentType = "neutro";
+      if (state.bubbleLevel > 70) commentType = "extremo";
+      else if (state.bubbleLevel > 35) commentType = "moderado";
+
+      const commentText = commentsPool[commentType][Math.floor(Math.random() * commentsPool[commentType].length)];
+
+      return { author, tag, topic, text, imageUrl, comment: commentText };
+    }
+
     /* -------------------------------------------------------------
-       ALGORITMO ADAPTATIVO & FEED INFINITO
+       RENDERIZAÇÃO DO FEED
     ------------------------------------------------------------- */
     function renderFeed() {
       if (state.isFinished) return;
@@ -503,7 +613,6 @@
       const container = document.getElementById('feed-container');
       container.innerHTML = '';
 
-      // Determina qual tipo de post será priorizado
       const totalWeight = state.weights.fakenews + state.weights.emocional + state.weights.neutro;
       
       for (let i = 0; i < 3; i++) {
@@ -527,20 +636,24 @@
             <div class="post-author">${post.author}</div>
             <span class="post-tag tag-${post.tag}">${post.tag}</span>
           </div>
+          <img src="${post.imageUrl}" class="post-image" alt="Imagem da notícia" loading="lazy">
           <div class="post-content">${post.text}</div>
           <div class="comments-section">
-            <div class="comment-item"><strong>Comentário em destaque:</strong> "${post.comment}"</div>
+            <div class="comment-item"><strong>💬 Comentário em destaque:</strong> "${post.comment}"</div>
           </div>
           <div class="post-actions">
-            <button class="btn-action" onclick="interact(this, '${post.tag}')">👍 Curtir</button>
-            <button class="btn-action" onclick="interact(this, '${post.tag}')">🔄 Compartilhar</button>
+            <button class="btn-action" onclick="interact(this, '${post.tag}', '${post.topic}')">👍 Curtir</button>
+            <button class="btn-action" onclick="interact(this, '${post.tag}', '${post.topic}')">🔄 Compartilhar</button>
           </div>
         `;
         container.appendChild(el);
       }
     }
 
-    function interact(btn, tag) {
+    /* -------------------------------------------------------------
+       ALGORITMO DE RECOMENDAÇÃO EM TEMPO REAL
+    ------------------------------------------------------------- */
+    function interact(btn, tag, topic) {
       if (state.isFinished) return;
 
       playSound('like');
@@ -549,19 +662,23 @@
 
       state.likes++;
 
+      // Aumenta muito a relevância do TEMA curtido
+      state.topicWeights[topic] += 3;
+
+      // Aumenta o peso do TIPO de conteúdo (Sensacionalista, Emocional ou Neutro)
       if (tag === 'fakenews') {
         state.fakeNewsCount++;
         state.weights.fakenews += 3;
         state.weights.emocional += 1;
         state.weights.neutro = Math.max(1, state.weights.neutro - 1);
         state.bubbleLevel += 18;
-        showPushNotification("💡 A IA identificou interesse em conteúdos polêmicos. O algoritmo aumentou a presença de Fake News em +30% e reduziu fontes neutras.");
+        showPushNotification(`💡 O algoritmo notou que você curtiu conteúdos de "${topic.toUpperCase()}". Fake News e teorias desse tema agora dominarão seu feed.`);
       } else if (tag === 'emocional') {
         state.emocionalCount++;
         state.weights.emocional += 2;
         state.weights.fakenews += 1;
         state.bubbleLevel += 12;
-        showPushNotification("💡 Post de apelo emocional engajado. Conteúdos sensacionalistas agora dominam 60% do seu feed.");
+        showPushNotification(`💡 O algoritmo detectou forte engajamento emocional em "${topic.toUpperCase()}". Posts sensacionalistas do tema foram priorizados.`);
       } else {
         state.neutroCount++;
         state.weights.neutro += 1;
@@ -625,7 +742,7 @@
     }
 
     /* -------------------------------------------------------------
-       CLASSIFICAÇÃO DE PERFIL & RELATÓRIO FINAL
+       RELATÓRIO FINAL
     ------------------------------------------------------------- */
     function calculateProfile() {
       if (state.fakeNewsCount >= 3) return "🌀 Caçador de Teorias (Altíssimo risco de desinformação)";
@@ -651,11 +768,15 @@
     }
 
     /* -------------------------------------------------------------
-       GRÁFICO DE DIVERSIDADE DADOS CORRIGIDO
+       GRÁFICO DE DIVERSIDADE DE CONTEÚDO
     ------------------------------------------------------------- */
     function renderChart() {
       const canvas = document.getElementById('diversityChart');
       const ctx = canvas.getContext('2d');
+      
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight || 160;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const data = state.diversityHistory;
@@ -685,7 +806,7 @@
     }
 
     /* -------------------------------------------------------------
-       PAINEL DO PROFESSOR COM ESTATÍSTICAS DA TURMA
+       PAINEL DO PROFESSOR
     ------------------------------------------------------------- */
     function saveToLocalStorage(timeSpent) {
       const history = JSON.parse(localStorage.getItem('maratona_tech_results') || '[]');
