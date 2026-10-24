@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVESTIGA+ · Dashboard de Pesquisa (Maratona Tech 2026)</title>
+    <title>INVESTIGA+ · Dashboard Científico (Maratona Tech 2026)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
@@ -49,7 +49,7 @@
                     <i class="fa-regular fa-id-card text-blue-600"></i> Amostra: 20 Estudantes
                 </span>
                 <span class="flex items-center gap-1.5 font-medium text-slate-700 px-2 py-1 bg-white rounded shadow-xs">
-                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Respostas Anônimas
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Questionário Físico Anônimo
                 </span>
             </div>
         </div>
@@ -58,16 +58,27 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         
-        <!-- INSTRUÇÃO DE INTERAÇÃO -->
-        <div class="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-center gap-3 text-blue-800 text-sm">
-            <i class="fa-solid fa-circle-info text-blue-600 text-base flex-shrink-0"></i>
-            <span><strong>Dica interativa:</strong> Clique em qualquer cartão de indicador ou barra dos gráficos para ver os detalhes, contagem de participantes e o impacto direto na hipótese!</span>
+        <!-- BARRA DE FILTRO INTERATIVO -->
+        <div class="mb-6 bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xs">
+            <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-filter"></i>
+                </span>
+                <div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Filtro de Visualização</h3>
+                    <p class="text-xs text-slate-500">Selecione o bloco de dados que deseja destacar no painel:</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="setFilter('all')" id="btn-filter-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition-colors shadow-xs">Visão Geral (Tudo)</button>
+                <button onclick="setFilter('p1')" id="btn-filter-p1" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">Frequência (P1)</button>
+                <button onclick="setFilter('p2')" id="btn-filter-p2" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">Atitudes e Fontes (P2)</button>
+            </div>
         </div>
 
         <!-- INDICADORES CHAVE (KPIs) -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             
-            <!-- KPI 1 -->
             <button onclick="openModal('total')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-blue-400 group relative">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Amostra Total</span>
@@ -82,7 +93,6 @@
                 </div>
             </button>
 
-            <!-- KPI 2 -->
             <button onclick="openModal('hipotese_refutada')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-amber-400 group relative">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Hipótese Inicial</span>
@@ -92,12 +102,11 @@
                 </div>
                 <div class="text-3xl font-extrabold text-amber-600 tracking-tight mb-1">30%</div>
                 <div class="text-xs text-slate-500 flex items-center justify-between">
-                    <span>Raramente / Nunca checam (6 de 20)</span>
+                    <span>Raramente / Nunca (6 de 20)</span>
                     <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-amber-500 transition-colors"></i>
                 </div>
             </button>
 
-            <!-- KPI 3 -->
             <button onclick="openModal('alta_checagem')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-emerald-400 group relative">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Alta Checagem</span>
@@ -112,7 +121,6 @@
                 </div>
             </button>
 
-            <!-- KPI 4 -->
             <button onclick="openModal('portais_jornalisticos')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-indigo-400 group relative">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Fonte Principal</span>
@@ -122,12 +130,11 @@
                 </div>
                 <div class="text-3xl font-extrabold text-indigo-600 tracking-tight mb-1">50%</div>
                 <div class="text-xs text-slate-500 flex items-center justify-between">
-                    <span>Citaram Portais (10 menções)</span>
+                    <span>Portais (10 menções)</span>
                     <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-indigo-500 transition-colors"></i>
                 </div>
             </button>
 
-            <!-- KPI 5 -->
             <button onclick="openModal('sites_oficiais')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-sky-400 group relative">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-semibold text-sky-600 uppercase tracking-wider">Fontes Oficiais</span>
@@ -137,7 +144,7 @@
                 </div>
                 <div class="text-3xl font-extrabold text-sky-600 tracking-tight mb-1">45%</div>
                 <div class="text-xs text-slate-500 flex items-center justify-between">
-                    <span>Citaram Site Oficial (9 menções)</span>
+                    <span>Sites oficiais (9 menções)</span>
                     <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-sky-500 transition-colors"></i>
                 </div>
             </button>
@@ -148,7 +155,7 @@
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             
             <!-- GRÁFICO 1: FREQUÊNCIA DE CHECAGEM -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+            <div id="section-freq" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between transition-all">
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -165,20 +172,20 @@
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
-                    <span>Clique nas colunas para ver o impacto pedagógico.</span>
+                    <span>Clique nas colunas para ver detalhes e impacto.</span>
                     <span class="font-semibold text-slate-700">Total: 20 Alunos</span>
                 </div>
             </div>
 
             <!-- GRÁFICO 2: ATITUDES E FONTES -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+            <div id="section-sources" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between transition-all">
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
                             Atitudes e Fontes de Verificação
                         </h2>
-                        <span class="text-xs font-medium text-slate-400">P2 · Múltipla Escolha</span>
+                        <span class="text-xs font-medium text-slate-400">P2 · Múltipla Escolha (30 menções)</span>
                     </div>
                     <p class="text-xs text-slate-500 mb-6">Ação primária escolhida ao decidir checar uma informação suspeita.</p>
                 </div>
@@ -188,11 +195,43 @@
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
-                    <span>Escolhas múltiplas permitidas (soma de menções).</span>
+                    <span>Escolhas múltiplas (soma de 30 menções).</span>
                     <span class="font-semibold text-indigo-600">Portais & Sites Oficiais lideram</span>
                 </div>
             </div>
 
+        </section>
+
+        <!-- SEÇÃO DE METODOLOGIA E CONCLUSÃO CIENTÍFICA -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs mb-12">
+            <div class="border-b border-slate-100 pb-4 mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900">Síntese Metodológica e Conclusão Científica</h3>
+                </div>
+                <span class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-md">Relatório Final</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-600">
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-bars-staggered text-blue-600"></i> Metodologia da Pesquisa
+                    </h4>
+                    <p class="leading-relaxed">
+                        A coleta foi realizada por meio de questionário impresso, anônimo e aplicado a uma amostra de <strong>20 estudantes</strong> do Ensino Médio. Tratando-se de um levantamento quantitativo descritivo com amostra reduzida e não aleatória, os resultados refletem estritamente o comportamento do grupo investigado, <strong>não devendo ser generalizados</strong> para toda a escola ou rede de ensino.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-amber-600"></i> Avaliação da Hipótese
+                    </h4>
+                    <p class="leading-relaxed">
+                        A hipótese inicial — de que a maioria dos estudantes raramente ou nunca verifica informações suspeitas — <strong>não foi confirmada pelos dados da amostra</strong>. Apenas 30% enquadraram-se nessa faixa, enquanto 45% afirmaram verificar sempre ou frequentemente. Destaca-se também a relevância de portais jornalísticos (50%) e sites oficiais (45%) como principais escolhas de averiguação.
+                    </p>
+                </div>
+            </div>
         </section>
 
     </main>
@@ -201,7 +240,6 @@
     <div id="infoModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden transition-opacity duration-200">
         <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
             
-            <!-- Header Modal -->
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                 <div class="flex items-center gap-2.5">
                     <div id="modalIcon" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold bg-blue-100 text-blue-700">
@@ -217,38 +255,32 @@
                 </button>
             </div>
 
-            <!-- Corpo Modal -->
             <div class="p-6 space-y-4">
                 
-                <!-- Destaque de Número -->
                 <div class="flex items-baseline gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
                     <span id="modalStatValue" class="text-4xl font-extrabold text-slate-900">0</span>
                     <span id="modalStatLabel" class="text-xs font-medium text-slate-500">dos estudantes pesquisados</span>
                 </div>
 
-                <!-- Descrição Explicativa -->
                 <div>
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">O que este dado representa:</h4>
                     <p id="modalDescription" class="text-sm text-slate-700 leading-relaxed"></p>
                 </div>
 
-                <!-- Impacto na Hipótese -->
                 <div class="pt-2 border-t border-slate-100">
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Impacto na Hipótese Científica:</h4>
                     <div id="modalHypothesisTag" class="p-3 rounded-lg text-xs leading-relaxed font-medium"></div>
                 </div>
 
-                <!-- Insight Científico -->
                 <div class="bg-blue-50/60 border border-blue-100 rounded-lg p-3">
                     <h4 class="text-xs font-bold text-blue-900 mb-1 flex items-center gap-1.5">
-                        <i class="fa-solid fa-lightbulb text-blue-600"></i> Insight INVESTIGA+
+                        <i class="fa-solid fa-lightbulb text-blue-600"></i> Contexto Científico
                     </h4>
                     <p id="modalInsight" class="text-xs text-blue-800 leading-relaxed"></p>
                 </div>
 
             </div>
 
-            <!-- Rodapé Modal -->
             <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-end">
                 <button onclick="closeModal()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors">
                     Fechar Janela
@@ -258,9 +290,8 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT & CHART.JS CONFIGURATIONS -->
+    <!-- JAVASCRIPT & CONFIGURAÇÕES -->
     <script>
-        // BASE DE DADOS DOS INDICADORES E GRÁFICOS
         const modalData = {
             'total': {
                 title: 'Amostra Total de Participantes',
@@ -269,34 +300,34 @@
                 iconBg: 'bg-blue-100',
                 value: '20 Estudantes',
                 statLabel: '100% da amostra coletada',
-                description: 'Todos os 20 estudantes do Ensino Médio responderam ao questionário em papel de forma voluntária e anônima.',
+                description: 'Todos os 20 estudantes do Ensino Médio responderam ao questionário em papel de forma anônima.',
                 hypothesis: 'Amostra suficiente para análise descritiva local, sem possibilidade de generalização estatística para toda a instituição de ensino.',
                 hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
-                insight: 'O grupo fornece evidências valiosas sobre comportamentos reais e atitudes frente a conteúdos digitais suspeitos.'
+                insight: 'O grupo fornece evidências locais valiosas sobre comportamentos e atitudes frente a conteúdos digitais.'
             },
             'hipotese_refutada': {
-                title: 'Refutação da Hipótese Inicial',
+                title: 'Hipótese Não Confirmada',
                 subtitle: 'Raramente ou Nunca Verificam',
                 icon: '<i class="fa-solid fa-triangle-exclamation text-amber-600"></i>',
                 iconBg: 'bg-amber-100',
                 value: '30% (6 de 20)',
                 statLabel: 'marcaram "Raramente" ou "Nunca"',
-                description: 'Apenas 6 dos 20 estudantes afirmaram que raramente ou nunca conferem dados em fontes confiáveis antes do compartilhamento.',
-                hypothesis: 'Refuta a hipótese inicial: A maioria dos estudantes NÃO negligencia totalmente a checagem de fatos.',
+                              description: 'Apenas 6 dos 20 estudantes afirmaram que raramente ou nunca conferem dados antes do compartilhamento.',
+                hypothesis: 'Hipótese inicial não confirmada: os dados da amostra mostram que a maioria não negligencia totalmente a checagem.',
                 hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
-                insight: 'Embora a hipótese tenha sido refutada no sentido estrito, 30% ainda é um número expressivo que requer intervenções contra a desinformação.'
+                insight: 'Embora a hipótese não tenha se confirmado, 30% ainda representa uma parcela que merece atenção em ações de alfabetização midiática.'
             },
             'alta_checagem': {
-                title: 'Estudantes com Alta Frequência de Checagem',
+                title: 'Estudantes com Maior Frequência de Checagem',
                 subtitle: 'Sempre ou Frequentemente Verificam',
                 icon: '<i class="fa-solid fa-shield-check text-emerald-600"></i>',
                 iconBg: 'bg-emerald-100',
                 value: '45% (9 de 20)',
                 statLabel: 'marcaram "Sempre" ou "Frequentemente"',
-                description: 'Quase metade do grupo demonstra comportamento proativo e consciente na checagem sistemática de informações.',
-                hypothesis: 'Indica um comportamento positivo superior ao previsto pela hipótese de trabalho inicial.',
+                description: 'Quase metade do grupo demonstra frequência elevada na verificação de informações antes de repassá-las.',
+                hypothesis: 'Indica comportamento positivo superior à premissa inicial da hipótese.',
                 hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
-                insight: 'Estes estudantes podem atuar como multiplicadores de boas práticas de alfabetização mediática dentro da comunidade escolar.'
+                insight: 'Estudantes com esse perfil podem colaborar ativamente em discussões sobre o combate à desinformação.'
             },
             'portais_jornalisticos': {
                 title: 'Uso de Portais Jornalísticos Confiáveis',
@@ -305,25 +336,23 @@
                 iconBg: 'bg-indigo-100',
                 value: '50% (10 menções)',
                 statLabel: 'escolheram esta alternativa',
-                description: 'Metade dos entrevistados recorre primariamente à imprensa profissional para averiguar boatos ou notícias duvidosas.',
-                hypothesis: 'Evidencia reconhecimento do jornalismo profissional como filtro legítimo contra fake news.',
+                description: 'Metade dos entrevistados mencionou recorrer a portais jornalísticos para averiguar boatos ou notícias.',
+                hypothesis: 'Evidencia o reconhecimento da imprensa profissional pelos participantes da amostra.',
                 hypothesisClass: 'bg-indigo-50 text-indigo-900 border border-indigo-200',
-                insight: 'Demonstra a importância e a credibilidade contínua de veículos jornalísticos estruturados entre os jovens.'
+                insight: 'Demonstra a busca por veículos estruturados para verificação de fatos.'
             },
             'sites_oficiais': {
-                title: 'Consulta a Sites Oficiais e Fontes Mencionadas',
+                title: 'Consulta a Sites Oficiais',
                 subtitle: 'Segunda Opção Mais Citada na P2',
                 icon: '<i class="fa-solid fa-building-columns text-sky-600"></i>',
                 iconBg: 'bg-sky-100',
                 value: '45% (9 menções)',
                 statLabel: 'escolheram esta alternativa',
-                description: 'Nove estudantes vão direto à fonte original (sites governamentais, acadêmicos ou institucionais) para checagem.',
-                hypothesis: 'Comportamento de alto rigor científico e verificação de origem primária.',
+                description: 'Nove menções indicam a busca direta em sites oficiais ou fontes mencionadas na notícia.',
+                hypothesis: 'Comportamento associado à verificação de origem primária.',
                 hypothesisClass: 'bg-sky-50 text-sky-900 border border-sky-200',
-                                hypothesisClass: 'bg-sky-50 text-sky-900 border border-sky-200',
-                insight: 'Excelente sinal de senso crítico e capacidade de pesquisa direta em fontes institucionais.'
+                insight: 'Reflete o hábito de recorrer a fontes institucionais para confirmação.'
             },
-            // Dados específicos para barras do gráfico 1
             'f_sempre': {
                 title: 'Opção: Sempre Verifico',
                 subtitle: 'Pergunta 1 · Frequência',
@@ -331,10 +360,10 @@
                 iconBg: 'bg-emerald-100',
                 value: '25% (5 de 20)',
                 statLabel: 'escolheram "Sempre"',
-                description: 'Estudantes que mantêm o hábito constante e rigoroso de checagem antes de qualquer compartilhamento.',
-                hypothesis: 'Demonstra postura crítica exemplar no ambiente digital.',
+                description: 'Estudantes que declaram checar sempre antes de compartilhar.',
+                hypothesis: 'Contribui para a não confirmação da hipótese inicial.',
                 hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
-                insight: 'Perfil ideal de checagem contínua.'
+                insight: 'Parcela significativa com hábito sistemático declarado.'
             },
             'f_frequentemente': {
                 title: 'Opção: Frequentemente Verifico',
@@ -343,10 +372,10 @@
                 iconBg: 'bg-emerald-100',
                 value: '20% (4 de 20)',
                 statLabel: 'escolheram "Frequentemente"',
-                description: 'Estudantes com hábito recorrente de checagem de conteúdos duvidosos.',
-                hypothesis: 'Apoia a refutação da hipótese inicial.',
+                description: 'Estudantes com hábito recorrente de checagem.',
+                hypothesis: 'Apoia a refutação/não confirmação da hipótese.',
                 hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
-                insight: 'Consolida a presença expressiva de comportamentos seguros no grupo.'
+                insight: 'Demonstra atenção frequente ao conteúdo compartilhado.'
             },
             'f_asvezes': {
                 title: 'Opção: Às Vezes Verifico',
@@ -355,10 +384,10 @@
                 iconBg: 'bg-blue-100',
                 value: '20% (4 de 20)',
                 statLabel: 'escolheram "Às Vezes"',
-                description: 'Estudantes com comportamento oscilante ou condicional à relevância do tema.',
-                hypothesis: 'Zona intermediária da pesquisa.',
+                description: 'Estudantes com comportamento condicional à relevância do tema.',
+                hypothesis: 'Representa o grupo intermediário da pesquisa.',
                 hypothesisClass: 'bg-blue-50 text-blue-900 border border-blue-200',
-                insight: 'Público-alvo prioritário para oficinas pedagógicas de rotina de checagem.'
+                insight: 'Comportamento variável conforme o tipo de informação.'
             },
             'f_raramente': {
                 title: 'Opção: Raramente Verifico',
@@ -367,10 +396,10 @@
                 iconBg: 'bg-amber-100',
                 value: '15% (3 de 20)',
                 statLabel: 'escolheram "Raramente"',
-                description: 'Estudantes que raramente buscam confirmação em fontes seguras.',
-                hypothesis: 'Parte integrante dos 30% da hipótese inicial.',
+                description: 'Estudantes que raramente realizam checagem de fatos.',
+                hypothesis: 'Parte dos 30% que fundamentaram a preocupação inicial.',
                 hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
-                insight: 'Reflete vulnerabilidade ao compartilhamento inadvertido de desinformação.'
+                insight: 'Indica menor propensão à verificação prévia.'
             },
             'f_nunca': {
                 title: 'Opção: Nunca Verifico',
@@ -379,10 +408,10 @@
                 iconBg: 'bg-rose-100',
                 value: '15% (3 de 20)',
                 statLabel: 'escolheram "Nunca"',
-                description: 'Estudantes que afirmam nunca checar fontes confiáveis antes de compartilhar.',
-                hypothesis: 'Confirmaria a hipótese se fosse a resposta predominante.',
+                description: 'Estudantes que afirmam nunca checar antes de compartilhar.',
+                hypothesis: 'Alinhado ao grupo de maior vulnerabilidade a conteúdos falsos.',
                 hypothesisClass: 'bg-rose-50 text-rose-900 border border-rose-200',
-                insight: 'Ponto crítico de atenção na comunidade escolar.'
+                insight: 'Ponto crítico para conscientização digital.'
             },
             'f_naocompartilho': {
                 title: 'Opção: Não Costumo Compartilhar',
@@ -391,23 +420,22 @@
                 iconBg: 'bg-slate-100',
                 value: '5% (1 de 20)',
                 statLabel: 'escolheu esta opção',
-                description: 'Estudante que adota a postura de retenção e prevenção ativa.',
-                hypothesis: 'Comportamento neutro / preventivo.',
+                description: 'Estudante que adota postura de retenção e cautela.',
+                hypothesis: 'Comportamento preventivo diante de conteúdos suspeitos.',
                 hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
-                insight: 'Estratégia eficiente para evitar a propagação de desinformação.'
+                insight: 'Estratégia pessoal de contenção de boatos.'
             },
-            // Dados específicos para fontes da P2
             's_comparo': {
-                title: 'Comparação em Múltiplas Fontes',
+                title: 'Comparação Entre Fontes',
                 subtitle: 'Pergunta 2 · Atitude',
                 icon: '<i class="fa-solid fa-code-compare text-purple-600"></i>',
                 iconBg: 'bg-purple-100',
                 value: '15% (3 menções)',
                 statLabel: 'escolheram esta opção',
-                description: 'Estudantes que praticam a checagem cruzada (triangulação de dados).',
-                hypothesis: 'Prática de nível avançado em checagem de fatos.',
+                description: 'Estudantes que cruzam dados de diferentes origens.',
+                hypothesis: 'Prática de checagem cruzada relatada pelo grupo.',
                 hypothesisClass: 'bg-purple-50 text-purple-900 border border-purple-200',
-                insight: 'Método mais recomendado do jornalismo investigativo.'
+                insight: 'Estratégia analítica para validação de informações.'
             },
             's_naoverifico': {
                 title: 'Não Costumo Verificar',
@@ -416,38 +444,37 @@
                 iconBg: 'bg-rose-100',
                 value: '15% (3 menções)',
                 statLabel: 'escolheram esta opção',
-                description: 'Estudantes que assumem passividade diante do conteúdo suspeito.',
+                description: 'Estudantes que não realizam verificação ativa.',
                 hypothesis: 'Consistente com os dados de baixa frequência da P1.',
                 hypothesisClass: 'bg-rose-50 text-rose-900 border border-rose-200',
-                insight: 'Indica a necessidade de incentivo ao pensamento crítico.'
+                insight: 'Reflete passividade diante de conteúdos duvidosos.'
             },
             's_redessociais': {
-                title: 'Busca em Comentários e Redes Sociais',
-                subtitle: 'Pergunta 2 · Atitude',
+                title: 'Redes Sociais e Comentários',
+                subtitle: 'Pergunta 2 · Atitude (Atualizado: 4 menções)',
                 icon: '<i class="fa-solid fa-comments text-amber-600"></i>',
                 iconBg: 'bg-amber-100',
-                value: '10% (2 menções)',
+                value: '20% (4 menções)',
                 statLabel: 'escolheram esta opção',
-                description: 'Uso das próprias redes sociais para validar o boato.',
-                hypothesis: 'Comportamento de risco para validação de fake news.',
+                description: 'Busca por comentários ou publicações nas redes sociais para avaliar o tema.',
+                hypothesis: 'Uso de plataformas sociais como parâmetro de checagem.',
                 hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
-                insight: 'Procurar confirmação em comentários pode reforçar bolhas de desinformação.'
+                insight: 'Apresenta riscos metodológicos, pois as redes sociais também circulam boatos e opiniões não fundamentadas.'
             },
             's_busca': {
-                title: 'Pesquisa em Mecanismos de Busca',
+                title: 'Mecanismos de Busca',
                 subtitle: 'Pergunta 2 · Atitude',
                 icon: '<i class="fa-solid fa-magnifying-glass text-slate-600"></i>',
                 iconBg: 'bg-slate-100',
                 value: '5% (1 menção)',
                 statLabel: 'escolheu esta opção',
-                description: 'Uso de buscadores para verificação de outras menções.',
-                hypothesis: 'Estratégia inicial de busca livre.',
+                description: 'Uso de buscadores gerais para encontrar outras fontes.',
+                hypothesis: 'Estratégia aberta de busca por incidências.',
                 hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
-                insight: 'Depende da capacidade do aluno em filtrar os resultados retornados.'
+                insight: 'Depende da habilidade de filtragem dos resultados obtidos.'
             }
         };
 
-        // FUNÇÕES DO MODAL
         function openModal(key) {
             const data = modalData[key];
             if (!data) return;
@@ -468,15 +495,13 @@
             iconContainer.innerHTML = data.icon;
             iconContainer.className = `w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${data.iconBg}`;
 
-            const modal = document.getElementById('infoModal');
-            modal.classList.remove('hidden');
+            document.getElementById('infoModal').classList.remove('hidden');
         }
 
         function closeModal() {
             document.getElementById('infoModal').classList.add('hidden');
         }
 
-        // Fechar com tecla ESC ou clique fora
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
@@ -484,10 +509,37 @@
             if (e.target.id === 'infoModal') closeModal();
         });
 
-        // INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS)
+        // FILTRO INTERATIVO DE SEÇÕES
+        function setFilter(type) {
+            const btnAll = document.getElementById('btn-filter-all');
+            const btnP1 = document.getElementById('btn-filter-p1');
+            const btnP2 = document.getElementById('btn-filter-p2');
+            const secFreq = document.getElementById('section-freq');
+            const secSources = document.getElementById('section-sources');
+
+            [btnAll, btnP1, btnP2].forEach(b => {
+                b.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors";
+            });
+
+            if (type === 'all') {
+                btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition-colors shadow-xs";
+                secFreq.style.display = 'flex';
+                secSources.style.display = 'flex';
+            } else if (type === 'p1') {
+                btnP1.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition-colors shadow-xs";
+                secFreq.style.display = 'flex';
+                secSources.style.display = 'none';
+            } else if (type === 'p2') {
+                btnP2.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition-colors shadow-xs";
+                secFreq.style.display = 'none';
+                secSources.style.display = 'flex';
+            }
+        }
+
+        // INICIALIZAÇÃO CHART.JS
         document.addEventListener('DOMContentLoaded', () => {
             
-            // GRÁFICO 1: FREQUÊNCIA DE CHECAGEM
+            // GRÁFICO 1
             const ctxFreq = document.getElementById('freqChart').getContext('2d');
             const keysFreq = ['f_sempre', 'f_frequentemente', 'f_asvezes', 'f_raramente', 'f_nunca', 'f_naocompartilho'];
             
@@ -499,12 +551,7 @@
                         label: 'Nº de Estudantes',
                         data: [5, 4, 4, 3, 3, 1],
                         backgroundColor: [
-                            '#10b981', // Emerald 500
-                            '#34d399', // Emerald 400
-                            '#3b82f6', // Blue 500
-                            '#f59e0b', // Amber 500
-                            '#f43f5e', // Rose 500
-                            '#94a3b8'  // Slate 400
+                            '#10b981', '#34d399', '#3b82f6', '#f59e0b', '#f43f5e', '#94a3b8'
                         ],
                         borderRadius: 8,
                         borderSkipped: false
@@ -527,15 +574,10 @@
                             ticks: { stepSize: 1 },
                             grid: { color: '#f1f5f9' }
                         },
-                        x: {
-                            grid: { display: false }
-                        }
+                        x: { grid: { display: false } }
                     },
                     onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            const index = activeElements[0].index;
-                            openModal(keysFreq[index]);
-                        }
+                        if (activeElements.length > 0) openModal(keysFreq[activeElements[0].index]);
                     },
                     onHover: (event, chartElement) => {
                         event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -543,9 +585,9 @@
                 }
             });
 
-            // GRÁFICO 2: ATITUDES E FONTES
+            // GRÁFICO 2 (ATUALIZADO COM 4 MENÇÕES EM REDES SOCIAIS)
             const ctxSources = document.getElementById('sourcesChart').getContext('2d');
-            const keysSources = ['portais_jornalisticos', 'sites_oficiais', 's_comparo', 's_naoverifico', 's_redessociais', 's_busca'];
+            const keysSources = ['portais_jornalisticos', 'sites_oficiais', 's_redessociais', 's_comparo', 's_naoverifico', 's_busca'];
 
             new Chart(ctxSources, {
                 type: 'bar',
@@ -554,21 +596,16 @@
                     labels: [
                         'Portais Jornalísticos',
                         'Site Oficial da Fonte',
-                        'Comparo em Várias Fontes',
-                        'Não Costumo Verificar',
                         'Redes Sociais / Comentários',
+                        'Comparação Entre Fontes',
+                        'Não Costumo Verificar',
                         'Mecanismos de Busca'
                     ],
                     datasets: [{
                         label: 'Menções de Estudantes',
-                        data: [10, 9, 3, 3, 2, 1],
+                        data: [10, 9, 4, 3, 3, 1],
                         backgroundColor: [
-                            '#6366f1', // Indigo 500
-                            '#0284c7', // Sky 600
-                            '#a855f7', // Purple 500
-                            '#f43f5e', // Rose 500
-                            '#f59e0b', // Amber 500
-                            '#64748b'  // Slate 500
+                            '#6366f1', '#0284c7', '#f59e0b', '#a855f7', '#f43f5e', '#64748b'
                         ],
                         borderRadius: 6,
                         borderSkipped: false
@@ -591,15 +628,10 @@
                             ticks: { stepSize: 2 },
                             grid: { color: '#f1f5f9' }
                         },
-                        y: {
-                            grid: { display: false }
-                        }
+                        y: { grid: { display: false } }
                     },
                     onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            const index = activeElements[0].index;
-                            openModal(keysSources[index]);
-                        }
+                        if (activeElements.length > 0) openModal(keysSources[activeElements[0].index]);
                     },
                     onHover: (event, chartElement) => {
                         event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
