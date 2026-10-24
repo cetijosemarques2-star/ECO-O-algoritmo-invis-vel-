@@ -1,858 +1,613 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Simulador ReelBubble | Maratona Tech</title>
-  <style>
-    :root {
-      --bg-color: #000000;
-      --card-bg: #121212;
-      --text-main: #ffffff;
-      --text-muted: #a7a7a7;
-      --accent-pink: #fe2c55;
-      --accent-blue: #25f4ee;
-      --accent-amber: #f59e0b;
-      --accent-green: #10b981;
-      --accent-purple: #a855f7;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      user-select: none;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
-
-    /* Container do Celular / App */
-    .app-container {
-      width: 100%;
-      max-width: 420px;
-      height: 100vh;
-      max-height: 880px;
-      position: relative;
-      background: #000;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border-radius: 0;
-    }
-
-    @media (min-width: 500px) {
-      .app-container {
-        height: 92vh;
-        border-radius: 24px;
-        border: 2px solid #334155;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-      }
-    }
-
-    /* Cabeçalho Fixo com Medidor */
-    header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 12px 16px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
-      z-index: 50;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .top-bar h1 {
-      font-size: 1rem;
-      font-weight: 800;
-      background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .bubble-meter-container {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      height: 6px;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .bubble-meter-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent-green), var(--accent-amber), var(--accent-pink));
-      transition: width 0.4s ease;
-    }
-
-    .bubble-status-text {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-    }
-
-    /* Notificação Push */
-    #push-notification {
-      position: absolute;
-      top: 70px;
-      left: 5%;
-      width: 90%;
-      background: rgba(26, 26, 26, 0.95);
-      border-left: 4px solid var(--accent-pink);
-      padding: 10px 14px;
-      border-radius: 8px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-      display: none;
-      z-index: 100;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Container de Reels/TikTok */
-    .reels-feed {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    .reel-card {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 20px 16px 30px 16px;
-      box-sizing: border-box;
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .reel-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.9) 100%);
-      z-index: 1;
-    }
-
-    .reel-content {
-      position: relative;
-      z-index: 2;
-      width: 80%;
-    }
-
-    .reel-author {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .reel-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--accent-purple);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-    }
-
-    .reel-tag {
-      font-size: 0.6rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .reel-caption {
-      font-size: 0.9rem;
-      line-height: 1.3;
-      margin-bottom: 12px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    }
-
-    .comment-preview {
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.75rem;
-      border-left: 2px solid var(--accent-blue);
-      color: #e2e8f0;
-    }
-
-    /* Botões Laterais Estilo TikTok */
-    .reel-actions {
-      position: absolute;
-      right: 12px;
-      bottom: 40px;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .action-btn {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-      font-size: 1.2rem;
-    }
-
-    .action-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.1);
-    }
-
-    .action-btn.liked {
-      background: var(--accent-pink);
-      color: #fff;
-    }
-
-    .action-label {
-      font-size: 0.65rem;
-      margin-top: 2px;
-      font-weight: 600;
-    }
-
-    .next-indicator {
-      position: absolute;
-      bottom: 8px;
-      width: 100%;
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      z-index: 2;
-      animation: bounce 1.5s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    /* Modal e Overlay UAU */
-    #uau-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #000;
-      z-index: 1000;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    #uau-overlay.active { opacity: 1; }
-
-    #uau-text {
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: var(--accent-pink);
-      max-width: 500px;
-      font-family: monospace;
-      margin-bottom: 30px;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 900;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: var(--card-bg);
-      border-radius: 16px;
-      max-width: 480px;
-      width: 100%;
-      padding: 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid #334155;
-    }
-
-    .profile-badge {
-      background: rgba(168, 85, 247, 0.2);
-      border: 1px solid var(--accent-purple);
-      color: var(--accent-purple);
-      padding: 8px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: bold;
-      margin: 12px 0;
-      font-size: 0.85rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin: 12px 0;
-    }
-
-    .stat-card {
-      background: #000;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .stat-card .val { font-size: 1.2rem; font-weight: bold; color: var(--accent-blue); }
-    .stat-card .lbl { font-size: 0.65rem; color: var(--text-muted); }
-
-    canvas {
-      width: 100% !important;
-      height: 140px;
-      margin: 10px 0;
-      background: #000;
-      border-radius: 8px;
-    }
-
-    .btn-primary {
-      width: 100%;
-      background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .teacher-panel {
-      margin-top: 15px;
-      border-top: 1px dashed #334155;
-      padding-top: 12px;
-    }
-
-    .teacher-summary {
-      background: #000;
-      padding: 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .ranking-list { list-style: none; font-size: 0.75rem; }
-    .ranking-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #222; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVESTIGA+ · Dashboard de Pesquisa (Maratona Tech 2026)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .kpi-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        }
+    </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased min-h-screen pb-12 bg-slate-50">
 
-  <div class="app-container">
-    <header>
-      <div class="top-bar">
-        <h1>Simulador ReelBubble</h1>
-        <span id="user-display" style="font-size:0.75rem; color: var(--text-muted);">Aluno: Visitante</span>
-      </div>
-      <div class="bubble-meter-container">
-        <div id="bubble-meter-fill" class="bubble-meter-fill"></div>
-      </div>
-      <div class="bubble-status-text">
-        <span>Isolamento da Bolha</span>
-        <span id="bubble-percentage">0%</span>
-      </div>
+    <!-- CABEÇALHO -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid me-0.5 fa-magnifying-glass-chart text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold text-slate-900 tracking-tight">INVESTIGA+</h1>
+                        <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-blue-200">Maratona Tech 2026</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-medium">Dashboard Científico · Análise Metodológica de Desinformação</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 text-xs bg-slate-100 p-2 rounded-lg border border-slate-200">
+                <span class="flex items-center gap-1.5 font-medium text-slate-700 px-2 py-1 bg-white rounded shadow-xs">
+                    <i class="fa-regular fa-id-card text-blue-600"></i> Amostra: 20 Estudantes
+                </span>
+                <span class="flex items-center gap-1.5 font-medium text-slate-700 px-2 py-1 bg-white rounded shadow-xs">
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Respostas Anônimas
+                </span>
+            </div>
+        </div>
     </header>
 
-    <div id="push-notification">
-      <strong style="color: var(--accent-amber); font-size: 0.75rem;">🤖 Algoritmo de Recomendação (IA)</strong>
-      <p id="push-text" style="font-size: 0.75rem; margin-top: 2px; color: #ddd;"></p>
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        <!-- INSTRUÇÃO DE INTERAÇÃO -->
+        <div class="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-center gap-3 text-blue-800 text-sm">
+            <i class="fa-solid fa-circle-info text-blue-600 text-base flex-shrink-0"></i>
+            <span><strong>Dica interativa:</strong> Clique em qualquer cartão de indicador ou barra dos gráficos para ver os detalhes, contagem de participantes e o impacto direto na hipótese!</span>
+        </div>
+
+        <!-- INDICADORES CHAVE (KPIs) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            
+            <!-- KPI 1 -->
+            <button onclick="openModal('total')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-blue-400 group relative">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Amostra Total</span>
+                    <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-users"></i>
+                    </span>
+                </div>
+                <div class="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">20</div>
+                <div class="text-xs text-slate-500 flex items-center justify-between">
+                    <span>Estudantes participantes</span>
+                    <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </button>
+
+            <!-- KPI 2 -->
+            <button onclick="openModal('hipotese_refutada')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-amber-400 group relative">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Hipótese Inicial</span>
+                    <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                </div>
+                <div class="text-3xl font-extrabold text-amber-600 tracking-tight mb-1">30%</div>
+                <div class="text-xs text-slate-500 flex items-center justify-between">
+                    <span>Raramente / Nunca checam (6 de 20)</span>
+                    <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-amber-500 transition-colors"></i>
+                </div>
+            </button>
+
+            <!-- KPI 3 -->
+            <button onclick="openModal('alta_checagem')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-emerald-400 group relative">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Alta Checagem</span>
+                    <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </span>
+                </div>
+                <div class="text-3xl font-extrabold text-emerald-600 tracking-tight mb-1">45%</div>
+                <div class="text-xs text-slate-500 flex items-center justify-between">
+                    <span>Sempre ou Frequente (9 de 20)</span>
+                    <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-emerald-500 transition-colors"></i>
+                </div>
+            </button>
+
+            <!-- KPI 4 -->
+            <button onclick="openModal('portais_jornalisticos')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-indigo-400 group relative">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Fonte Principal</span>
+                    <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-newspaper"></i>
+                    </span>
+                </div>
+                <div class="text-3xl font-extrabold text-indigo-600 tracking-tight mb-1">50%</div>
+                <div class="text-xs text-slate-500 flex items-center justify-between">
+                    <span>Citaram Portais (10 menções)</span>
+                    <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-indigo-500 transition-colors"></i>
+                </div>
+            </button>
+
+            <!-- KPI 5 -->
+            <button onclick="openModal('sites_oficiais')" class="kpi-card text-left bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-sky-400 group relative">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-sky-600 uppercase tracking-wider">Fontes Oficiais</span>
+                    <span class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-xs group-hover:bg-sky-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </span>
+                </div>
+                <div class="text-3xl font-extrabold text-sky-600 tracking-tight mb-1">45%</div>
+                <div class="text-xs text-slate-500 flex items-center justify-between">
+                    <span>Citaram Site Oficial (9 menções)</span>
+                    <i class="fa-solid fa-arrow-right text-slate-300 group-hover:text-sky-500 transition-colors"></i>
+                </div>
+            </button>
+
+        </section>
+
+        <!-- SEÇÃO DE GRÁFICOS -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- GRÁFICO 1: FREQUÊNCIA DE CHECAGEM -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                            Frequência de Verificação
+                        </h2>
+                        <span class="text-xs font-medium text-slate-400">P1 · Resposta Única</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-6">Frequência com que pesquisam em fontes confiáveis antes de compartilhar.</p>
+                </div>
+                
+                <div class="relative h-72 w-full flex items-center justify-center">
+                    <canvas id="freqChart"></canvas>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+                    <span>Clique nas colunas para ver o impacto pedagógico.</span>
+                    <span class="font-semibold text-slate-700">Total: 20 Alunos</span>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 2: ATITUDES E FONTES -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                            Atitudes e Fontes de Verificação
+                        </h2>
+                        <span class="text-xs font-medium text-slate-400">P2 · Múltipla Escolha</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-6">Ação primária escolhida ao decidir checar uma informação suspeita.</p>
+                </div>
+
+                <div class="relative h-72 w-full flex items-center justify-center">
+                    <canvas id="sourcesChart"></canvas>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+                    <span>Escolhas múltiplas permitidas (soma de menções).</span>
+                    <span class="font-semibold text-indigo-600">Portais & Sites Oficiais lideram</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL DE DETALHES INTERATIVOS -->
+    <div id="infoModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden transition-opacity duration-200">
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
+            
+            <!-- Header Modal -->
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center gap-2.5">
+                    <div id="modalIcon" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold bg-blue-100 text-blue-700">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="text-base font-bold text-slate-900">Detalhes da Categoria</h3>
+                        <p id="modalSubtitle" class="text-xs text-slate-500">Indicador do Projeto INVESTIGA+</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Corpo Modal -->
+            <div class="p-6 space-y-4">
+                
+                <!-- Destaque de Número -->
+                <div class="flex items-baseline gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                    <span id="modalStatValue" class="text-4xl font-extrabold text-slate-900">0</span>
+                    <span id="modalStatLabel" class="text-xs font-medium text-slate-500">dos estudantes pesquisados</span>
+                </div>
+
+                <!-- Descrição Explicativa -->
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">O que este dado representa:</h4>
+                    <p id="modalDescription" class="text-sm text-slate-700 leading-relaxed"></p>
+                </div>
+
+                <!-- Impacto na Hipótese -->
+                <div class="pt-2 border-t border-slate-100">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Impacto na Hipótese Científica:</h4>
+                    <div id="modalHypothesisTag" class="p-3 rounded-lg text-xs leading-relaxed font-medium"></div>
+                </div>
+
+                <!-- Insight Científico -->
+                <div class="bg-blue-50/60 border border-blue-100 rounded-lg p-3">
+                    <h4 class="text-xs font-bold text-blue-900 mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-blue-600"></i> Insight INVESTIGA+
+                    </h4>
+                    <p id="modalInsight" class="text-xs text-blue-800 leading-relaxed"></p>
+                </div>
+
+            </div>
+
+            <!-- Rodapé Modal -->
+            <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors">
+                    Fechar Janela
+                </button>
+            </div>
+
+        </div>
     </div>
 
-    <main class="reels-feed" id="reels-container">
-      </main>
+    <!-- JAVASCRIPT & CHART.JS CONFIGURATIONS -->
+    <script>
+        // BASE DE DADOS DOS INDICADORES E GRÁFICOS
+        const modalData = {
+            'total': {
+                title: 'Amostra Total de Participantes',
+                subtitle: 'Parâmetro de Metodologia',
+                icon: '<i class="fa-solid fa-users text-blue-600"></i>',
+                iconBg: 'bg-blue-100',
+                value: '20 Estudantes',
+                statLabel: '100% da amostra coletada',
+                description: 'Todos os 20 estudantes do Ensino Médio responderam ao questionário em papel de forma voluntária e anônima.',
+                hypothesis: 'Amostra suficiente para análise descritiva local, sem possibilidade de generalização estatística para toda a instituição de ensino.',
+                hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
+                insight: 'O grupo fornece evidências valiosas sobre comportamentos reais e atitudes frente a conteúdos digitais suspeitos.'
+            },
+            'hipotese_refutada': {
+                title: 'Refutação da Hipótese Inicial',
+                subtitle: 'Raramente ou Nunca Verificam',
+                icon: '<i class="fa-solid fa-triangle-exclamation text-amber-600"></i>',
+                iconBg: 'bg-amber-100',
+                value: '30% (6 de 20)',
+                statLabel: 'marcaram "Raramente" ou "Nunca"',
+                description: 'Apenas 6 dos 20 estudantes afirmaram que raramente ou nunca conferem dados em fontes confiáveis antes do compartilhamento.',
+                hypothesis: 'Refuta a hipótese inicial: A maioria dos estudantes NÃO negligencia totalmente a checagem de fatos.',
+                hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
+                insight: 'Embora a hipótese tenha sido refutada no sentido estrito, 30% ainda é um número expressivo que requer intervenções contra a desinformação.'
+            },
+            'alta_checagem': {
+                title: 'Estudantes com Alta Frequência de Checagem',
+                subtitle: 'Sempre ou Frequentemente Verificam',
+                icon: '<i class="fa-solid fa-shield-check text-emerald-600"></i>',
+                iconBg: 'bg-emerald-100',
+                value: '45% (9 de 20)',
+                statLabel: 'marcaram "Sempre" ou "Frequentemente"',
+                description: 'Quase metade do grupo demonstra comportamento proativo e consciente na checagem sistemática de informações.',
+                hypothesis: 'Indica um comportamento positivo superior ao previsto pela hipótese de trabalho inicial.',
+                hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
+                insight: 'Estes estudantes podem atuar como multiplicadores de boas práticas de alfabetização mediática dentro da comunidade escolar.'
+            },
+            'portais_jornalisticos': {
+                title: 'Uso de Portais Jornalísticos Confiáveis',
+                subtitle: 'Opção Mais Citada na P2',
+                icon: '<i class="fa-solid fa-newspaper text-indigo-600"></i>',
+                iconBg: 'bg-indigo-100',
+                value: '50% (10 menções)',
+                statLabel: 'escolheram esta alternativa',
+                description: 'Metade dos entrevistados recorre primariamente à imprensa profissional para averiguar boatos ou notícias duvidosas.',
+                hypothesis: 'Evidencia reconhecimento do jornalismo profissional como filtro legítimo contra fake news.',
+                hypothesisClass: 'bg-indigo-50 text-indigo-900 border border-indigo-200',
+                insight: 'Demonstra a importância e a credibilidade contínua de veículos jornalísticos estruturados entre os jovens.'
+            },
+            'sites_oficiais': {
+                title: 'Consulta a Sites Oficiais e Fontes Mencionadas',
+                subtitle: 'Segunda Opção Mais Citada na P2',
+                icon: '<i class="fa-solid fa-building-columns text-sky-600"></i>',
+                iconBg: 'bg-sky-100',
+                value: '45% (9 menções)',
+                statLabel: 'escolheram esta alternativa',
+                description: 'Nove estudantes vão direto à fonte original (sites governamentais, acadêmicos ou institucionais) para checagem.',
+                hypothesis: 'Comportamento de alto rigor científico e verificação de origem primária.',
+                hypothesisClass: 'bg-sky-50 text-sky-900 border border-sky-200',
+                                hypothesisClass: 'bg-sky-50 text-sky-900 border border-sky-200',
+                insight: 'Excelente sinal de senso crítico e capacidade de pesquisa direta em fontes institucionais.'
+            },
+            // Dados específicos para barras do gráfico 1
+            'f_sempre': {
+                title: 'Opção: Sempre Verifico',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-check-double text-emerald-600"></i>',
+                iconBg: 'bg-emerald-100',
+                value: '25% (5 de 20)',
+                statLabel: 'escolheram "Sempre"',
+                description: 'Estudantes que mantêm o hábito constante e rigoroso de checagem antes de qualquer compartilhamento.',
+                hypothesis: 'Demonstra postura crítica exemplar no ambiente digital.',
+                hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
+                insight: 'Perfil ideal de checagem contínua.'
+            },
+            'f_frequentemente': {
+                title: 'Opção: Frequentemente Verifico',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-check text-emerald-600"></i>',
+                iconBg: 'bg-emerald-100',
+                value: '20% (4 de 20)',
+                statLabel: 'escolheram "Frequentemente"',
+                description: 'Estudantes com hábito recorrente de checagem de conteúdos duvidosos.',
+                hypothesis: 'Apoia a refutação da hipótese inicial.',
+                hypothesisClass: 'bg-emerald-50 text-emerald-900 border border-emerald-200',
+                insight: 'Consolida a presença expressiva de comportamentos seguros no grupo.'
+            },
+            'f_asvezes': {
+                title: 'Opção: Às Vezes Verifico',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-sliders text-blue-600"></i>',
+                iconBg: 'bg-blue-100',
+                value: '20% (4 de 20)',
+                statLabel: 'escolheram "Às Vezes"',
+                description: 'Estudantes com comportamento oscilante ou condicional à relevância do tema.',
+                hypothesis: 'Zona intermediária da pesquisa.',
+                hypothesisClass: 'bg-blue-50 text-blue-900 border border-blue-200',
+                insight: 'Público-alvo prioritário para oficinas pedagógicas de rotina de checagem.'
+            },
+            'f_raramente': {
+                title: 'Opção: Raramente Verifico',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-xmark text-amber-600"></i>',
+                iconBg: 'bg-amber-100',
+                value: '15% (3 de 20)',
+                statLabel: 'escolheram "Raramente"',
+                description: 'Estudantes que raramente buscam confirmação em fontes seguras.',
+                hypothesis: 'Parte integrante dos 30% da hipótese inicial.',
+                hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
+                insight: 'Reflete vulnerabilidade ao compartilhamento inadvertido de desinformação.'
+            },
+            'f_nunca': {
+                title: 'Opção: Nunca Verifico',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-ban text-rose-600"></i>',
+                iconBg: 'bg-rose-100',
+                value: '15% (3 de 20)',
+                statLabel: 'escolheram "Nunca"',
+                description: 'Estudantes que afirmam nunca checar fontes confiáveis antes de compartilhar.',
+                hypothesis: 'Confirmaria a hipótese se fosse a resposta predominante.',
+                hypothesisClass: 'bg-rose-50 text-rose-900 border border-rose-200',
+                insight: 'Ponto crítico de atenção na comunidade escolar.'
+            },
+            'f_naocompartilho': {
+                title: 'Opção: Não Costumo Compartilhar',
+                subtitle: 'Pergunta 1 · Frequência',
+                icon: '<i class="fa-solid fa-user-slash text-slate-600"></i>',
+                iconBg: 'bg-slate-100',
+                value: '5% (1 de 20)',
+                statLabel: 'escolheu esta opção',
+                description: 'Estudante que adota a postura de retenção e prevenção ativa.',
+                hypothesis: 'Comportamento neutro / preventivo.',
+                hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
+                insight: 'Estratégia eficiente para evitar a propagação de desinformação.'
+            },
+            // Dados específicos para fontes da P2
+            's_comparo': {
+                title: 'Comparação em Múltiplas Fontes',
+                subtitle: 'Pergunta 2 · Atitude',
+                icon: '<i class="fa-solid fa-code-compare text-purple-600"></i>',
+                iconBg: 'bg-purple-100',
+                value: '15% (3 menções)',
+                statLabel: 'escolheram esta opção',
+                description: 'Estudantes que praticam a checagem cruzada (triangulação de dados).',
+                hypothesis: 'Prática de nível avançado em checagem de fatos.',
+                hypothesisClass: 'bg-purple-50 text-purple-900 border border-purple-200',
+                insight: 'Método mais recomendado do jornalismo investigativo.'
+            },
+            's_naoverifico': {
+                title: 'Não Costumo Verificar',
+                subtitle: 'Pergunta 2 · Atitude',
+                icon: '<i class="fa-solid fa-circle-minus text-rose-600"></i>',
+                iconBg: 'bg-rose-100',
+                value: '15% (3 menções)',
+                statLabel: 'escolheram esta opção',
+                description: 'Estudantes que assumem passividade diante do conteúdo suspeito.',
+                hypothesis: 'Consistente com os dados de baixa frequência da P1.',
+                hypothesisClass: 'bg-rose-50 text-rose-900 border border-rose-200',
+                insight: 'Indica a necessidade de incentivo ao pensamento crítico.'
+            },
+            's_redessociais': {
+                title: 'Busca em Comentários e Redes Sociais',
+                subtitle: 'Pergunta 2 · Atitude',
+                icon: '<i class="fa-solid fa-comments text-amber-600"></i>',
+                iconBg: 'bg-amber-100',
+                value: '10% (2 menções)',
+                statLabel: 'escolheram esta opção',
+                description: 'Uso das próprias redes sociais para validar o boato.',
+                hypothesis: 'Comportamento de risco para validação de fake news.',
+                hypothesisClass: 'bg-amber-50 text-amber-900 border border-amber-200',
+                insight: 'Procurar confirmação em comentários pode reforçar bolhas de desinformação.'
+            },
+            's_busca': {
+                title: 'Pesquisa em Mecanismos de Busca',
+                subtitle: 'Pergunta 2 · Atitude',
+                icon: '<i class="fa-solid fa-magnifying-glass text-slate-600"></i>',
+                iconBg: 'bg-slate-100',
+                value: '5% (1 menção)',
+                statLabel: 'escolheu esta opção',
+                description: 'Uso de buscadores para verificação de outras menções.',
+                hypothesis: 'Estratégia inicial de busca livre.',
+                hypothesisClass: 'bg-slate-100 text-slate-800 border border-slate-200',
+                insight: 'Depende da capacidade do aluno em filtrar os resultados retornados.'
+            }
+        };
 
-    <div class="next-indicator">Pule ou interaja para ver o próximo conteúdo ↓</div>
-  </div>
+        // FUNÇÕES DO MODAL
+        function openModal(key) {
+            const data = modalData[key];
+            if (!data) return;
 
-  <div id="uau-overlay">
-    <div id="uau-text"></div>
-    <button class="btn-primary" style="max-width: 250px;" onclick="closeUauAndShowReport()">Ver Diagnóstico do Feed</button>
-  </div>
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalSubtitle').textContent = data.subtitle;
+            document.getElementById('modalStatValue').textContent = data.value;
+            document.getElementById('modalStatLabel').textContent = data.statLabel;
+            document.getElementById('modalDescription').textContent = data.description;
+            
+            const tag = document.getElementById('modalHypothesisTag');
+            tag.textContent = data.hypothesis;
+            tag.className = `p-3 rounded-lg text-xs leading-relaxed font-medium ${data.hypothesisClass}`;
 
-  <div id="report-modal" class="modal">
-    <div class="modal-content">
-      <h2 style="font-size: 1.1rem;">📊 Diagnóstico de Bolha Algorítmica</h2>
-      
-      <div id="user-profile" class="profile-badge">Perfil: Analisando...</div>
+            document.getElementById('modalInsight').textContent = data.insight;
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="val" id="stat-time">0s</div>
-          <div class="lbl">Tempo de Sessão</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" id="stat-seen">0</div>
-          <div class="lbl">Vídeos Assistidos</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" id="stat-likes">0</div>
-          <div class="lbl">Interações</div>
-        </div>
-        <div class="stat-card">
-          <div class="val" id="stat-fakenews" style="color: var(--accent-pink);">0</div>
-          <div class="lbl">Conteúdos Extremos</div>
-        </div>
-      </div>
+            const iconContainer = document.getElementById('modalIcon');
+            iconContainer.innerHTML = data.icon;
+            iconContainer.className = `w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${data.iconBg}`;
 
-      <h4 style="font-size: 0.8rem; margin-top: 8px;">Queda na Diversidade do seu Feed:</h4>
-      <canvas id="diversityChart"></canvas>
-
-      <div class="teacher-panel">
-        <h3 style="font-size: 0.85rem; color: var(--accent-amber); margin-bottom: 6px;">👨‍🏫 Painel da Turma</h3>
-        <div class="teacher-summary">
-          <span>Média da Bolha: <strong id="class-avg">0%</strong></span>
-          <span>Registros: <strong id="class-count">0</strong></span>
-        </div>
-        <ul id="ranking-list" class="ranking-list"></ul>
-      </div>
-
-      <button class="btn-primary" style="margin-top: 12px;" onclick="restartSimulation()">Reiniciar Feed</button>
-    </div>
-  </div>
-
-  <script>
-    /* -------------------------------------------------------------
-       EFEITOS SONOROS (Web Audio API)
-    ------------------------------------------------------------- */
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      const now = audioCtx.currentTime;
-
-      if (type === 'like') {
-        osc.frequency.setValueAtTime(523, now);
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-        osc.start(now); osc.stop(now + 0.12);
-      } else if (type === 'push') {
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.setValueAtTime(900, now + 0.08);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        osc.start(now); osc.stop(now + 0.2);
-      } else if (type === 'uau') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, now);
-        osc.frequency.exponentialRampToValueAtTime(40, now + 1.5);
-        gain.gain.setValueAtTime(0.4, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 1.5);
-        osc.start(now); osc.stop(now + 1.5);
-      }
-    }
-
-    /* -------------------------------------------------------------
-       CATÁLOGO DIVERSO DE CONTEÚDOS (FORMATO TIKTOK/REELS)
-    ------------------------------------------------------------- */
-    const topicImages = {
-      memes: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop",
-      receitas: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop",
-      games: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop",
-      influencer: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop",
-      teoria: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop"
-    };
-
-    const authors = {
-      neutro: ["@memes_br", "@chef_chefao", "@gameplay_pro", "@curiosidades_top", "@tech_guru"],
-      emocional: ["@fofoca_da_hora", "@dramaqueen", "@historias_reais", "@reacoes_quentes"],
-      fakenews: ["@verdades_ocultas", "@alerta_maximo", "@dossie_secreto", "@codigo_x"]
-    };
-
-    const contentTemplates = {
-      memes: {
-        neutro: ["POV: Quando você tenta estudar no domingo à noite 😂🔥 #humor #meme"],
-        emocional: ["😭 Eu não tava preparado pra esse final!! Assistam até o fim!! 💔"],
-        fakenews: ["🚨 CUIDADO: Estão usando este áudio viral para hipnotizar quem assiste Reels!"]
-      },
-      receitas: {
-        neutro: ["Receita rápida de miojo gourmet em 3 minutos! 🍜✨ #culinaria #receita"],
-        emocional: ["😱 Fiz essa sobremesa pra minha avó e ela CHOROU de emoção!! ❤️"],
-        fakenews: ["💣 O ingrediente secreto do mercado que altera seu estômago e ninguém te avisa!"]
-      },
-      games: {
-        neutro: ["Jogada absurda no final da partida!! Quem mais joga de sniper? 🎮🔥 #games"],
-        emocional: ["😭 O momento mais triste da história dos videogames... não aguento! 💔"],
-        fakenews: ["⚠️ VAZOU: Consoles atuais estão usando o microfone pra escutar suas conversas privadas!"]
-      },
-      influencer: {
-        neutro: ["Get ready with me pra ir ao shopping num sábado à tarde 👗✨ #grwm"],
-        emocional: ["😱 Cancelei minha amizade depois do que ela fez nas minhas costas... entenda o exposed!"],
-        fakenews: ["🚨 URGENTE: O segredo que os influenciadores usam pra ganhar R$ 10 mil por dia sem trabalhar!"]
-      },
-      teoria: {
-        neutro: ["Você sabia? O motivo científico das estrelas parecerem piscar no céu ✨ #ciencia"],
-        emocional: ["😭 A história assustadora da cidade que sumiu do mapa da noite para o dia..."],
-        fakenews: ["💣 ELES NÃO QUEREM QUE VOCÊ SAIBA: O sinal 5G está mudando o clima da Terra em segredo!"]
-      }
-    };
-
-    const commentsPool = {
-      neutro: ["Muito bom kkkkk", "Adorei a dica!", "Caramba, que daora 🔥"],
-      moderado: ["Gente, isso é sério?? 😱", "Alguém precisa checar isso!", "Tô chocado com esse vídeo!"],
-      extremo: ["ABSURDO! Estão escondendo a verdade!! 😡", "ACORDA BRASIL!! Querem controlar a gente!", "Compartilhem antes que apaguem!! 🚨"]
-    };
-
-    /* -------------------------------------------------------------
-       ESTADO DA APLICAÇÃO
-    ------------------------------------------------------------- */
-    let state = {
-      studentName: "Aluno",
-      startTime: Date.now(),
-      bubbleLevel: 0,
-      postsSeen: 0,
-      likes: 0,
-      fakeNewsCount: 0,
-      emocionalCount: 0,
-      neutroCount: 0,
-      weights: { fakenews: 1, emocional: 1, neutro: 2 },
-      topicWeights: { memes: 1, receitas: 1, games: 1, influencer: 1, teoria: 1 },
-      diversityHistory: [100],
-      isFinished: false,
-      currentPost: null
-    };
-
-    window.onload = () => {
-      const name = prompt("Digite seu nome para entrar no ReelBubble:", "Aluno 1");
-      if (name) state.studentName = name;
-      document.getElementById('user-display').innerText = `@${state.studentName.toLowerCase().replace(/\s+/g, '')}`;
-      renderNextReel();
-      renderTeacherPanel();
-    };
-
-    function pickWeightedTopic() {
-      let total = 0;
-      for (let t in state.topicWeights) total += state.topicWeights[t];
-      let rand = Math.random() * total;
-      for (let t in state.topicWeights) {
-        if (rand < state.topicWeights[t]) return t;
-        rand -= state.topicWeights[t];
-      }
-      return "memes";
-    }
-
-    function generatePost() {
-      const totalWeight = state.weights.fakenews + state.weights.emocional + state.weights.neutro;
-      const rand = Math.random() * totalWeight;
-      let tag = "neutro";
-
-      if (rand < state.weights.fakenews) tag = "fakenews";
-      else if (rand < state.weights.fakenews + state.weights.emocional) tag = "emocional";
-
-      const topic = pickWeightedTopic();
-      const authorList = authors[tag];
-      const author = authorList[Math.floor(Math.random() * authorList.length)];
-      
-      const templates = contentTemplates[topic][tag];
-      const text = templates[Math.floor(Math.random() * templates.length)];
-      const imageUrl = topicImages[topic];
-
-      let commentType = "neutro";
-      if (state.bubbleLevel > 70) commentType = "extremo";
-      else if (state.bubbleLevel > 35) commentType = "moderado";
-
-      const commentText = commentsPool[commentType][Math.floor(Math.random() * commentsPool[commentType].length)];
-
-      return { author, tag, topic, text, imageUrl, comment: commentText };
-    }
-
-    /* -------------------------------------------------------------
-       RENDERIZAÇÃO DO REEL / TIKTOK
-    ------------------------------------------------------------- */
-    function renderNextReel() {
-      if (state.isFinished) return;
-
-      state.postsSeen++;
-      const post = generatePost();
-      state.currentPost = post;
-
-      const container = document.getElementById('reels-container');
-      container.innerHTML = `
-        <div class="reel-card" style="background-image: url('${post.imageUrl}')">
-          <div class="reel-overlay"></div>
-          
-          <div class="reel-content">
-            <div class="reel-author">
-              <div class="reel-avatar">${post.author[1].toUpperCase()}</div>
-              <span>${post.author}</span>
-              <span class="reel-tag">${post.tag}</span>
-            </div>
-            <div class="reel-caption">${post.text}</div>
-            <div class="comment-preview">
-              💬 <strong>@user_anonimo:</strong> "${post.comment}"
-            </div>
-          </div>
-
-          <div class="reel-actions">
-            <button class="action-btn" onclick="interact('like', '${post.tag', '${post.topic}', this)">
-              ❤️
-              <span class="action-label">Curtir</span>
-            </button>
-            <button class="action-btn" onclick="interact('share', '${post.tag}', '${post.topic}', this)">
-              🔄
-              <span class="action-label">Enviar</span>
-            </button>
-            <button class="action-btn" onclick="skipReel()">
-              ⏭️
-              <span class="action-label">Pular</span>
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function skipReel() {
-      renderNextReel();
-    }
-
-    /* -------------------------------------------------------------
-       ALGORITMO ADAPTATIVO
-    ------------------------------------------------------------- */
-    function interact(type, tag, topic, btn) {
-      if (state.isFinished) return;
-
-      playSound('like');
-      btn.classList.add('liked');
-
-      state.likes++;
-      state.topicWeights[topic] += 3.5; // O algoritmo vicia no tema interagido
-
-      if (tag === 'fakenews') {
-        state.fakeNewsCount++;
-        state.weights.fakenews += 3;
-        state.weights.emocional += 1;
-        state.weights.neutro = Math.max(1, state.weights.neutro - 1);
-        state.bubbleLevel += 18;
-        showPushNotification(`💡 O algoritmo notou seu interesse em "${topic.toUpperCase()}". Vídeos polêmicos e teorias do mesmo tema agora dominam 80% da sua aba For You.`);
-      } else if (tag === 'emocional') {
-        state.emocionalCount++;
-        state.weights.emocional += 2;
-        state.weights.fakenews += 1;
-        state.bubbleLevel += 12;
-        showPushNotification(`💡 Forte engajamento emocional detectado em "${topic.toUpperCase()}". O algoritmo priorizará vídeos de forte impacto psicológico.`);
-      } else {
-        state.neutroCount++;
-        state.weights.neutro += 1;
-        state.bubbleLevel += 3;
-      }
-
-      state.bubbleLevel = Math.min(100, state.bubbleLevel);
-      state.diversityHistory.push(Math.max(0, 100 - state.bubbleLevel));
-
-      updateBubbleMeter();
-
-      if (state.bubbleLevel >= 100 && !state.isFinished) {
-        state.isFinished = true;
-        setTimeout(triggerUauMoment, 500);
-      } else {
-        setTimeout(renderNextReel, 400);
-      }
-    }
-
-    function updateBubbleMeter() {
-      document.getElementById('bubble-meter-fill').style.width = `${state.bubbleLevel}%`;
-      document.getElementById('bubble-percentage').innerText = `${state.bubbleLevel}%`;
-    }
-
-    function showPushNotification(text) {
-      playSound('push');
-      const push = document.getElementById('push-notification');
-      document.getElementById('push-text').innerText = text;
-      push.style.display = 'block';
-      setTimeout(() => { push.style.display = 'none'; }, 4000);
-    }
-
-    /* -------------------------------------------------------------
-       ALERTAS E RELATÓRIO
-    ------------------------------------------------------------- */
-    function triggerUauMoment() {
-      playSound('uau');
-      const overlay = document.getElementById('uau-overlay');
-      const textContainer = document.getElementById('uau-text');
-      overlay.style.display = 'flex';
-      setTimeout(() => overlay.classList.add('active'), 50);
-
-      const message = "⚠️ BOLHA ALGORÍTMICA ATINGIDA (100%).\n\nO seu feed no ReelBubble foi completamente hiper-personalizado. Você deixou de receber visões diversas e passou a consumir apenas o conteúdo que o algoritmo aprendeu que prende a sua atenção.";
-      
-      let index = 0;
-      textContainer.innerText = "";
-      
-      function typeWriter() {
-        if (index < message.length) {
-          textContainer.innerText += message.charAt(index);
-          index++;
-          setTimeout(typeWriter, 30);
+            const modal = document.getElementById('infoModal');
+            modal.classList.remove('hidden');
         }
-      }
-      typeWriter();
-    }
 
-    function closeUauAndShowReport() {
-      document.getElementById('uau-overlay').style.display = 'none';
-      showReportModal();
-    }
+        function closeModal() {
+            document.getElementById('infoModal').classList.add('hidden');
+        }
 
-    function calculateProfile() {
-      if (state.fakeNewsCount >= 3) return "🌀 Caçador de Conspirações (Vítima de engajamento por raiva)";
-      if (state.emocionalCount >= 3) return "🎭 Conectado Emocionalmente (Suscetível a gatilhos dramáticos)";
-      if (state.neutroCount > state.likes / 2) return "🛡️ Consumidor Consciente (Resistente ao vício algorítmico)";
-      return "📱 Usuário Padrão (Facilmente guiado por feeds infinitos)";
-    }
+        // Fechar com tecla ESC ou clique fora
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        document.getElementById('infoModal').addEventListener('click', (e) => {
+            if (e.target.id === 'infoModal') closeModal();
+        });
 
-    function showReportModal() {
-      const timeSpent = Math.round((Date.now() - state.startTime) / 1000);
-      document.getElementById('stat-time').innerText = `${timeSpent}s`;
-      document.getElementById('stat-seen').innerText = state.postsSeen;
-      document.getElementById('stat-likes').innerText = state.likes;
-      document.getElementById('stat-fakenews').innerText = state.fakeNewsCount;
-      document.getElementById('user-profile').innerText = `Perfil: ${calculateProfile()}`;
+        // INICIALIZAÇÃO DOS GRÁFICOS (CHART.JS)
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // GRÁFICO 1: FREQUÊNCIA DE CHECAGEM
+            const ctxFreq = document.getElementById('freqChart').getContext('2d');
+            const keysFreq = ['f_sempre', 'f_frequentemente', 'f_asvezes', 'f_raramente', 'f_nunca', 'f_naocompartilho'];
+            
+            new Chart(ctxFreq, {
+                type: 'bar',
+                data: {
+                    labels: ['Sempre', 'Frequentemente', 'Às vezes', 'Raramente', 'Nunca', 'Não compartilho'],
+                    datasets: [{
+                        label: 'Nº de Estudantes',
+                        data: [5, 4, 4, 3, 3, 1],
+                        backgroundColor: [
+                            '#10b981', // Emerald 500
+                            '#34d399', // Emerald 400
+                            '#3b82f6', // Blue 500
+                            '#f59e0b', // Amber 500
+                            '#f43f5e', // Rose 500
+                            '#94a3b8'  // Slate 400
+                        ],
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => ` ${context.raw} estudante(s) (${(context.raw / 20 * 100).toFixed(0)}%)`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            openModal(keysFreq[index]);
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                    }
+                }
+            });
 
-      saveToLocalStorage(timeSpent);
-      renderChart();
-      renderTeacherPanel();
+            // GRÁFICO 2: ATITUDES E FONTES
+            const ctxSources = document.getElementById('sourcesChart').getContext('2d');
+            const keysSources = ['portais_jornalisticos', 'sites_oficiais', 's_comparo', 's_naoverifico', 's_redessociais', 's_busca'];
 
-      document.getElementById('report-modal').style.display = 'flex';
-    }
+            new Chart(ctxSources, {
+                type: 'bar',
+                indexAxis: 'y',
+                data: {
+                    labels: [
+                        'Portais Jornalísticos',
+                        'Site Oficial da Fonte',
+                        'Comparo em Várias Fontes',
+                        'Não Costumo Verificar',
+                        'Redes Sociais / Comentários',
+                        'Mecanismos de Busca'
+                    ],
+                    datasets: [{
+                        label: 'Menções de Estudantes',
+                        data: [10, 9, 3, 3, 2, 1],
+                        backgroundColor: [
+                            '#6366f1', // Indigo 500
+                            '#0284c7', // Sky 600
+                            '#a855f7', // Purple 500
+                            '#f43f5e', // Rose 500
+                            '#f59e0b', // Amber 500
+                            '#64748b'  // Slate 500
+                        ],
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => ` ${context.raw} menção(ões) (${(context.raw / 20 * 100).toFixed(0)}% da amostra)`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 2 },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    },
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            openModal(keysSources[index]);
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                    }
+                }
+            });
 
-    function renderChart() {
-      const canvas = document.getElementById('diversityChart');
-      const ctx = canvas.getContext('2d');
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight || 140;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const data = state.diversityHistory;
-      const stepX = canvas.width / (data.length - 1 || 1);
-
-      ctx.beginPath();
-      ctx.strokeStyle = '#fe2c55';
-      ctx.lineWidth = 3;
-
-      data.forEach((val, i) => {
-        const x = i * stepX;
-        const y = canvas.height - (val / 100 * (canvas.height - 30)) - 15;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-
-      ctx.stroke();
-
-      data.forEach((val, i) => {
-        const x = i * stepX;
-        const y = canvas.height - (val / 100 * (canvas.height - 30)) - 15;
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#25f4ee';
-        ctx.fill();
-      });
-    }
-
-    function saveToLocalStorage(timeSpent) {
-      const history = JSON.parse(localStorage.getItem('reel_bubble_results') || '[]');
-      history.push({
-        name: state.studentName,
-        bubble: state.bubbleLevel,
-        time: timeSpent
-      });
-      localStorage.setItem('reel_bubble_results', JSON.stringify(history));
-    }
-
-    function renderTeacherPanel() {
-      const list = document.getElementById('ranking-list');
-      const history = JSON.parse(localStorage.getItem('reel_bubble_results') || '[]');
-      
-      list.innerHTML = history.length === 0 ? '<li style="color:var(--text-muted); padding: 6px 0;">Nenhum registro de aluno ainda.</li>' : '';
-
-      let totalBubble = 0;
-
-      history.slice(-5).reverse().forEach(item => {
-        totalBubble += item.bubble;
-        const li = document.createElement('li');
-        li.className = 'ranking-item';
-        li.innerHTML = `
-          <span><strong>@${item.name}</strong> (${item.time}s)</span>
-          <span style="color: ${item.bubble >= 80 ? 'var(--accent-pink)' : 'var(--accent-green)'}">Bolha: ${item.bubble}%</span>
-        `;
-        list.appendChild(li);
-      });
-
-      if (history.length > 0) {
-        const avg = Math.round(totalBubble / history.slice(-5).length);
-        document.getElementById('class-avg').innerText = `${avg}%`;
-        document.getElementById('class-count').innerText = history.length;
-      }
-    }
-
-    function restartSimulation() {
-      window.location.reload();
-    }
-  </script>
+        });
+    </script>
 </body>
 </html>
