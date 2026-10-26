@@ -12,20 +12,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-dark: #070b19;
-            --bg-card: #0f172a;
-            --bg-card-hover: #1e293b;
-            --border-color: #1e293b;
-            --border-hover: #334155;
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.2);
-            --cyan: #06b6d4;
-            --cyan-glow: rgba(6, 182, 212, 0.2);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.15);
+            --cyan: #0891b2;
+            --cyan-glow: rgba(8, 145, 178, 0.15);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-success: #059669;
+            --accent-warning: #d97706;
+            --accent-danger: #dc2626;
             --transition: all 0.3s ease;
         }
 
@@ -37,19 +36,20 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             color: var(--text-main);
             line-height: 1.6;
             padding-bottom: 3rem;
         }
 
         header {
-            background: linear-gradient(135deg, #0a1128 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: #ffffff;
             border-bottom: 1px solid var(--border-color);
-            padding: 2rem 1rem;
+            padding: 2.5rem 1rem;
             text-align: center;
             position: relative;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .header-content {
@@ -61,14 +61,14 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: var(--cyan-glow);
-            color: var(--cyan);
+            background: rgba(255, 255, 255, 0.1);
+            color: #38bdf8;
             padding: 0.35rem 0.85rem;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            border: 1px solid rgba(6, 182, 212, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.3);
         }
 
         h1 {
@@ -76,13 +76,11 @@
             font-weight: 700;
             letter-spacing: -0.025em;
             margin-bottom: 0.5rem;
-            background: linear-gradient(to right, #60a5fa, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
         }
 
         .subtitle {
-            color: var(--text-muted);
+            color: #94a3b8;
             font-size: 1.1rem;
             font-weight: 400;
         }
@@ -111,12 +109,13 @@
             position: relative;
             overflow: hidden;
             transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .kpi-card:hover {
             border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
         }
 
         .kpi-card::after {
@@ -178,6 +177,7 @@
             border-radius: 12px;
             padding: 1.75rem;
             transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .section-box:hover {
@@ -230,7 +230,7 @@
             gap: 1rem;
             align-items: center;
             margin-bottom: 1.5rem;
-            background: rgba(15, 23, 42, 0.6);
+            background: #f8fafc;
             padding: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
@@ -243,7 +243,7 @@
         }
 
         .filter-select {
-            background: var(--bg-dark);
+            background: #ffffff;
             color: var(--text-main);
             border: 1px solid var(--border-hover);
             padding: 0.5rem 1rem;
@@ -253,7 +253,7 @@
             cursor: pointer;
             transition: var(--transition);
             flex-grow: 1;
-            max-width: 350px;
+            max-width: 380px;
         }
 
         .filter-select:focus {
@@ -276,7 +276,7 @@
         }
 
         .btn-reset:hover {
-            background: var(--border-color);
+            background: #f1f5f9;
             border-color: var(--primary);
             color: var(--primary);
         }
@@ -297,7 +297,7 @@
         }
 
         th {
-            background-color: #162032;
+            background-color: #f8fafc;
             color: var(--text-main);
             padding: 0.85rem 1rem;
             font-weight: 600;
@@ -315,7 +315,7 @@
         }
 
         tbody tr:hover {
-            background-color: rgba(59, 130, 246, 0.05);
+            background-color: #f8fafc;
         }
 
         tbody tr:last-child td {
@@ -382,7 +382,7 @@
         .method-note {
             margin-top: 1rem;
             padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.02);
+            background: #f8fafc;
             border: 1px dashed var(--border-hover);
             border-radius: 6px;
             font-size: 0.85rem;
@@ -419,18 +419,18 @@
         <section class="kpi-grid">
             <div class="kpi-card cyan">
                 <div class="kpi-header">
-                    <span class="kpi-title">Participantes</span>
+                    <span class="kpi-title">Participantes Filtrados</span>
                     <i class="fa-solid fa-users kpi-icon"></i>
                 </div>
-                <div class="kpi-value">20</div>
-                <div class="kpi-desc">Amostra total do Ensino Médio</div>
+                <div class="kpi-value" id="kpiTotal">20</div>
+                <div class="kpi-desc" id="kpiTotalDesc">Amostra total do Ensino Médio</div>
             </div>
             <div class="kpi-card success">
                 <div class="kpi-header">
                     <span class="kpi-title">Alta Frequência</span>
                     <i class="fa-solid fa-circle-check kpi-icon"></i>
                 </div>
-                <div class="kpi-value">45%</div>
+                <div class="kpi-value" id="kpiHigh">45%</div>
                 <div class="kpi-desc">Sempre ou Frequentemente (9 alunos)</div>
             </div>
             <div class="kpi-card danger">
@@ -438,7 +438,7 @@
                     <span class="kpi-title">Baixa Frequência</span>
                     <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
                 </div>
-                <div class="kpi-value">30%</div>
+                <div class="kpi-value" id="kpiLow">30%</div>
                 <div class="kpi-desc">Raramente ou Nunca (6 alunos)</div>
             </div>
             <div class="kpi-card warning">
@@ -446,7 +446,7 @@
                     <span class="kpi-title">Sites Oficiais</span>
                     <i class="fa-solid fa-globe kpi-icon"></i>
                 </div>
-                <div class="kpi-value">35%</div>
+                <div class="kpi-value" id="kpiOfficial">35%</div>
                 <div class="kpi-desc">Principal estratégia inicial (7 alunos)</div>
             </div>
             <div class="kpi-card">
@@ -462,7 +462,7 @@
         <!-- Charts Section -->
         <section class="section-box">
             <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Panorama Geral das Perguntas da Pesquisa</h2>
-            <p class="section-desc">Visualização da frequência de checagem declarada e das principais atitudes adotadas primeiro pelos estudantes.</p>
+            <p class="section-desc">Visualização interativa da frequência de checagem declarada e das principais atitudes adotadas primeiro pelos estudantes (atualiza conforme o filtro abaixo).</p>
             
             <div class="charts-grid">
                 <div>
@@ -483,7 +483,7 @@
         <!-- Cross Analysis Section -->
         <section class="section-box">
             <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cruzamento de Dados: Frequência vs. Estratégias</h2>
-            <p class="section-desc">Analise diretamente a relação combinada entre a frequência com que o estudante checa informações e qual estratégia ele adota primeiro.</p>
+            <p class="section-desc">Filtre por frequência para atualizar simultaneamente a tabela, os indicadores e os gráficos do dashboard.</p>
 
             <div class="cross-controls">
                 <label for="freqFilter"><i class="fa-solid fa-filter"></i> Filtrar por Frequência:</label>
@@ -555,21 +555,38 @@
                 <ul class="styled-list">
                     <li>
                         <i class="fa-solid fa-check"></i>
-                        <div><strong>Preferência por Fontes Oficiais:</strong> A estratégia mais mencionada foi consultar o site oficial ou a fonte original, escolhida por 7 participantes (35%).</div>
+                        <div>
+                            <strong>Preferência por Fontes Oficiais:</strong>
+                            A estratégia mais mencionada foi consultar o site oficial ou a fonte original, escolhida por 7 participantes (35%).
+                        </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
-                        <div><strong>Portais e Redes:</strong> Portais jornalísticos confiáveis e redes sociais empataram com 4 menções cada (20% cada).</div>
+                        <div>
+                            <strong>Portais e Redes:</strong>
+                            Portais jornalísticos confiáveis e redes sociais empataram com 4 menções cada (20% cada).
+                        </div>
+                        </li>
+                                                <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <strong>Abstenção de Checagem:</strong>
+                            Três participantes (15%) afirmaram que não costumam verificar informações suspeitas. Esse resultado indica uma oportunidade para ações de educação midiática.
+                        </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
-                        <div><strong>Abstenção de Checagem:</strong> Três                    <li>
-                        <i class="fa-solid fa-check"></i>
-                        <div><strong>Diversidade de Hábitos:</strong> A pesquisa evidenciou um panorama plural de condutas entre os alunos do Ensino Médio ao lidarem com boatos e notícias duvidosas.</div>
+                        <div>
+                            <strong>Diversidade de Hábitos:</strong>
+                            A pesquisa evidenciou diferentes condutas entre os participantes ao lidarem com informações duvidosas.
+                        </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
-                        <div><strong>Educação Midiática:</strong> Intervenções pedagógicas e letramento midiático são essenciais para apoiar os estudantes na avaliação crítica de fontes, contextos e confiabilidade antes de disseminar conteúdos.</div>
+                        <div>
+                            <strong>Educação Midiática:</strong>
+                            Ações educativas podem ajudar os estudantes a avaliar fontes, contextos e confiabilidade antes de compartilhar informações.
+                        </div>
                     </li>
                 </ul>
             </section>
@@ -582,31 +599,27 @@
 
     <script>
         // Dados oficiais consolidados
-        const freqData = {
-            labels: [
-                "Sempre", 
-                "Frequentemente", 
-                "Às vezes", 
-                "Raramente", 
-                "Nunca", 
-                "Não costumo compartilhar informações suspeitas"
-            ],
-            data: [5, 4, 4, 3, 3, 1]
-        };
+        const freqLabels = [
+            "Sempre", 
+            "Frequentemente", 
+            "Às vezes", 
+            "Raramente", 
+            "Nunca", 
+            "Não costumo compartilhar informações suspeitas"
+        ];
+        const freqValuesOriginal = [5, 4, 4, 3, 3, 1];
 
-        const stratData = {
-            labels: [
-                "Consulto o site oficial ou fonte mencionada",
-                "Procuro a informação em portais jornalísticos confiáveis",
-                "Procuro comentários ou publicações nas redes sociais",
-                "Não costumo verificar informações suspeitas",
-                "Comparo a informação em diferentes fontes",
-                "Pesquiso em mecanismos de busca para encontrar outras fontes",
-                "Pergunto a professores, familiares ou outras pessoas",
-                "Outra atitude"
-            ],
-            data: [7, 4, 4, 3, 1, 1, 0, 0]
-        };
+        const stratLabels = [
+            "Consulto o site oficial ou fonte mencionada",
+            "Procuro a informação em portais jornalísticos confiáveis",
+            "Procuro comentários ou publicações nas redes sociais",
+            "Não costumo verificar informações suspeitas",
+            "Comparo a informação em diferentes fontes",
+            "Pesquiso em mecanismos de busca para encontrar outras fontes",
+            "Pergunto a professores, familiares ou outras pessoas",
+            "Outra atitude"
+        ];
+        const stratValuesOriginal = [7, 4, 4, 3, 1, 1, 0, 0];
 
         const crossData = [
             { freq: "Frequentemente", strat: "Comparo a informação em diferentes fontes", count: 1 },
@@ -624,21 +637,21 @@
             { freq: "Nunca", strat: "Procuro comentários ou publicações nas redes sociais", count: 1 }
         ];
 
-        // Configuração de Cores Globais para o Chart.js
-        Chart.defaults.color = '#94a3b8';
+        // Configuração Global Chart.js
+        Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
-        // Renderizar Gráfico de Frequência (Barra vertical)
+        // Instanciar Gráficos
         const ctxFreq = document.getElementById('freqChart').getContext('2d');
         const freqChart = new Chart(ctxFreq, {
             type: 'bar',
             data: {
-                labels: freqData.labels.map(l => l.length > 28 ? l.match(/.{1,28}(\s|$)/g) : l),
+                labels: freqLabels,
                 datasets: [{
                     label: 'Participantes',
-                    data: freqData.data,
-                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                    borderColor: '#3b82f6',
+                    data: freqValuesOriginal,
+                    backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                    borderColor: '#2563eb',
                     borderWidth: 1,
                     borderRadius: 6,
                     barThickness: 'flex',
@@ -654,7 +667,8 @@
                         callbacks: {
                             label: function(context) {
                                 let val = context.raw;
-                                let pct = ((val / 20) * 100).toFixed(0);
+                                let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
+                                let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
                                 return ` ${val} participante(s) (${pct}%)`;
                             }
                         }
@@ -665,27 +679,26 @@
                         beginAtZero: true,
                         max: 6,
                         ticks: { stepSize: 1 },
-                        grid: { color: 'rgba(30, 41, 59, 0.5)' }
+                        grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { font: { size: 11 } }
+                        ticks: { font: { size: 10 } }
                     }
                 }
             }
         });
 
-        // Renderizar Gráfico de Estratégias (Barra horizontal para melhor leitura)
         const ctxStrat = document.getElementById('stratChart').getContext('2d');
         const stratChart = new Chart(ctxStrat, {
             type: 'bar',
             data: {
-                labels: stratData.labels,
+                labels: stratLabels,
                 datasets: [{
                     label: 'Participantes',
-                    data: stratData.data,
-                    backgroundColor: 'rgba(6, 182, 212, 0.8)',
-                    borderColor: '#06b6d4',
+                    data: stratValuesOriginal,
+                    backgroundColor: 'rgba(8, 145, 178, 0.8)',
+                    borderColor: '#0891b2',
                     borderWidth: 1,
                     borderRadius: 6,
                     barThickness: 16
@@ -701,7 +714,8 @@
                         callbacks: {
                             label: function(context) {
                                 let val = context.raw;
-                                let pct = ((val / 20) * 100).toFixed(0);
+                                let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
+                                let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
                                 return ` ${val} participante(s) (${pct}%)`;
                             }
                         }
@@ -712,57 +726,104 @@
                         beginAtZero: true,
                         max: 8,
                         ticks: { stepSize: 2 },
-                        grid: { color: 'rgba(30, 41, 59, 0.5)' }
+                        grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { font: { size: 11 } }
+                        ticks: { font: { size: 10 } }
                     }
                 }
             }
         });
 
-        // Manipulação da Tabela de Cruzamento e Filtros
+        // Elementos da Interface
         const tableBody = document.getElementById('crossTableBody');
         const freqFilter = document.getElementById('freqFilter');
         const resetFilterBtn = document.getElementById('resetFilter');
+        const kpiTotal = document.getElementById('kpiTotal');
+        const kpiTotalDesc = document.getElementById('kpiTotalDesc');
+        const kpiHigh = document.getElementById('kpiHigh');
+        const kpiLow = document.getElementById('kpiLow');
+        const kpiOfficial = document.getElementById('kpiOfficial');
 
-        function renderTable(filterVal) {
+        function updateDashboard(filterVal) {
+            // 1. Filtrar Tabela de Cruzamento
             tableBody.innerHTML = '';
-            let filteredData = crossData;
-            
+            let filteredCross = crossData;
             if (filterVal && filterVal !== 'all') {
-                filteredData = crossData.filter(item => item.freq === filterVal);
+                filteredCross = crossData.filter(item => item.freq === filterVal);
             }
 
-            if (filteredData.length === 0) {
+            if (filteredCross.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Nenhum registro encontrado para o filtro selecionado.</td></tr>`;
-                return;
+            } else {
+                filteredCross.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="highlight-text">${row.freq}</td>
+                        <td>${row.strat}</td>
+                        <td><span class="badge-count">${row.count}</span></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
             }
 
-            filteredData.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="highlight-text">${row.freq}</td>
-                    <td>${row.strat}</td>
-                    <td><span class="badge-count">${row.count}</span></td>
-                `;
-                tableBody.appendChild(tr);
-            });
+            // 2. Atualizar Gráficos e Indicadores baseado no Filtro
+            if (filterVal && filterVal !== 'all') {
+                let matchedRows = crossData.filter(item => item.freq === filterVal);
+                let totalFiltered = matchedRows.reduce((sum, r) => sum + r.count, 0);
+
+                kpiTotal.innerText = totalFiltered;
+                kpiTotalDesc.innerText = `Registros para "${filterVal}"`;
+
+                let newStratData = new Array(stratLabels.length).fill(0);
+                matchedRows.forEach(r => {
+                    let idx = stratLabels.indexOf(r.strat);
+                    if (idx !== -1) newStratData[idx] += r.count;
+                });
+                stratChart.data.datasets[0].data = newStratData;
+                stratChart.update();
+
+                let newFreqData = freqLabels.map(label => label === filterVal ? totalFiltered : 0);
+                freqChart.data.datasets[0].data = newFreqData;
+                freqChart.update();
+
+                let highCount = (filterVal === "Sempre" || filterVal === "Frequentemente") ? totalFiltered : 0;
+                let lowCount = (filterVal === "Raramente" || filterVal === "Nunca") ? totalFiltered : 0;
+                let officialCount = matchedRows.filter(r => r.strat.includes("site oficial")).reduce((s, r) => s + r.count, 0);
+
+                kpiHigh.innerText = totalFiltered > 0 ? `${((highCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                kpiLow.innerText = totalFiltered > 0 ? `${((lowCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                kpiOfficial.innerText = totalFiltered > 0 ? `${((officialCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+
+            } else {
+                kpiTotal.innerText = "20";
+                kpiTotalDesc.innerText = "Amostra total do Ensino Médio";
+
+                freqChart.data.datasets[0].data = freqValuesOriginal;
+                freqChart.update();
+
+                stratChart.data.datasets[0].data = stratValuesOriginal;
+                stratChart.update();
+
+                kpiHigh.innerText = "45%";
+                kpiLow.innerText = "30%";
+                kpiOfficial.innerText = "35%";
+            }
         }
 
-        // Event Listeners para Filtros
+        // Event Listeners
         freqFilter.addEventListener('change', (e) => {
-            renderTable(e.target.value);
+            updateDashboard(e.target.value);
         });
 
         resetFilterBtn.addEventListener('click', () => {
             freqFilter.value = 'all';
-            renderTable('all');
+            updateDashboard('all');
         });
 
-        // Inicializar tabela completa
-        renderTable('all');
+        // Inicializar
+        updateDashboard('all');
     </script>
 </body>
 </html>
