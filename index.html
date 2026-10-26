@@ -580,7 +580,7 @@
                     <i class="fa-solid fa-circle-check kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiHigh">45%</div>
-                <div class="kpi-desc">Sempre/Freq. (9)</div>
+                <div class="kpi-desc" id="kpiHighDesc">Sempre/Freq. (9)</div>
             </div>
             <div class="kpi-card danger" onclick="openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.')">
                 <div class="kpi-header">
@@ -588,17 +588,17 @@
                     <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiLow">30%</div>
-                <div class="kpi-desc">Raramente/Nunca (6)</div>
+                <div class="kpi-desc" id="kpiLowDesc">Raramente/Nunca (6)</div>
             </div>
-            <div class="kpi-card warning" onclick="openIndicatorModal('Sites Oficiais (35%)', '7 alunos', 'A estratégia número um declarada pelos estudantes ao iniciar uma verificação de veracidade.')">
+            <div class="kpi-card warning" onclick="openIndicatorModal('Sites Oficiais (45%)', '9 menções', 'A estratégia principal mencionada pelos estudantes ao iniciar uma verificação de veracidade.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Sites Oficiais</span>
                     <i class="fa-solid fa-globe kpi-icon"></i>
                 </div>
-                <div class="kpi-value" id="kpiOfficial">35%</div>
-                <div class="kpi-desc">Principal atitude (7)</div>
+                <div class="kpi-value" id="kpiOfficial">45%</div>
+                <div class="kpi-desc" id="kpiOfficialDesc">Principal atitude (9)</div>
             </div>
-            <div class="kpi-card" onclick="openIndicatorModal('Hipótese Inicial', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese foi refutada empiricamente.')">
+            <div class="kpi-card" onclick="openIndicatorModal('Hipótese Científica', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese não foi confirmada pelos dados da amostra.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Hipótese</span>
                     <i class="fa-solid fa-scale-balanced kpi-icon"></i>
@@ -611,7 +611,7 @@
         <!-- Charts Section -->
         <section class="section-box">
             <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Panorama Geral das Perguntas</h2>
-            <p class="section-desc">Visualização da frequência de checagem declarada, das estratégias em barras e da distribuição proporcional em pizza.</p>
+            <p class="section-desc">Visualização da frequência de checagem declarada e da distribuição de menções das estratégias (múltipla escolha).</p>
             
             <div class="charts-grid">
                 <div>
@@ -628,9 +628,10 @@
                 </div>
             </div>
 
-            <!-- Gráfico de Pizza Adicional -->
+            <!-- Gráfico de Pizza Adicional (Menções Proporcionais) -->
             <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
-                <h3 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-main); text-align: center;"><i class="fa-solid fa-chart-pie" style="color: var(--cyan);"></i> Distribuição Proporcional de Estratégias (Gráfico de Pizza)</h3>
+                <h3 style="font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--text-main); text-align: center;"><i class="fa-solid fa-chart-pie" style="color: var(--cyan);"></i> Proporção de Menções por Estratégia (Gráfico de Pizza)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">Representa o volume de menções totais registradas, considerando que há múltiplas escolhas</p>
                 <div style="max-width: 460px; margin: 0 auto;" class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
@@ -639,8 +640,8 @@
 
         <!-- Cross Analysis Section -->
         <section class="section-box">
-                        <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cruzamento de Dados</h2>
-            <p class="section-desc">Filtre por frequência para atualizar simultaneamente a tabela, os indicadores e todos os gráficos do dashboard.</p>
+            <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cruzamento de Dados</h2>
+            <p class="section-desc">Filtre por frequência para consultar os registros consolidados correspondentes.</p>
 
             <div class="cross-controls">
                 <label for="freqFilter"><i class="fa-solid fa-filter"></i> Filtrar Frequência:</label>
@@ -694,7 +695,7 @@
                     </li>
                     <li>
                         <i class="fa-solid fa-circle-xmark" style="color: var(--accent-danger);"></i>
-                        <div><strong>Conclusão:</strong> <strong>Não confirmada</strong>, pois 30% está abaixo do limiar de maioria exigido (> 50%).</div>
+                        <div><strong>Conclusão:</strong> <strong>Não confirmada</strong> pelos dados da amostra, pois o percentual de 30% ficou abaixo do limiar de maioria exigido (> 50%).</div>
                     </li>
                 </ul>
 
@@ -705,7 +706,7 @@
                 <div class="extra-hypothesis-content" id="extraHypothesis">
                     <div style="background: rgba(37,99,235,0.04); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.6rem;">
                         <strong style="color: var(--text-main); font-size: 0.9rem;"><i class="fa-solid fa-glasses"></i> Nota Metodológica Detalhada:</strong>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Embora a hipótese inicial tenha sido refutada, o dado de 30% revela uma vulnerabilidade relevante no grupo amostral. O fato de 45% declararem checagem alta demonstra consciência digital positiva, mas a existência de 15% de abstenção total reforça a necessidade de projetos de letramento midiático contínuos na escola.</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">A não confirmação da hipótese demonstra que a maioria da amostra investigada não se enquadra na faixa de baixa checagem prevista. Trata-se de um resultado válido e específico para este grupo de 20 estudantes, sem caráter generalizante para toda a população escolar.</p>
                     </div>
                 </div>
             </section>
@@ -720,28 +721,28 @@
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Preferência por Fontes Oficiais:</strong>
-                            A estratégia mais mencionada foi consultar o site oficial ou a fonte original (7 participantes / 35%).
+                            A estratégia mais mencionada foi consultar o site oficial ou a fonte original (9 menções / 45%).
                         </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Portais e Redes:</strong>
-                            Portais jornalísticos confiáveis e redes sociais empataram com 4 menções cada (20% cada).
+                            Portais jornalísticos confiáveis (4 menções / 20%) e redes sociais (4 menções / 20%).
                         </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Abstenção de Checagem:</strong>
-                            Três participantes (15%) afirmaram que não costumam verificar informações, apontando foco para oficinas de checagem.
+                            Três participantes (15%) afirmaram que não costumam verificar informações, apontando foco para ações de letramento.
                         </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Educação Midiática:</strong>
-                            Intervenções pedagógicas auxiliam estudantes na avaliação de contexto e credibilidade.
+                            Intervenções pedagógicas auxiliam estudantes na avaliação crítica de contexto, fontes e confiabilidade.
                         </div>
                     </li>
                 </ul>
@@ -791,7 +792,8 @@
             "Pergunto a professores, familiares ou outras pessoas",
             "Outra atitude"
         ];
-        const stratValuesOriginal = [7, 4, 4, 3, 1, 1, 0, 0];
+        // Dado corrigido para 9 menções em Sites Oficiais
+        const stratValuesOriginal = [9, 4, 4, 3, 1, 1, 0, 0];
 
         const crossData = [
             { freq: "Frequentemente", strat: "Comparo a informação em diferentes fontes", count: 1 },
@@ -873,7 +875,7 @@
             data: {
                 labels: stratLabels,
                 datasets: [{
-                    label: 'Participantes',
+                    label: 'Menções',
                     data: stratValuesOriginal,
                     backgroundColor: 'rgba(8, 145, 178, 0.85)',
                     borderColor: '#0891b2',
@@ -892,9 +894,7 @@
                         callbacks: {
                             label: function(context) {
                                 let val = context.raw;
-                                let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
-                                let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
-                                return ` ${val} participante(s) (${pct}%)`;
+                                return ` ${val} menção(ões) registrada(s)`;
                             }
                         }
                     }
@@ -902,7 +902,7 @@
                 scales: {
                     x: {
                         beginAtZero: true,
-                        max: 8,
+                        max: 10,
                         ticks: { stepSize: 2, font: { size: 10 } },
                         grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
@@ -942,9 +942,9 @@
                         callbacks: {
                             label: function(context) {
                                 let val = context.raw;
-                                let totalCurrent = stratValuesOriginal.reduce((a, b) => a + b, 0);
-                                let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
-                                return ` ${context.label}: ${val} (${pct}%)`;
+                                let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
+                                let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
+                                return ` ${context.label}: ${val} menção(ões) (${pct}% do total de escolhas)`;
                             }
                         }
                     }
@@ -960,8 +960,11 @@
         const kpiTotal = document.getElementById('kpiTotal');
         const kpiTotalDesc = document.getElementById('kpiTotalDesc');
         const kpiHigh = document.getElementById('kpiHigh');
+        const kpiHighDesc = document.getElementById('kpiHighDesc');
         const kpiLow = document.getElementById('kpiLow');
+        const kpiLowDesc = document.getElementById('kpiLowDesc');
         const kpiOfficial = document.getElementById('kpiOfficial');
+        const kpiOfficialDesc = document.getElementById('kpiOfficialDesc');
 
         function updateDashboard(filterVal) {
             // 1. Filtrar Tabela de Cruzamento
@@ -972,7 +975,7 @@
             }
 
             if (filteredCross.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Nenhum registro encontrado para o filtro selecionado.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Nenhum registro consolidado encontrado para o filtro selecionado.</td></tr>`;
             } else {
                 filteredCross.forEach(row => {
                     const tr = document.createElement('tr');
@@ -985,25 +988,13 @@
                 });
             }
 
-            // 2. Atualizar Gráficos e Indicadores baseado no Filtro
+            // 2. Atualizar Indicadores e Gráficos baseados no Recorte
             if (filterVal && filterVal !== 'all') {
                 let matchedRows = crossData.filter(item => item.freq === filterVal);
                 let totalFiltered = matchedRows.reduce((sum, r) => sum + r.count, 0);
 
                 kpiTotal.innerText = totalFiltered;
                 kpiTotalDesc.innerText = `Recorte selecionado`;
-
-                let newStratData = new Array(stratLabels.length).fill(0);
-                matchedRows.forEach(r => {
-                    let idx = stratLabels.indexOf(r.strat);
-                    if (idx !== -1) newStratData[idx] += r.count;
-                });
-                
-                stratChart.data.datasets[0].data = newStratData;
-                stratChart.update();
-
-                pieChart.data.datasets[0].data = newStratData;
-                pieChart.update();
 
                 let newFreqData = freqLabels.map(label => label === filterVal ? totalFiltered : 0);
                 freqChart.data.datasets[0].data = newFreqData;
@@ -1014,8 +1005,13 @@
                 let officialCount = matchedRows.filter(r => r.strat.includes("site oficial")).reduce((s, r) => s + r.count, 0);
 
                 kpiHigh.innerText = totalFiltered > 0 ? `${((highCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                kpiHighDesc.innerText = `Frequência ${filterVal}`;
+                
                 kpiLow.innerText = totalFiltered > 0 ? `${((lowCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                kpiLowDesc.innerText = `Frequência ${filterVal}`;
+
                 kpiOfficial.innerText = totalFiltered > 0 ? `${((officialCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                kpiOfficialDesc.innerText = `No recorte (${officialCount})`;
 
             } else {
                 kpiTotal.innerText = "20";
@@ -1024,15 +1020,14 @@
                 freqChart.data.datasets[0].data = freqValuesOriginal;
                 freqChart.update();
 
-                stratChart.data.datasets[0].data = stratValuesOriginal;
-                stratChart.update();
-
-                pieChart.data.datasets[0].data = stratValuesOriginal;
-                pieChart.update();
-
                 kpiHigh.innerText = "45%";
+                kpiHighDesc.innerText = "Sempre/Freq. (9)";
+
                 kpiLow.innerText = "30%";
-                kpiOfficial.innerText = "35%";
+                kpiLowDesc.innerText = "Raramente/Nunca (6)";
+
+                kpiOfficial.innerText = "45%";
+                kpiOfficialDesc.innerText = "Principal atitude (9)";
             }
         }
 
@@ -1051,10 +1046,7 @@
             const extra = document.getElementById('extraHypothesis');
             if (extra.style.display === 'block') {
                 extra.style.display = 'none';
-            } else {
-                extra.style.display = 'block';
-            }
-           }
+             }
 
         // Modal de Indicadores Profissional
         function openIndicatorModal(title, subtitle, description) {
