@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-body: #f1f5f9;
+            --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --border-color: #e2e8f0;
             --border-hover: #cbd5e1;
@@ -40,15 +40,15 @@
             color: var(--text-main);
             line-height: 1.6;
             padding-bottom: 3rem;
+            -webkit-tap-highlight-color: transparent;
         }
 
         header {
             background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
             color: #ffffff;
             border-bottom: 1px solid var(--border-color);
-            padding: 2.5rem 1rem;
+            padding: 2rem 1rem;
             text-align: center;
-            position: relative;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
@@ -65,57 +65,72 @@
             color: #38bdf8;
             padding: 0.35rem 0.85rem;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             border: 1px solid rgba(56, 189, 248, 0.3);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.025em;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             color: #ffffff;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 2.5rem; }
         }
 
         .subtitle {
             color: #94a3b8;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 400;
+        }
+
+        @media (min-width: 768px) {
+            .subtitle { font-size: 1.1rem; }
         }
 
         main {
             max-width: 1200px;
-            margin: 2rem auto 0;
+            margin: 1.5rem auto 0;
             padding: 0 1rem;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         /* KPI Cards */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
         }
 
         .kpi-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1.25rem;
+            padding: 1rem;
             position: relative;
             overflow: hidden;
             transition: var(--transition);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
 
         .kpi-card:hover {
             border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
         }
 
         .kpi-card::after {
@@ -137,11 +152,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .kpi-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 600;
@@ -150,7 +165,7 @@
 
         .kpi-icon {
             color: var(--primary);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .kpi-card.cyan .kpi-icon { color: var(--cyan); }
@@ -159,15 +174,53 @@
         .kpi-card.danger .kpi-icon { color: var(--accent-danger); }
 
         .kpi-value {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
         }
 
         .kpi-desc {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
+        }
+
+        /* Interactive Hypothesis Card */
+        .interactive-hypothesis {
+            cursor: pointer;
+            border-left: 4px solid var(--accent-warning);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .interactive-hypothesis:hover {
+            border-color: var(--primary);
+        }
+
+        .hypothesis-toggle-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 0.75rem;
+            background: var(--primary-glow);
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+        }
+
+        .extra-hypothesis-content {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Section Layout */
@@ -175,9 +228,13 @@
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1.75rem;
+            padding: 1.25rem;
             transition: var(--transition);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        @media (min-width: 768px) {
+            .section-box { padding: 1.75rem; }
         }
 
         .section-box:hover {
@@ -185,13 +242,17 @@
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.6rem;
             color: var(--text-main);
+        }
+
+        @media (min-width: 768px) {
+            .section-title { font-size: 1.25rem; }
         }
 
         .section-title i {
@@ -200,44 +261,55 @@
 
         .section-desc {
             color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
         }
 
         /* Charts Grid */
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            grid-template-columns: 1fr;
             gap: 2rem;
         }
 
-        @media (max-width: 768px) {
+        @media (min-width: 992px) {
             .charts-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         .chart-container {
             position: relative;
-            height: 320px;
+            height: 280px;
             width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container { height: 320px; }
         }
 
         /* Cross Analysis Section */
         .cross-controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
             background: #f8fafc;
             padding: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
 
+        @media (min-width: 768px) {
+            .cross-controls {
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+
         .cross-controls label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             color: var(--text-muted);
         }
@@ -246,14 +318,16 @@
             background: #ffffff;
             color: var(--text-main);
             border: 1px solid var(--border-hover);
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 6px;
             font-size: 0.9rem;
             outline: none;
             cursor: pointer;
-            transition: var(--transition);
-            flex-grow: 1;
-            max-width: 380px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .filter-select { max-width: 380px; }
         }
 
         .filter-select:focus {
@@ -272,7 +346,13 @@
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.4rem;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn-reset { width: auto; }
         }
 
         .btn-reset:hover {
@@ -287,25 +367,31 @@
             overflow-x: auto;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 768px) {
+            table { font-size: 0.9rem; white-space: normal; }
         }
 
         th {
             background-color: #f8fafc;
             color: var(--text-main);
-            padding: 0.85rem 1rem;
+            padding: 0.75rem 1rem;
             font-weight: 600;
             border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 0.85rem 1rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-muted);
         }
@@ -334,24 +420,20 @@
             padding: 0.2rem 0.6rem;
             border-radius: 12px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
-        /* Hypothesis & Analysis Cards */
+        /* Hypothesis & Analysis Grid */
         .grid-2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
         }
 
-        @media (max-width: 768px) {
+        @media (min-width: 992px) {
             .grid-2 {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
-        }
-
-        .hypothesis-box {
-            border-left: 4px solid var(--accent-warning);
         }
 
         .conclusion-box {
@@ -370,12 +452,12 @@
             align-items: flex-start;
             gap: 0.75rem;
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .styled-list li i {
             color: var(--cyan);
-            margin-top: 0.25rem;
+            margin-top: 0.2rem;
             flex-shrink: 0;
         }
 
@@ -385,20 +467,100 @@
             background: #f8fafc;
             border: 1px dashed var(--border-hover);
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
+        /* Modal / Dialog Profissional para Cliche de Porcentagens */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 450px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            animation: scaleUp 0.3s ease forwards;
+        }
+
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .modal-footer {
+            text-align: right;
+        }
+
+        .btn-modal {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
         footer {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 2.5rem;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             border-top: 1px solid var(--border-color);
-            padding-top: 1.5rem;
+            padding-top: 1.25rem;
         }
     </style>
 </head>
@@ -415,64 +577,64 @@
     </header>
 
     <main>
-        <!-- KPI Indicators -->
+        <!-- KPI Indicators (Clickable for professional details) -->
         <section class="kpi-grid">
-            <div class="kpi-card cyan">
+            <div class="kpi-card cyan" onclick="openIndicatorModal('Participantes', '20 estudantes', 'Amostra representativa da turma do Ensino Médio pesquisada na Maratona Tech 2026.')">
                 <div class="kpi-header">
-                    <span class="kpi-title">Participantes Filtrados</span>
+                    <span class="kpi-title">Participantes</span>
                     <i class="fa-solid fa-users kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiTotal">20</div>
-                <div class="kpi-desc" id="kpiTotalDesc">Amostra total do Ensino Médio</div>
+                <div class="kpi-desc" id="kpiTotalDesc">Amostra total</div>
             </div>
-            <div class="kpi-card success">
+            <div class="kpi-card success" onclick="openIndicatorModal('Alta Frequência (45%)', '9 alunos', 'Sempre (5 alunos) ou Frequentemente (4 alunos). Representa quase metade da amostra analisada.')">
                 <div class="kpi-header">
-                    <span class="kpi-title">Alta Frequência</span>
+                    <span class="kpi-title">Alta Freq.</span>
                     <i class="fa-solid fa-circle-check kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiHigh">45%</div>
-                <div class="kpi-desc">Sempre ou Frequentemente (9 alunos)</div>
+                <div class="kpi-desc">Sempre/Freq. (9)</div>
             </div>
-            <div class="kpi-card danger">
+            <div class="kpi-card danger" onclick="openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.')">
                 <div class="kpi-header">
-                    <span class="kpi-title">Baixa Frequência</span>
+                    <span class="kpi-title">Baixa Freq.</span>
                     <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiLow">30%</div>
-                <div class="kpi-desc">Raramente ou Nunca (6 alunos)</div>
+                <div class="kpi-desc">Raramente/Nunca (6)</div>
             </div>
-            <div class="kpi-card warning">
+            <div class="kpi-card warning" onclick="openIndicatorModal('Sites Oficiais (35%)', '7 alunos', 'A estratégia número um declarada pelos estudantes ao iniciar uma verificação de veracidade.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Sites Oficiais</span>
                     <i class="fa-solid fa-globe kpi-icon"></i>
                 </div>
                 <div class="kpi-value" id="kpiOfficial">35%</div>
-                <div class="kpi-desc">Principal estratégia inicial (7 alunos)</div>
+                <div class="kpi-desc">Principal atitude (7)</div>
             </div>
-            <div class="kpi-card">
+            <div class="kpi-card" onclick="openIndicatorModal('Hipótese Inicial', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese foi refutada empiricamente.')">
                 <div class="kpi-header">
-                    <span class="kpi-title">Hipótese Inicial</span>
+                    <span class="kpi-title">Hipótese</span>
                     <i class="fa-solid fa-scale-balanced kpi-icon"></i>
                 </div>
-                <div class="kpi-value" style="font-size: 1.3rem; margin-top: 0.3rem; color: var(--accent-warning);">Não Confirmada</div>
-                <div class="kpi-desc">Abaixo do limiar de 50% previsto</div>
+                <div class="kpi-value" style="font-size: 1.1rem; margin-top: 0.2rem; color: var(--accent-warning);">Não Conf.</div>
+                <div class="kpi-desc">Limiar >50% não atingido</div>
             </div>
         </section>
 
         <!-- Charts Section -->
         <section class="section-box">
-            <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Panorama Geral das Perguntas da Pesquisa</h2>
-            <p class="section-desc">Visualização interativa da frequência de checagem declarada e das principais atitudes adotadas primeiro pelos estudantes (atualiza conforme o filtro abaixo).</p>
+            <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Panorama Geral das Perguntas</h2>
+            <p class="section-desc">Visualização da frequência de checagem declarada e das principais atitudes adotadas primeiro pelos estudantes.</p>
             
             <div class="charts-grid">
                 <div>
-                    <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main); text-align: center;">Frequência de Verificação (Pergunta 1)</h3>
+                    <h3 style="font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-main); text-align: center;">Frequência de Verificação (Pergunta 1)</h3>
                     <div class="chart-container">
                         <canvas id="freqChart"></canvas>
                     </div>
                 </div>
                 <div>
-                    <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main); text-align: center;">Estratégias de Verificação (Pergunta 2)</h3>
+                    <h3 style="font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-main); text-align: center;">Estratégias de Verificação (Pergunta 2)</h3>
                     <div class="chart-container">
                         <canvas id="stratChart"></canvas>
                     </div>
@@ -482,11 +644,11 @@
 
         <!-- Cross Analysis Section -->
         <section class="section-box">
-            <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cruzamento de Dados: Frequência vs. Estratégias</h2>
-            <p class="section-desc">Filtre por frequência para atualizar simultaneamente a tabela, os indicadores e os gráficos do dashboard.</p>
+            <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cruzamento de Dados</h2>
+            <p class="section-desc">Filtre por frequência para atualizar simultaneamente a tabela, os indicadores e os gráficos.</</p>
 
             <div class="cross-controls">
-                <label for="freqFilter"><i class="fa-solid fa-filter"></i> Filtrar por Frequência:</label>
+                <label for="freqFilter"><i class="fa-solid fa-filter"></i> Filtrar Frequência:</label>
                 <select id="freqFilter" class="filter-select">
                     <option value="all">Todas as frequências (Visão Completa)</option>
                     <option value="Sempre">Sempre</option>
@@ -496,7 +658,7 @@
                     <option value="Nunca">Nunca</option>
                     <option value="Não costumo compartilhar informações suspeitas">Não costumo compartilhar informações suspeitas</option>
                 </select>
-                <button class="btn-reset" id="resetFilter"><i class="fa-solid fa-rotate-right"></i> Limpar Filtro</button>
+                <button class="btn-reset" id="resetFilter"><i class="fa-solid fa-rotate-right"></i> Limpar</button>
             </div>
 
             <div class="table-responsive">
@@ -517,33 +679,39 @@
 
         <!-- Hypothesis & Interpretation Grid -->
         <div class="grid-2">
-            <!-- Hypothesis Section -->
-            <section class="section-box hypothesis-box">
-                <h2 class="section-title"><i class="fa-solid fa-bullseye"></i> Hipótese Científica e Resultado</h2>
+            <!-- Interactive Hypothesis Section -->
+            <section class="section-box interactive-hypothesis" id="hypothesisBox" onclick="toggleHypothesisDetails()">
+                <h2 class="section-title"><i class="fa-solid fa-bullseye"></i> Hipótese Científica e Resultado <span style="font-size: 0.75rem; margin-left: auto; color: var(--primary);"><i class="fa-solid fa-hand-pointer"></i> Clique para expandir</span></h2>
                 <p class="section-desc">Validação empírica baseada no critério pré-estabelecido da pesquisa.</p>
                 
                 <ul class="styled-list">
                     <li>
                         <i class="fa-solid fa-circle-question"></i>
-                        <div><strong>Pergunta de Pesquisa:</strong> “Com que frequência os estudantes do Ensino Médio da minha escola verificam informações suspeitas em fontes confiáveis antes de compartilhá-las?”</div>
+                        <div><strong>Pergunta:</strong> “Com que frequência os estudantes do Ensino Médio verificam informações suspeitas antes de compartilhá-las?”</div>
                     </li>
                     <li>
                         <i class="fa-solid fa-flag"></i>
-                        <div><strong>Hipótese Inicial:</strong> “A maioria dos estudantes do Ensino Médio da minha escola raramente ou nunca verifica informações suspeitas em fontes confiáveis antes de compartilhá-las.” (Critério: > 50%).</div>
+                        <div><strong>Hipótese Inicial:</strong> “A maioria raramente ou nunca verifica.” (Critério estatístico: > 50%).</div>
                     </li>
                     <li>
                         <i class="fa-solid fa-square-poll-vertical"></i>
-                        <div><strong>Resultado Coletado:</strong> Raramente (3) + Nunca (3) = 6 de 20 participantes, equivalentes a <strong>30%</strong>.</div>
+                        <div><strong>Resultado:</strong> Raramente (3) + Nunca (3) = 6 de 20 (<strong>30%</strong>).</div>
                     </li>
                     <li>
                         <i class="fa-solid fa-circle-xmark" style="color: var(--accent-danger);"></i>
-                        <div><strong>Conclusão Obrigatória:</strong> A hipótese inicial <strong>não foi confirmada</strong> pelo critério estabelecido, pois os 30% observados ficaram abaixo do limite de maioria (> 50%). O resultado é válido e reflete o comportamento real da amostra investigada.</div>
+                        <div><strong>Conclusão:</strong> <strong>Não confirmada</strong>, pois 30% está abaixo do limiar de maioria exigido (> 50%).</div>
                     </li>
                 </ul>
 
-                <div class="method-note">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>Nota metodológica: Pesquisa amostral com 20 participantes. Os resultados descrevem exclusivamente este grupo e não devem ser generalizados para toda a escola ou população.</span>
+                <div class="hypothesis-toggle-hint">
+                    <i class="fa-solid fa-circle-info"></i> Toque aqui para ver a análise metodológica estendida...
+                </div>
+
+                <div class="extra-hypothesis-content" id="extraHypothesis">
+                    <div style="background: rgba(37,99,235,0.04); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 0.6rem;">
+                        <strong style="color: var(--text-main); font-size: 0.9rem;"><i class="fa-solid fa-glasses"></i> Nota Metodológica Detalhada:</strong>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Embora a hipótese inicial tenha sido refutada, o dado de 30% revela uma vulnerabilidade relevante no grupo amostral. O fato de 45% declararem checagem alta demonstra consciência digital positiva, mas a existência de 15% de abstenção total reforça a necessidade de projetos de letramento midiático contínuos na escola.</p>
+                    </div>
                 </div>
             </section>
 
@@ -557,7 +725,7 @@
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Preferência por Fontes Oficiais:</strong>
-                            A estratégia mais mencionada foi consultar o site oficial ou a fonte original, escolhida por 7 participantes (35%).
+                            A estratégia mais mencionada foi consultar o site oficial ou a fonte original (7 participantes / 35%).
                         </div>
                     </li>
                     <li>
@@ -566,32 +734,41 @@
                             <strong>Portais e Redes:</strong>
                             Portais jornalísticos confiáveis e redes sociais empataram com 4 menções cada (20% cada).
                         </div>
-                        </li>
-                                                <li>
-                        <i class="fa-solid fa-check"></i>
-                        <div>
-                            <strong>Abstenção de Checagem:</strong>
-                            Três participantes (15%) afirmaram que não costumam verificar informações suspeitas. Esse resultado indica uma oportunidade para ações de educação midiática.
-                        </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
                         <div>
-                            <strong>Diversidade de Hábitos:</strong>
-                            A pesquisa evidenciou diferentes condutas entre os participantes ao lidarem com informações duvidosas.
+                            <strong>Abstenção de Checagem:</strong>
+                            Três participantes (15%) afirmaram que não costumam verificar informações, apontando foco para oficinas de checagem.
                         </div>
                     </li>
                     <li>
                         <i class="fa-solid fa-check"></i>
                         <div>
                             <strong>Educação Midiática:</strong>
-                            Ações educativas podem ajudar os estudantes a avaliar fontes, contextos e confiabilidade antes de compartilhar informações.
+                            Intervenções pedagógicas auxiliam estudantes na avaliação de contexto e credibilidade.
                         </div>
                     </li>
                 </ul>
             </section>
         </div>
     </main>
+
+    <!-- Professional Detail Modal -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Detalhe do Indicador</div>
+                <button class="modal-close" onclick="closeIndicatorModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Preenchido dinamicamente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal" onclick="closeIndicatorModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>INVESTIGA+ &bull; Maratona Tech 2026 &bull; Desenvolvido para análise educacional e verificação de dados.</p>
@@ -641,7 +818,7 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
-        // Instanciar Gráficos
+        // Instanciar Gráficos com layout responsivo otimizado
         const ctxFreq = document.getElementById('freqChart').getContext('2d');
         const freqChart = new Chart(ctxFreq, {
             type: 'bar',
@@ -650,12 +827,12 @@
                 datasets: [{
                     label: 'Participantes',
                     data: freqValuesOriginal,
-                    backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.85)',
                     borderColor: '#2563eb',
                     borderWidth: 1,
                     borderRadius: 6,
                     barThickness: 'flex',
-                    maxBarThickness: 45
+                    maxBarThickness: 40
                 }]
             },
             options: {
@@ -678,12 +855,12 @@
                     y: {
                         beginAtZero: true,
                         max: 6,
-                        ticks: { stepSize: 1 },
+                        ticks: { stepSize: 1, font: { size: 10 } },
                         grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { font: { size: 10 } }
+                        ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }
                     }
                 }
             }
@@ -697,11 +874,11 @@
                 datasets: [{
                     label: 'Participantes',
                     data: stratValuesOriginal,
-                    backgroundColor: 'rgba(8, 145, 178, 0.8)',
+                    backgroundColor: 'rgba(8, 145, 178, 0.85)',
                     borderColor: '#0891b2',
                     borderWidth: 1,
                     borderRadius: 6,
-                    barThickness: 16
+                    barThickness: 14
                 }]
             },
             options: {
@@ -725,12 +902,12 @@
                     x: {
                         beginAtZero: true,
                         max: 8,
-                        ticks: { stepSize: 2 },
+                        ticks: { stepSize: 2, font: { size: 10 } },
                         grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { font: { size: 10 } }
+                        ticks: { font: { size: 9 } }
                     }
                 }
             }
@@ -774,7 +951,7 @@
                 let totalFiltered = matchedRows.reduce((sum, r) => sum + r.count, 0);
 
                 kpiTotal.innerText = totalFiltered;
-                kpiTotalDesc.innerText = `Registros para "${filterVal}"`;
+                kpiTotalDesc.innerText = `Recorte selecionado`;
 
                 let newStratData = new Array(stratLabels.length).fill(0);
                 matchedRows.forEach(r => {
@@ -798,7 +975,7 @@
 
             } else {
                 kpiTotal.innerText = "20";
-                kpiTotalDesc.innerText = "Amostra total do Ensino Médio";
+                kpiTotalDesc.innerText = "Amostra total";
 
                 freqChart.data.datasets[0].data = freqValuesOriginal;
                 freqChart.update();
@@ -820,6 +997,39 @@
         resetFilterBtn.addEventListener('click', () => {
             freqFilter.value = 'all';
             updateDashboard('all');
+        });
+
+        // Toggle para a Hipótese Interativa
+        function toggleHypothesisDetails() {
+            const extra = document.getElementById('extraHypothesis');
+            if (extra.style.display === 'block') {
+                extra.style.display = 'none';
+            } else {
+                extra.style.display = 'block';
+            }
+        }
+
+        // Modal de Indicadores Profissional
+        function openIndicatorModal(title, subtitle, description) {
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> ${title}`;
+            document.getElementById('modalBody').innerHTML = `
+                <div><strong>Valor em Destaque:</strong> ${subtitle}</div>
+                <div><strong>Contexto Analítico:</strong> ${description}</div>
+                <div style="font-size: 0.8rem; background: #f1f5f9; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem;">Pesquisa conduzida com estudantes do Ensino Médio — Maratona Tech 2026.</div>
+            `;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeIndicatorModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // Fechar modal clicando fora
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('infoModal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
         });
 
         // Inicializar
