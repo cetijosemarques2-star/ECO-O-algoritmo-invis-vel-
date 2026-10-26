@@ -564,9 +564,9 @@
     </header>
 
     <main>
-        <!-- KPI Indicators (Clickable for professional details) -->
+        <!-- KPI Indicators -->
         <section class="kpi-grid">
-            <div class="kpi-card cyan" id="cardTotal" onclick="openIndicatorModal('Participantes', '20 estudantes', 'Amostra representativa da turma do Ensino Médio pesquisada na Maratona Tech 2026.')">
+            <div class="kpi-card cyan" id="cardTotal">
                 <div class="kpi-header">
                     <span class="kpi-title">Participantes</span>
                     <i class="fa-solid fa-users kpi-icon"></i>
@@ -574,7 +574,7 @@
                 <div class="kpi-value" id="kpiTotal">20</div>
                 <div class="kpi-desc" id="kpiTotalDesc">Amostra total</div>
             </div>
-            <div class="kpi-card success" id="cardHigh" onclick="openIndicatorModal('Alta Frequência (45%)', '9 alunos', 'Sempre (5 alunos) ou Frequentemente (4 alunos). Representa quase metade da amostra analisada.')">
+            <div class="kpi-card success" id="cardHigh">
                 <div class="kpi-header">
                     <span class="kpi-title">Alta Freq.</span>
                     <i class="fa-solid fa-circle-check kpi-icon"></i>
@@ -582,7 +582,7 @@
                 <div class="kpi-value" id="kpiHigh">45%</div>
                 <div class="kpi-desc" id="kpiHighDesc">Sempre/Freq. (9)</div>
             </div>
-            <div class="kpi-card danger" id="cardLow" onclick="openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.')">
+            <div class="kpi-card danger" id="cardLow">
                 <div class="kpi-header">
                     <span class="kpi-title">Baixa Freq.</span>
                     <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
@@ -590,7 +590,7 @@
                 <div class="kpi-value" id="kpiLow">30%</div>
                 <div class="kpi-desc" id="kpiLowDesc">Raramente/Nunca (6)</div>
             </div>
-            <div class="kpi-card warning" id="cardOfficial" onclick="openIndicatorModal('Sites Oficiais (45%)', '9 menções', 'A estratégia principal mencionada pelos estudantes ao iniciar uma verificação de veracidade.')">
+            <div class="kpi-card warning" id="cardOfficial">
                 <div class="kpi-header">
                     <span class="kpi-title">Sites Oficiais</span>
                     <i class="fa-solid fa-globe kpi-icon"></i>
@@ -598,7 +598,7 @@
                 <div class="kpi-value" id="kpiOfficial">45%</div>
                 <div class="kpi-desc" id="kpiOfficialDesc">Principal atitude (9)</div>
             </div>
-            <div class="kpi-card" id="cardHypo" onclick="openIndicatorModal('Hipótese Científica', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese não foi confirmada pelos dados da amostra.')">
+            <div class="kpi-card" id="cardHypo">
                 <div class="kpi-header">
                     <span class="kpi-title">Hipótese</span>
                     <i class="fa-solid fa-scale-balanced kpi-icon"></i>
@@ -628,7 +628,7 @@
                 </div>
             </div>
 
-            <!-- Gráfico de Pizza Adicional (Menções Proporcionais) -->
+            <!-- Gráfico de Pizza Adicional -->
             <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--text-main); text-align: center;"><i class="fa-solid fa-chart-pie" style="color: var(--cyan);"></i> Proporção de Menções por Estratégia (Gráfico de Pizza)</h3>
                 <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">Representa o volume de menções totais registradas, considerando que há múltiplas escolhas.</p>
@@ -676,7 +676,7 @@
         <!-- Hypothesis & Interpretation Grid -->
         <div class="grid-2">
             <!-- Interactive Hypothesis Section -->
-            <section class="section-box interactive-hypothesis" id="hypothesisBox" onclick="toggleHypothesisDetails()">
+            <section class="section-box interactive-hypothesis" id="hypothesisBox">
                 <h2 class="section-title"><i class="fa-solid fa-bullseye"></i> Hipótese Científica e Resultado <span style="font-size: 0.75rem; margin-left: auto; color: var(--primary);"><i class="fa-solid fa-hand-pointer"></i> Clique para expandir</span></h2>
                 <p class="section-desc">Validação empírica baseada no critério pré-estabelecido da pesquisa.</p>
                 
@@ -755,13 +755,13 @@
         <div class="modal-card">
             <div class="modal-header">
                 <div class="modal-title" id="modalTitle"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Detalhe do Indicador</div>
-                <button class="modal-close" onclick="closeIndicatorModal()">&times;</button>
+                <button class="modal-close" id="modalCloseBtn">&times;</button>
             </div>
             <div class="modal-body" id="modalBody">
                 <!-- Preenchido dinamicamente -->
             </div>
             <div class="modal-footer">
-                <button class="btn-modal" onclick="closeIndicatorModal()">Fechar</button>
+                <button class="btn-modal" id="modalFooterBtn">Fechar</button>
             </div>
         </div>
     </div>
@@ -771,314 +771,335 @@
     </footer>
 
     <script>
-        // Dados oficiais consolidados
-        const freqLabels = [
-            "Sempre", 
-            "Frequentemente", 
-            "Às vezes", 
-            "Raramente", 
-            "Nunca", 
-            "Não costumo compartilhar informações suspeitas"
-        ];
-        const freqValuesOriginal = [5, 4, 4, 3, 3, 1];
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dados oficiais consolidados
+            const freqLabels = [
+                "Sempre", 
+                "Frequentemente", 
+                "Às vezes", 
+                "Raramente", 
+                "Nunca", 
+                "Não costumo compartilhar informações suspeitas"
+            ];
+            const freqValuesOriginal = [5, 4, 4, 3, 3, 1];
 
-        const stratLabels = [
-            "Consulto o site oficial ou fonte mencionada",
-            "Procuro a informação em portais jornalísticos confiáveis",
-            "Procuro comentários ou publicações nas redes sociais",
-            "Não costumo verificar informações suspeitas",
-            "Comparo a informação em diferentes fontes",
-            "Pesquiso em mecanismos de busca para encontrar outras fontes",
-            "Pergunto a professores, familiares ou outras pessoas",
-            "Outra atitude"
-        ];
-        const stratValuesOriginal = [9, 4, 4, 3, 1, 1, 0, 0];
+            const stratLabels = [
+                "Consulto o site oficial ou fonte mencionada",
+                "Procuro a informação em portais jornalísticos confiáveis",
+                "Procuro comentários ou publicações nas redes sociais",
+                "Não costumo verificar informações suspeitas",
+                "Comparo a informação em diferentes fontes",
+                "Pesquiso em mecanismos de busca para encontrar outras fontes",
+                "Pergunto a professores, familiares ou outras pessoas",
+                "Outra atitude"
+            ];
+            const stratValuesOriginal = [9, 4, 4, 3, 1, 1, 0, 0];
 
-        const crossData = [
-            { freq: "Frequentemente", strat: "Comparo a informação em diferentes fontes", count: 1 },
-            { freq: "Raramente", strat: "Consulto o site oficial ou fonte mencionada", count: 2 },
-            { freq: "Sempre", strat: "Procuro a informação em portais jornalísticos confiáveis", count: 3 },
-            { freq: "Às vezes", strat: "Consulto o site oficial ou fonte mencionada", count: 3 },
-            { freq: "Frequentemente", strat: "Procuro a informação em portais jornalísticos confiáveis", count: 1 },
-            { freq: "Não costumo compartilhar informações suspeitas", strat: "Consulto o site oficial ou fonte mencionada", count: 1 },
-            { freq: "Sempre", strat: "Consulto o site oficial ou fonte mencionada", count: 1 },
-            { freq: "Nunca", strat: "Não costumo verificar informações suspeitas", count: 2 },
-            { freq: "Raramente", strat: "Não costumo verificar informações suspeitas", count: 1 },
-            { freq: "Sempre", strat: "Pesquiso em mecanismos de busca para encontrar outras fontes", count: 1 },
-            { freq: "Às vezes", strat: "Procuro comentários ou publicações nas redes sociais", count: 1 },
-            { freq: "Frequentemente", strat: "Procuro comentários ou publicações nas redes sociais", count: 2 },
-            { freq: "Nunca", strat: "Procuro comentários ou publicações nas redes sociais", count: 1 }
-        ];
+            const crossData = [
+                { freq: "Frequentemente", strat: "Comparo a informação em diferentes fontes", count: 1 },
+                { freq: "Raramente", strat: "Consulto o site oficial ou fonte mencionada", count: 2 },
+                { freq: "Sempre", strat: "Procuro a informação em portais jornalísticos confiáveis", count: 3 },
+                { freq: "Às vezes", strat: "Consulto o site oficial ou fonte mencionada", count: 3 },
+                { freq: "Frequentemente", strat: "Procuro a informação em portais jornalísticos confiáveis", count: 1 },
+                { freq: "Não costumo compartilhar informações suspeitas", strat: "Consulto o site oficial ou fonte mencionada", count: 1 },
+                { freq: "Sempre", strat: "Consulto o site oficial ou fonte mencionada", count: 1 },
+                { freq: "Nunca", strat: "Não costumo verificar informações suspeitas", count: 2 },
+                { freq: "Raramente", strat: "Não costumo verificar informações suspeitas", count: 1 },
+                { freq: "Sempre", strat: "Pesquiso em mecanismos de busca para encontrar outras fontes", count: 1 },
+                { freq: "Às vezes", strat: "Procuro comentários ou publicações nas redes sociais", count: 1 },
+                { freq: "Frequentemente", strat: "Procuro comentários ou publicações nas redes sociais", count: 2 },
+                { freq: "Nunca", strat: "Procuro comentários ou publicações nas redes sociais", count: 1 }
+            ];
 
-        // Configuração Global Chart.js
-        Chart.defaults.color = '#64748b';
-        Chart.defaults.font.family = "'Inter', sans-serif";
+            // Configuração Global Chart.js
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.font.family = "'Inter', sans-serif";
 
-        const pieColors = [
-            '#2563eb', '#0891b2', '#059669', '#d97706', 
-            '#7c3aed', '#db2777', '#64748b', '#cbd5e1'
-        ];
+            const pieColors = [
+                '#2563eb', '#0891b2', '#059669', '#d97706', 
+                '#7c3aed', '#db2777', '#64748b', '#cbd5e1'
+            ];
 
-        // Instanciar Gráfico de Frequência (Barra) com percentual explícito no Tooltip
-        const ctxFreq = document.getElementById('freqChart').getContext('2d');
-        const freqChart = new Chart(ctxFreq, {
-            type: 'bar',
-            data: {
-                labels: freqLabels,
-                datasets: [{
-                    label: 'Participantes',
-                    data: freqValuesOriginal,
-                    backgroundColor: 'rgba(37, 99, 235, 0.85)',
-                    borderColor: '#2563eb',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    barThickness: 'flex',
-                    maxBarThickness: 40
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let val = context.raw;
-                                let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
-                                let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
-                                return ` ${val} participante(s) — ${pct}%`;
+            // 1. Gráfico de Frequência (Barra) com Porcentagem no Tooltip
+            const ctxFreq = document.getElementById('freqChart').getContext('2d');
+            const freqChart = new Chart(ctxFreq, {
+                type: 'bar',
+                data: {
+                    labels: freqLabels,
+                    datasets: [{
+                        label: 'Participantes',
+                        data: freqValuesOriginal,
+                        backgroundColor: 'rgba(37, 99, 235, 0.85)',
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 'flex',
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let val = context.raw;
+                                    let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
+                                    let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
+                                    return ` ${val} participante(s) — ${pct}%`;
+                                }
                             }
                         }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 6,
-                        ticks: { stepSize: 1, font: { size: 10 } },
-                        grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 6,
+                            ticks: { stepSize: 1, font: { size: 10 } },
+                            grid: { color: 'rgba(226, 232, 240, 0.8)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 45 }
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Instanciar Gráfico de Estratégias (Barra Horizontal) com percentual
-        const ctxStrat = document.getElementById('stratChart').getContext('2d');
-        const stratChart = new Chart(ctxStrat, {
-            type: 'bar',
-            data: {
-                labels: stratLabels,
-                datasets: [{
-                    label: 'Menções',
-                    data: stratValuesOriginal,
-                    backgroundColor: 'rgba(8, 145, 178, 0.85)',
-                    borderColor: '#0891b2',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    barThickness: 14
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let val = context.raw;
-                                let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
-                                let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
-                                return ` ${val} menção(ões) — ${pct}% das escolhas`;
+            // 2. Gráfico de Estratégias (Barra Horizontal) com Porcentagem
+            const ctxStrat = document.getElementById('stratChart').getContext('2d');
+            const stratChart = new Chart(ctxStrat, {
+                type: 'bar',
+                data: {
+                    labels: stratLabels,
+                    datasets: [{
+                        label: 'Menções',
+                        data: stratValuesOriginal,
+                        backgroundColor: 'rgba(8, 145, 178, 0.85)',
+                        borderColor: '#0891b2',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 14
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let val = context.raw;
+                                    let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
+                                    let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
+                                    return ` ${val} menção(ões) — ${pct}% das escolhas`;
+                                }
                             }
                         }
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 10,
-                        ticks: { stepSize: 2, font: { size: 10 } },
-                        grid: { color: 'rgba(226, 232, 240, 0.8)' }
                     },
-                    y: {
-                        grid: { display: false },
-                        ticks: { font: { size: 9 } }
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { stepSize: 2, font: { size: 10 } },
+                            grid: { color: 'rgba(226, 232, 240, 0.8)' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { font: { size: 9 } }
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Instanciar Gráfico de Pizza (Doughnut) com percentual explícito
-        const ctxPie = document.getElementById('pieChart').getContext('2d');
-        const pieChart = new Chart(ctxPie, {
-            type: 'doughnut',
-            data: {
-                labels: stratLabels,
-                datasets: [{
-                    data: stratValuesOriginal,
-                    backgroundColor: pieColors,
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            font: { size: 10 }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let val = context.raw;
-                                let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
-                                let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
-                                return ` ${context.label}: ${val} menção(ões) (${pct}%)`;
+            // 3. Gráfico de Pizza (Doughnut) com Porcentagem
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            const pieChart = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: stratLabels,
+                    datasets: [{
+                        data: stratValuesOriginal,
+                        backgroundColor: pieColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let val = context.raw;
+                                    let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
+                                    let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
+                                    return ` ${context.label}: ${val} menção(ões) (${pct}%)`;
+                                }
                             }
                         }
-                    }
-                },
-                cutout: '55%'
+                    },
+                    cutout: '55%'
+                }
+            });
+
+            // Elementos da Interface e Filtros
+            const tableBody = document.getElementById('crossTableBody');
+            const freqFilter = document.getElementById('freqFilter');
+            const resetFilterBtn = document.getElementById('resetFilter');
+            const kpiTotal = document.getElementById('kpiTotal');
+            const kpiTotalDesc = document.getElementById('kpiTotalDesc');
+            const kpiHigh = document.getElementById('kpiHigh');
+            const kpiHighDesc = document.getElementById('kpiHighDesc');
+            const kpiLow = document.getElementById('kpiLow');
+            const kpiLowDesc = document.getElementById('kpiLowDesc');
+            const kpiOfficial = document.getElementById('kpiOfficial');
+            const kpiOfficialDesc = document.getElementById('kpiOfficialDesc');
+
+            function updateDashboard(filterVal) {
+                tableBody.innerHTML = '';
+                let filteredCross = crossData;
+                if (filterVal && filterVal !== 'all') {
+                    filteredCross = crossData.filter(item => item.freq === filterVal);
+                }
+
+                if (filteredCross.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Nenhum registro consolidado encontrado para o filtro selecionado.</td></tr>`;
+                } else {
+                    filteredCross.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="highlight-text">${row.freq}</td>
+                            <td>${row.strat}</td>
+                            <td><span class="badge-count">${row.count}</span></td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+                }
+
+                if (filterVal && filterVal !== 'all') {
+                    let matchedRows = crossData.filter(item => item.freq === filterVal);
+                    let totalFiltered = matchedRows.reduce((sum, r) => sum + r.count, 0);
+
+                    kpiTotal.innerText = totalFiltered;
+                    kpiTotalDesc.innerText = `Recorte selecionado`;
+
+                    let newFreqData = freqLabels.map(label => label === filterVal ? totalFiltered : 0);
+                    freqChart.data.datasets[0].data = newFreqData;
+                    freqChart.update();
+
+                    let highCount = (filterVal === "Sempre" || filterVal === "Frequentemente") ? totalFiltered : 0;
+                    let lowCount = (filterVal === "Raramente" || filterVal === "Nunca") ? totalFiltered : 0;
+                    let officialCount = matchedRows.filter(r => r.strat.includes("site oficial")).reduce((s, r) => s + r.count, 0);
+
+                    kpiHigh.innerText = totalFiltered > 0 ? `${((highCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                    kpiHighDesc.innerText = `Frequência ${filterVal}`;
+                    
+                    kpiLow.innerText = totalFiltered > 0 ? `${((lowCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                    kpiLowDesc.innerText = `Frequência ${filterVal}`;
+
+                    kpiOfficial.innerText = totalFiltered > 0 ? `${((officialCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
+                    kpiOfficialDesc.innerText = `No recorte (${officialCount})`;
+
+                } else {
+                    kpiTotal.innerText = "20";
+                    kpiTotalDesc.innerText = "Amostra total";
+
+                    freqChart.data.datasets[0].data = freqValuesOriginal;
+                    freqChart.update();
+
+                    kpiHigh.innerText = "45%";
+                    kpiHighDesc.innerText = "Sempre/Freq. (9)";
+
+                    kpiLow.innerText = "30%";
+                    kpiLowDesc.innerText = "Raramente/Nunca (6)";
+
+                    kpiOfficial.innerText = "45%";
+                    kpiOfficialDesc.innerText = "Principal atitude (9)";
+                }
             }
-        });
 
-        // Elementos da Interface
-        const tableBody = document.getElementById('crossTableBody');
-        const freqFilter = document.getElementById('freqFilter');
-        const resetFilterBtn = document.getElementById('resetFilter');
-        const kpiTotal = document.getElementById('kpiTotal');
-        const kpiTotalDesc = document.getElementById('kpiTotalDesc');
-        const kpiHigh = document.getElementById('kpiHigh');
-        const kpiHighDesc = document.getElementById('kpiHighDesc');
-        const kpiLow = document.getElementById('kpiLow');
-        const kpiLowDesc = document.getElementById('kpiLowDesc');
-        const kpiOfficial = document.getElementById('kpiOfficial');
-        const kpiOfficialDesc = document.getElementById('kpiOfficialDesc');
+            freqFilter.addEventListener('change', (e) => {
+                updateDashboard(e.target.value);
+            });
 
-        function updateDashboard(filterVal) {
-            // 1. Filtrar Tabela de Cruzamento
-            tableBody.innerHTML = '';
-            let filteredCross = crossData;
-            if (filterVal && filterVal !== 'all') {
-                filteredCross = crossData.filter(item => item.freq === filterVal);
+            resetFilterBtn.addEventListener('click', () => {
+                freqFilter.value = 'all';
+                updateDashboard('all');
+            });
+
+            // Toggle Hipótese Inter            // Toggle Hipótese Interativa
+            const hypothesisBox = document.getElementById('hypothesisBox');
+            const extraHypothesis = document.getElementById('extraHypothesis');
+            hypothesisBox.addEventListener('click', () => {
+                if (extraHypothesis.style.display === 'block') {
+                    extraHypothesis.style.display = 'none';
+                } else {
+                    extraHypothesis.style.display = 'block';
+                }
+            });
+
+            // Modal de Indicadores Profissional
+            const infoModal = document.getElementById('infoModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalFooterBtn = document.getElementById('modalFooterBtn');
+
+            function openIndicatorModal(title, subtitle, description) {
+                modalTitle.innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> ${title}`;
+                modalBody.innerHTML = `
+                    <div><strong>Valor em Destaque:</strong> ${subtitle}</div>
+                    <div><strong>Contexto Analítico:</strong> ${description}</div>
+                    <div style="font-size: 0.8rem; background: #f1f5f9; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem;">Pesquisa conduzida com estudantes do Ensino Médio — Maratona Tech 2026.</div>
+                `;
+                infoModal.style.display = 'flex';
             }
 
-            if (filteredCross.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">Nenhum registro consolidado encontrado para o filtro selecionado.</td></tr>`;
-            } else {
-                filteredCross.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="highlight-text">${row.freq}</td>
-                        <td>${row.strat}</td>
-                        <td><span class="badge-count">${row.count}</span></td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
+            function closeIndicatorModal() {
+                infoModal.style.display = 'none';
             }
 
-            // 2. Atualizar Indicadores e Gráficos baseados no Recorte
-            if (filterVal && filterVal !== 'all') {
-                let matchedRows = crossData.filter(item => item.freq === filterVal);
-                let totalFiltered = matchedRows.reduce((sum, r) => sum + r.count, 0);
+            document.getElementById('cardTotal').addEventListener('click', () => {
+                openIndicatorModal('Participantes', '20 estudantes', 'Amostra representativa da turma do Ensino Médio pesquisada na Maratona Tech 2026.');
+            });
+            document.getElementById('cardHigh').addEventListener('click', () => {
+                openIndicatorModal('Alta Frequência (45%)', '9 alunos', 'Sempre (5 alunos) ou Frequentemente (4 alunos). Representa quase metade da amostra analisada.');
+            });
+            document.getElementById('cardLow').addEventListener('click', () => {
+                openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.');
+            });
+            document.getElementById('cardOfficial').addEventListener('click', () => {
+                openIndicatorModal('Sites Oficiais (45%)', '9 menções', 'A estratégia principal mencionada pelos estudantes ao iniciar uma verificação de veracidade.');
+            });
+            document.getElementById('cardHypo').addEventListener('click', () => {
+                openIndicatorModal('Hipótese Científica', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese não foi confirmada pelos dados da amostra.');
+            });
 
-                kpiTotal.innerText = totalFiltered;
-                kpiTotalDesc.innerText = `Recorte selecionado`;
+            modalCloseBtn.addEventListener('click', closeIndicatorModal);
+            modalFooterBtn.addEventListener('click', closeIndicatorModal);
 
-                let newFreqData = freqLabels.map(label => label === filterVal ? totalFiltered : 0);
-                freqChart.data.datasets[0].data = newFreqData;
-                freqChart.update();
+            window.addEventListener('click', (e) => {
+                if (e.target === infoModal) {
+                    closeIndicatorModal();
+                }
+            });
 
-                let highCount = (filterVal === "Sempre" || filterVal === "Frequentemente") ? totalFiltered : 0;
-                let lowCount = (filterVal === "Raramente" || filterVal === "Nunca") ? totalFiltered : 0;
-                let officialCount = matchedRows.filter(r => r.strat.includes("site oficial")).reduce((s, r) => s + r.count, 0);
-
-                kpiHigh.innerText = totalFiltered > 0 ? `${((highCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
-                kpiHighDesc.innerText = `Frequência ${filterVal}`;
-                
-                kpiLow.innerText = totalFiltered > 0 ? `${((lowCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
-                kpiLowDesc.innerText = `Frequência ${filterVal}`;
-
-                kpiOfficial.innerText = totalFiltered > 0 ? `${((officialCount / totalFiltered) * 100).toFixed(0)}%` : '0%';
-                kpiOfficialDesc.innerText = `No recorte (${officialCount})`;
-
-            } else {
-                kpiTotal.innerText = "20";
-                kpiTotalDesc.innerText = "Amostra total";
-
-                freqChart.data.datasets[0].data = freqValuesOriginal;
-                freqChart.update();
-
-                kpiHigh.innerText = "45%";
-                kpiHighDesc.innerText = "Sempre/Freq. (9)";
-
-                kpiLow.innerText = "30%";
-                kpiLowDesc.innerText = "Raramente/Nunca (6)";
-
-                kpiOfficial.innerText = "45%";
-                kpiOfficialDesc.innerText = "Principal atitude (9)";
-            }
-        }
-
-        // Event Listeners para Filtros
-        freqFilter.addEventListener('change', (e) => {
-            updateDashboard(e.target.value);
-        });
-
-        resetFilterBtn.addEventListener('click', () => {
-            freqFilter.value = 'all';
-                  resetFilterBtn.addEventListener('click', () => {
-            freqFilter.value = 'all';
+            // Inicializar dashboard completo
             updateDashboard('all');
         });
-
-        // Toggle para a Hipótese Interativa
-        function toggleHypothesisDetails() {
-            const extra = document.getElementById('extraHypothesis');
-            if (extra.style.display === 'block') {
-                extra.style.display = 'none';
-            } else {
-                extra.style.display = 'block';
-            }
-        }
-
-        // Modal de Indicadores Profissional (Garante abertura correta)
-        function openIndicatorModal(title, subtitle, description) {
-            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> ${title}`;
-            document.getElementById('modalBody').innerHTML = `
-                <div><strong>Valor em Destaque:</strong> ${subtitle}</div>
-                <div><strong>Contexto Analítico:</strong> ${description}</div>
-                <div style="font-size: 0.8rem; background: #f1f5f9; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem;">Pesquisa conduzida com estudantes do Ensino Médio — Maratona Tech 2026.</div>
-            `;
-            document.getElementById('infoModal').style.display = 'flex';
-        }
-
-        function closeIndicatorModal() {
-            document.getElementById('infoModal').style.display = 'none';
-        }
-
-        // Fechar modal clicando fora
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('infoModal');
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-        // Inicializar dashboard completo
-        updateDashboard('all');
     </script>
 </body>
 </html>
