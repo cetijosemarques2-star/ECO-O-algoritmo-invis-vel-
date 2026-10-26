@@ -8,8 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js DataLabels Plugin CDN para exibir porcentagens fixas no gráfico -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -137,12 +135,11 @@
                                 <i class="fa-solid fa-users"></i>
                             </div>
                             <span class="text-[11px] font-bold text-brand-purpleMain bg-purple-50 px-2 py-0.5 rounded-md flex items-center gap-1">
-                                <i class="fa-solid fa-circle-info text-[9px]"></i> Clique p/ detalhes
+                                <i class="fa-solid fa-circle-info text-[9px]"></i> Detalhes
                             </span>
                         </div>
                         <h3 class="text-3xl font-black text-brand-textDark" id="valPart">20</h3>
                         <p class="text-xs text-slate-500 font-medium mt-1">Participantes da Pesquisa</p>
-                        <!-- Barra de progresso / subida -->
                         <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
                             <span class="text-slate-400 font-medium">Meta atingida</span>
                             <span class="text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> 100%</span>
@@ -165,7 +162,7 @@
                         <h3 class="text-3xl font-black text-brand-textDark" id="valFreq">9</h3>
                         <p class="text-xs text-slate-500 font-medium mt-1">Sempre ou frequentemente (45%)</p>
                         <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                            <span class="text-slate-400 font-medium">Índice de Confiabilidade</span>
+                            <span class="text-slate-400 font-medium">Confiabilidade</span>
                             <span class="text-blue-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +45%</span>
                         </div>
                         <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
@@ -217,7 +214,7 @@
 
                 </section>
 
-                <!-- SEÇÃO DOS GRÁFICOS (COM PIZZA EXIBINDO PORCENTAGENS) -->
+                <!-- SEÇÃO DOS GRÁFICOS -->
                 <section id="graficos" class="space-y-6 pt-2">
                     <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
                         <div>
@@ -234,7 +231,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         
-                        <!-- Gráfico 1: Rosca / Pizza com percentuais visíveis -->
+                        <!-- Gráfico 1: Rosca / Pizza com percentuais -->
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
@@ -283,19 +280,10 @@
                     <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
-                 <!-- SEÇÃO DE ESTRATÉGIAS DETALHADAS -->
-                <section id="estrategias" class="space-y-4 pt-2">
-                    <div class="border-b border-slate-200 pb-3">
-                        <h2 class="text-lg sm:text-xl font-bold text-brand-textDark flex items-center space-x-2">
-                            <i class="fa-solid fa-shield-halved text-brand-cyan"></i>
-                            <span>Detalhamento das Estratégias Utilizadas</span>
-                        </h2>
-                    </div>
-
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
                                 <thead>
+                                    <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-bold border-b border-slate-200">
+                                        <th class="p-4">Atitude / Estratégia de Verificação</th>
+                                                 <thead>
                                     <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-bold border-b border-slate-200">
                                         <th class="p-4">Atitude / Estratégia de Verificação</th>
                                         <th class="p-4 text-center">Menções</th>
@@ -448,8 +436,6 @@
     </div>
 
     <!-- MODAIS INTERATIVOS PARA OS CARTÕES -->
-    
-    <!-- Modal Participantes -->
     <div id="modalParticipantes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -469,7 +455,6 @@
         </div>
     </div>
 
-    <!-- Modal Frequentes -->
     <div id="modalFrequentes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -489,7 +474,6 @@
         </div>
     </div>
 
-    <!-- Modal Fontes Oficiais -->
     <div id="modalFontes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -509,7 +493,6 @@
         </div>
     </div>
 
-    <!-- Modal Raramente -->
     <div id="modalRaramente" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -531,7 +514,6 @@
 
     <!-- SCRIPT DE GRÁFICOS E INTERATIVIDADE -->
     <script>
-        // Dados oficiais da pesquisa
         const dadosFrequencia = {
             labels: ['Sempre', 'Frequentemente', 'Às vezes', 'Raramente', 'Nunca', 'Não costumo compartilhar'],
             valores: [5, 4, 4, 3, 3, 1],
@@ -560,7 +542,7 @@
         });
 
         function initCharts() {
-            // Gráfico 1: Rosca com plugin de DataLabels para mostrar porcentagens direto nas fatias
+            // Gráfico 1: Rosca / Pizza
             const ctxFreq = document.getElementById('chartFrequencia').getContext('2d');
             chartFreqInstance = new Chart(ctxFreq, {
                 type: 'doughnut',
@@ -595,8 +577,7 @@
                 }
             });
 
-            // Gráfico 2: Barras Horizontais (Estratégias)
-            const ctxEst = do            // Gráfico 2: Barras Horizontais (Estratégias)
+            // Gráfico 2: Barras Horizontais
             const ctxEst = document.getElementById('chartEstrategias').getContext('2d');
             chartEstInstance = new Chart(ctxEst, {
                 type: 'bar',
@@ -624,6 +605,7 @@
         }
 
         // Filtro Interativo
+        function aplicarF        // Filtro Interativo
         function aplicarFiltro() {
             const val = document.getElementById('filtroFrequencia').value;
             const badge = document.getElementById('badgeFiltroAtivo');
@@ -649,7 +631,7 @@
             chartFreqInstance.update();
         }
 
-        // Funções de Modais dos Cartões
+        // Modais
         function abrirModal(id) {
             document.getElementById(id).classList.remove('hidden');
         }
@@ -685,4 +667,3 @@
     </script>
 </body>
 </html>
-                    
