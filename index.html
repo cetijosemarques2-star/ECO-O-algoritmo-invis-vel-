@@ -461,7 +461,7 @@
             flex-shrink: 0;
         }
 
-        /* Modal / Dialog Profissional para Cliche de Porcentagens */
+        /* Modal / Dialog Profissional para Clicar nos Indicadores */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -566,7 +566,7 @@
     <main>
         <!-- KPI Indicators (Clickable for professional details) -->
         <section class="kpi-grid">
-            <div class="kpi-card cyan" onclick="openIndicatorModal('Participantes', '20 estudantes', 'Amostra representativa da turma do Ensino Médio pesquisada na Maratona Tech 2026.')">
+            <div class="kpi-card cyan" id="cardTotal" onclick="openIndicatorModal('Participantes', '20 estudantes', 'Amostra representativa da turma do Ensino Médio pesquisada na Maratona Tech 2026.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Participantes</span>
                     <i class="fa-solid fa-users kpi-icon"></i>
@@ -574,7 +574,7 @@
                 <div class="kpi-value" id="kpiTotal">20</div>
                 <div class="kpi-desc" id="kpiTotalDesc">Amostra total</div>
             </div>
-            <div class="kpi-card success" onclick="openIndicatorModal('Alta Frequência (45%)', '9 alunos', 'Sempre (5 alunos) ou Frequentemente (4 alunos). Representa quase metade da amostra analisada.')">
+            <div class="kpi-card success" id="cardHigh" onclick="openIndicatorModal('Alta Frequência (45%)', '9 alunos', 'Sempre (5 alunos) ou Frequentemente (4 alunos). Representa quase metade da amostra analisada.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Alta Freq.</span>
                     <i class="fa-solid fa-circle-check kpi-icon"></i>
@@ -582,7 +582,7 @@
                 <div class="kpi-value" id="kpiHigh">45%</div>
                 <div class="kpi-desc" id="kpiHighDesc">Sempre/Freq. (9)</div>
             </div>
-            <div class="kpi-card danger" onclick="openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.')">
+            <div class="kpi-card danger" id="cardLow" onclick="openIndicatorModal('Baixa Frequência (30%)', '6 alunos', 'Raramente (3 alunos) ou Nunca (3 alunos). Base para o teste da hipótese científica.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Baixa Freq.</span>
                     <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
@@ -590,7 +590,7 @@
                 <div class="kpi-value" id="kpiLow">30%</div>
                 <div class="kpi-desc" id="kpiLowDesc">Raramente/Nunca (6)</div>
             </div>
-            <div class="kpi-card warning" onclick="openIndicatorModal('Sites Oficiais (45%)', '9 menções', 'A estratégia principal mencionada pelos estudantes ao iniciar uma verificação de veracidade.')">
+            <div class="kpi-card warning" id="cardOfficial" onclick="openIndicatorModal('Sites Oficiais (45%)', '9 menções', 'A estratégia principal mencionada pelos estudantes ao iniciar uma verificação de veracidade.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Sites Oficiais</span>
                     <i class="fa-solid fa-globe kpi-icon"></i>
@@ -598,7 +598,7 @@
                 <div class="kpi-value" id="kpiOfficial">45%</div>
                 <div class="kpi-desc" id="kpiOfficialDesc">Principal atitude (9)</div>
             </div>
-            <div class="kpi-card" onclick="openIndicatorModal('Hipótese Científica', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese não foi confirmada pelos dados da amostra.')">
+            <div class="kpi-card" id="cardHypo" onclick="openIndicatorModal('Hipótese Científica', 'Não Confirmada', 'O limiar exigido era >50%. Como o resultado foi 30%, a hipótese não foi confirmada pelos dados da amostra.')">
                 <div class="kpi-header">
                     <span class="kpi-title">Hipótese</span>
                     <i class="fa-solid fa-scale-balanced kpi-icon"></i>
@@ -631,7 +631,7 @@
             <!-- Gráfico de Pizza Adicional (Menções Proporcionais) -->
             <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--text-main); text-align: center;"><i class="fa-solid fa-chart-pie" style="color: var(--cyan);"></i> Proporção de Menções por Estratégia (Gráfico de Pizza)</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">Representa o volume de menções totais registradas, considerando que há múltiplas escolhas</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">Representa o volume de menções totais registradas, considerando que há múltiplas escolhas.</p>
                 <div style="max-width: 460px; margin: 0 auto;" class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
@@ -792,7 +792,6 @@
             "Pergunto a professores, familiares ou outras pessoas",
             "Outra atitude"
         ];
-        // Dado corrigido para 9 menções em Sites Oficiais
         const stratValuesOriginal = [9, 4, 4, 3, 1, 1, 0, 0];
 
         const crossData = [
@@ -820,7 +819,7 @@
             '#7c3aed', '#db2777', '#64748b', '#cbd5e1'
         ];
 
-        // Instanciar Gráfico de Frequência (Barra)
+        // Instanciar Gráfico de Frequência (Barra) com percentual explícito no Tooltip
         const ctxFreq = document.getElementById('freqChart').getContext('2d');
         const freqChart = new Chart(ctxFreq, {
             type: 'bar',
@@ -848,7 +847,7 @@
                                 let val = context.raw;
                                 let totalCurrent = freqValuesOriginal.reduce((a, b) => a + b, 0);
                                 let pct = totalCurrent > 0 ? ((val / totalCurrent) * 100).toFixed(0) : 0;
-                                return ` ${val} participante(s) (${pct}%)`;
+                                return ` ${val} participante(s) — ${pct}%`;
                             }
                         }
                     }
@@ -868,7 +867,7 @@
             }
         });
 
-        // Instanciar Gráfico de Estratégias (Barra Horizontal)
+        // Instanciar Gráfico de Estratégias (Barra Horizontal) com percentual
         const ctxStrat = document.getElementById('stratChart').getContext('2d');
         const stratChart = new Chart(ctxStrat, {
             type: 'bar',
@@ -894,7 +893,9 @@
                         callbacks: {
                             label: function(context) {
                                 let val = context.raw;
-                                return ` ${val} menção(ões) registrada(s)`;
+                                let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
+                                let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
+                                return ` ${val} menção(ões) — ${pct}% das escolhas`;
                             }
                         }
                     }
@@ -914,7 +915,7 @@
             }
         });
 
-        // Instanciar Gráfico de Pizza (Doughnut)
+        // Instanciar Gráfico de Pizza (Doughnut) com percentual explícito
         const ctxPie = document.getElementById('pieChart').getContext('2d');
         const pieChart = new Chart(ctxPie, {
             type: 'doughnut',
@@ -944,7 +945,7 @@
                                 let val = context.raw;
                                 let totalMentions = stratValuesOriginal.reduce((a, b) => a + b, 0);
                                 let pct = totalMentions > 0 ? ((val / totalMentions) * 100).toFixed(0) : 0;
-                                return ` ${context.label}: ${val} menção(ões) (${pct}% do total de escolhas)`;
+                                return ` ${context.label}: ${val} menção(ões) (${pct}%)`;
                             }
                         }
                     }
@@ -1031,12 +1032,14 @@
             }
         }
 
-        // Event Listeners
+        // Event Listeners para Filtros
         freqFilter.addEventListener('change', (e) => {
             updateDashboard(e.target.value);
         });
 
         resetFilterBtn.addEventListener('click', () => {
+            freqFilter.value = 'all';
+                  resetFilterBtn.addEventListener('click', () => {
             freqFilter.value = 'all';
             updateDashboard('all');
         });
@@ -1046,9 +1049,12 @@
             const extra = document.getElementById('extraHypothesis');
             if (extra.style.display === 'block') {
                 extra.style.display = 'none';
-             }
+            } else {
+                extra.style.display = 'block';
+            }
+        }
 
-        // Modal de Indicadores Profissional
+        // Modal de Indicadores Profissional (Garante abertura correta)
         function openIndicatorModal(title, subtitle, description) {
             document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> ${title}`;
             document.getElementById('modalBody').innerHTML = `
@@ -1071,7 +1077,7 @@
             }
         });
 
-        // Inicializar
+        // Inicializar dashboard completo
         updateDashboard('all');
     </script>
 </body>
