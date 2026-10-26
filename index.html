@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js DataLabels Plugin CDN para exibir porcentagens fixas no gráfico -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -33,11 +35,16 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #F5F7FC; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .glow-card:hover { animation: pulseGlow 1.5s infinite; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-purple-950 via-indigo-900 to-purple-900 min-h-screen p-3 sm:p-6 font-sans text-brand-textDark flex items-center justify-center">
 
-    <!-- MOLDURA EXTERNA ROXA VIBRANTE (Inspirada no modelo) -->
+    <!-- MOLDURA EXTERNA ROXA VIBRANTE -->
     <div class="w-full max-w-6xl bg-brand-bgLight rounded-[2.5rem] shadow-2xl border-4 border-brand-purpleMain overflow-hidden flex flex-col">
 
         <!-- CABEÇALHO DA PLATAFORMA -->
@@ -51,7 +58,7 @@
                         <h1 class="text-2xl sm:text-3xl font-black tracking-tight">INVESTIGA+</h1>
                         <span class="bg-brand-cyan/20 text-brand-cyan text-xs px-2.5 py-0.5 rounded-full font-semibold border border-brand-cyan/40">Maratona Tech 2026</span>
                     </div>
-                    <p class="text-brand-yellow font-semibold text-xs sm:text-sm mt-0.5">Verdade ou Fake? — Painel de Investigação de Hábitos</p>
+                    <p class="text-brand-yellow font-semibold text-xs sm:text-sm mt-0.5">Verdade ou Fake? — Painel Interativo Avançado</p>
                 </div>
             </div>
 
@@ -120,60 +127,97 @@
             <!-- CONTEÚDO PRINCIPAL -->
             <main id="inicio" class="flex-1 p-4 sm:p-6 space-y-6 overflow-y-auto">
 
-                <!-- ÁREA DE INDICADORES (ESTILO EXATO DA REFERÊNCIA) -->
+                <!-- ÁREA DE INDICADORES INTERATIVOS (CLICÁVEIS) -->
                 <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     
-                    <!-- Cartão 1: Participantes -->
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition relative overflow-hidden group">
+                    <!-- Cartão 1 -->
+                    <div onclick="abrirModal('modalParticipantes')" class="glow-card bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:border-brand-purpleMain transition cursor-pointer relative overflow-hidden group">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-10 h-10 rounded-2xl bg-purple-100 text-brand-purpleMain flex items-center justify-center font-bold text-lg">
                                 <i class="fa-solid fa-users"></i>
                             </div>
-                            <span class="text-[11px] font-bold text-brand-purpleMain bg-purple-50 px-2 py-0.5 rounded-md">Amostra</span>
+                            <span class="text-[11px] font-bold text-brand-purpleMain bg-purple-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-[9px]"></i> Clique p/ detalhes
+                            </span>
                         </div>
                         <h3 class="text-3xl font-black text-brand-textDark" id="valPart">20</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Participantes</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Participantes da Pesquisa</p>
+                        <!-- Barra de progresso / subida -->
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                            <span class="text-slate-400 font-medium">Meta atingida</span>
+                            <span class="text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> 100%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
+                            <div class="bg-brand-purpleMain h-full rounded-full w-full"></div>
+                        </div>
                     </div>
 
-                    <!-- Cartão 2: Frequentes -->
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition relative overflow-hidden group">
+                    <!-- Cartão 2 -->
+                    <div onclick="abrirModal('modalFrequentes')" class="glow-card bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:border-brand-blue transition cursor-pointer relative overflow-hidden group">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-10 h-10 rounded-2xl bg-blue-100 text-brand-blue flex items-center justify-center font-bold text-lg">
                                 <i class="fa-solid fa-shield-check"></i>
                             </div>
-                            <span class="text-[11px] font-bold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-md">45%</span>
+                            <span class="text-[11px] font-bold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-[9px]"></i> Detalhes
+                            </span>
                         </div>
                         <h3 class="text-3xl font-black text-brand-textDark" id="valFreq">9</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Sempre ou frequentemente</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Sempre ou frequentemente (45%)</p>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                            <span class="text-slate-400 font-medium">Índice de Confiabilidade</span>
+                            <span class="text-blue-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +45%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
+                            <div class="bg-brand-blue h-full rounded-full" style="width: 45%;"></div>
+                        </div>
                     </div>
 
-                    <!-- Cartão 3: Fontes Oficiais -->
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition relative overflow-hidden group">
+                    <!-- Cartão 3 -->
+                    <div onclick="abrirModal('modalFontes')" class="glow-card bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:border-brand-cyan transition cursor-pointer relative overflow-hidden group">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-10 h-10 rounded-2xl bg-cyan-100 text-brand-cyan flex items-center justify-center font-bold text-lg">
                                 <i class="fa-solid fa-building-columns"></i>
                             </div>
-                            <span class="text-[11px] font-bold text-brand-cyan bg-cyan-50 px-2 py-0.5 rounded-md">35%</span>
+                            <span class="text-[11px] font-bold text-brand-cyan bg-cyan-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-[9px]"></i> Detalhes
+                            </span>
                         </div>
                         <h3 class="text-3xl font-black text-brand-textDark">7</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Consultam fontes oficiais</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Consultam fontes oficiais (35%)</p>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                            <span class="text-slate-400 font-medium">Adesão a Portais</span>
+                            <span class="text-cyan-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +35%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
+                            <div class="bg-brand-cyan h-full rounded-full" style="width: 35%;"></div>
+                        </div>
                     </div>
 
-                    <!-- Cartão 4: Baixa Frequência -->
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition relative overflow-hidden group">
+                    <!-- Cartão 4 -->
+                    <div onclick="abrirModal('modalRaramente')" class="glow-card bg-white p-5 rounded-3xl shadow-sm border border-slate-200 hover:border-amber-500 transition cursor-pointer relative overflow-hidden group">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
-                            <span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">30%</span>
+                            <span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fa-solid fa-circle-info text-[9px]"></i> Detalhes
+                            </span>
                         </div>
                         <h3 class="text-3xl font-black text-brand-textDark" id="valBaixa">6</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Raramente ou nunca</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Raramente ou nunca (30%)</p>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                            <span class="text-slate-400 font-medium">Grupo de Risco</span>
+                            <span class="text-amber-600 font-bold"><i class="fa-solid fa-arrow-trend-down"></i> 30%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
+                            <div class="bg-amber-500 h-full rounded-full" style="width: 30%;"></div>
+                        </div>
                     </div>
 
                 </section>
 
-                <!-- SEÇÃO DOS GRÁFICOS -->
+                <!-- SEÇÃO DOS GRÁFICOS (COM PIZZA EXIBINDO PORCENTAGENS) -->
                 <section id="graficos" class="space-y-6 pt-2">
                     <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
                         <div>
@@ -181,7 +225,7 @@
                                 <i class="fa-solid fa-chart-pie text-brand-purpleMain"></i>
                                 <span>Panorama da Pesquisa e Frequência</span>
                             </h2>
-                            <p class="text-xs text-slate-500">Distribuição das respostas da turma do Ensino Médio.</p>
+                            <p class="text-xs text-slate-500">Distribuição com percentuais detalhados por categoria.</p>
                         </div>
                         <span id="badgeFiltroAtivo" class="hidden text-xs bg-purple-100 text-brand-purpleMain font-bold px-3 py-1 rounded-full border border-purple-200">
                             Filtrado: <span id="txtFiltroNome">Nenhum</span>
@@ -190,20 +234,20 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         
-                        <!-- Gráfico 1: Rosca / Pizza (Frequência) -->
+                        <!-- Gráfico 1: Rosca / Pizza com percentuais visíveis -->
                         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                                     <i class="fa-solid fa-clock-rotate-left text-brand-purpleMain"></i>
-                                    Frequência de verificação
+                                    Frequência de verificação (%)
                                 </h3>
                                 <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-semibold">Pergunta 1</span>
                             </div>
-                            <div class="relative h-72 flex items-center justify-center">
+                            <div class="relative h-80 flex items-center justify-center">
                                 <canvas id="chartFrequencia"></canvas>
                             </div>
                             <p class="text-[11px] text-slate-400 text-center mt-4 italic">
-                                * Dados oficiais tabulados de 20 estudantes participantes da Maratona Tech 2026.
+                                * Passe o mouse ou toque nas fatias para ver detalhes exatos.
                             </p>
                         </div>
 
@@ -212,11 +256,11 @@
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                                     <i class="fa-solid fa-list-check text-brand-blue"></i>
-                                    Qual é a primeira atitude diante de uma informação suspeita?
+                                    Primeira atitude diante de informação suspeita
                                 </h3>
                                 <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-semibold">Pergunta 2</span>
                             </div>
-                            <div class="relative h-72 flex items-center justify-center">
+                            <div class="relative h-80 flex items-center justify-center">
                                 <canvas id="chartEstrategias"></canvas>
                             </div>
                             <p class="text-[11px] text-slate-400 text-center mt-4 italic">
@@ -228,6 +272,18 @@
                 </section>
 
                 <!-- SEÇÃO DE ESTRATÉGIAS DETALHADAS -->
+                <section id="estrategias" class="space-y-4 pt-2">
+                    <div class="border-b border-slate-200 pb-3">
+                        <h2 class="text-lg sm:text-xl font-bold text-brand-textDark flex items-center space-x-2">
+                            <i class="fa-solid fa-shield-halved text-brand-cyan"></i>
+                            <span>Detalhamento das Estratégias Utilizadas</span>
+                        </h2>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                 <!-- SEÇÃO DE ESTRATÉGIAS DETALHADAS -->
                 <section id="estrategias" class="space-y-4 pt-2">
                     <div class="border-b border-slate-200 pb-3">
                         <h2 class="text-lg sm:text-xl font-bold text-brand-textDark flex items-center space-x-2">
@@ -284,9 +340,6 @@
                 </section>
 
                 <!-- ÁREA ESPECIAL — INVESTIGAÇÃO DA HIPÓTESE -->
-                <section id="hipotese" class="space-y-4 pt-2">
-                    <div class="border-b border-slate-200 pb-3">
-                        <h2 class="text-lg sm:text-xl f                <!-- ÁREA ESPECIAL — INVESTIGAÇÃO DA HIPÓTESE -->
                 <section id="hipotese" class="space-y-4 pt-2">
                     <div class="border-b border-slate-200 pb-3">
                         <h2 class="text-lg sm:text-xl font-bold text-brand-textDark flex items-center space-x-2">
@@ -394,12 +447,95 @@
 
     </div>
 
+    <!-- MODAIS INTERATIVOS PARA OS CARTÕES -->
+    
+    <!-- Modal Participantes -->
+    <div id="modalParticipantes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-users text-brand-purpleMain"></i> Detalhes: Participantes
+                </h3>
+                <button onclick="fecharModal('modalParticipantes')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                A amostra é composta por <strong class="text-brand-purpleMain">20 estudantes</strong> do Ensino Médio. Este quantitativo foi tabulado para a Maratona Tech 2026, garantindo viabilidade e rigor estatístico na análise exploratória inicial.
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="fecharModal('modalParticipantes')" class="px-4 py-2 bg-brand-purpleMain text-white text-xs font-semibold rounded-xl">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Frequentes -->
+    <div id="modalFrequentes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-check text-brand-blue"></i> Detalhes: Sempre ou Frequentemente
+                </h3>
+                <button onclick="fecharModal('modalFrequentes')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Um total de <strong class="text-brand-blue">9 estudantes (45%)</strong> indicaram que checam os fatos de maneira constante. Destes, 5 respondem "Sempre" (25%) e 4 respondem "Frequentemente" (20%). É o grupo com maior conscientização digital.
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="fecharModal('modalFrequentes')" class="px-4 py-2 bg-brand-blue text-white text-xs font-semibold rounded-xl">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Fontes Oficiais -->
+    <div id="modalFontes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-building-columns text-brand-cyan"></i> Detalhes: Fontes Oficiais
+                </h3>
+                <button onclick="fecharModal('modalFontes')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <strong class="text-brand-cyan">7 menções (35%)</strong> foram registradas para a prática de consultar diretamente o site oficial ou a fonte primária mencionada na publicação suspeita, demonstrando busca por autenticidade.
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="fecharModal('modalFontes')" class="px-4 py-2 bg-brand-cyan text-white text-xs font-semibold rounded-xl">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Raramente -->
+    <div id="modalRaramente" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Detalhes: Raramente ou Nunca
+                </h3>
+                <button onclick="fecharModal('modalRaramente')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <strong class="text-amber-600">6 estudantes (30%)</strong> declararam que raramente ou nunca checam informações antes de repassá-las. Este grupo é o alvo prioritário para campanhas educativas de combate à desinformação.
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="fecharModal('modalRaramente')" class="px-4 py-2 bg-amber-500 text-white text-xs font-semibold rounded-xl">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT DE GRÁFICOS E INTERATIVIDADE -->
     <script>
         // Dados oficiais da pesquisa
         const dadosFrequencia = {
             labels: ['Sempre', 'Frequentemente', 'Às vezes', 'Raramente', 'Nunca', 'Não costumo compartilhar'],
             valores: [5, 4, 4, 3, 3, 1],
+            percentuais: ['25%', '20%', '20%', '15%', '15%', '5%'],
             cores: ['#6829E8', '#1677FF', '#18C8D0', '#FFC83D', '#F43F5E', '#94A3B8']
         };
 
@@ -424,7 +560,7 @@
         });
 
         function initCharts() {
-            // Gráfico 1: Rosca (Frequência)
+            // Gráfico 1: Rosca com plugin de DataLabels para mostrar porcentagens direto nas fatias
             const ctxFreq = document.getElementById('chartFrequencia').getContext('2d');
             chartFreqInstance = new Chart(ctxFreq, {
                 type: 'doughnut',
@@ -442,14 +578,25 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'right',
+                            position: 'bottom',
                             labels: { boxWidth: 12, font: { size: 11, weight: '600' } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let val = context.raw || 0;
+                                    let porcentagem = dadosFrequencia.percentuais[context.dataIndex];
+                                    return ` ${label}: ${val} estudante(s) (${porcentagem})`;
+                                }
+                            }
                         }
                     }
                 }
             });
 
             // Gráfico 2: Barras Horizontais (Estratégias)
+            const ctxEst = do            // Gráfico 2: Barras Horizontais (Estratégias)
             const ctxEst = document.getElementById('chartEstrategias').getContext('2d');
             chartEstInstance = new Chart(ctxEst, {
                 type: 'bar',
@@ -490,7 +637,6 @@
             badge.classList.remove('hidden');
             txtNome.textContent = val;
 
-            // Destacar o valor selecionado no gráfico de rosca
             let novoDoughnut = dadosFrequencia.valores.map((v, i) => dadosFrequencia.labels[i] === val ? v : 0);
             chartFreqInstance.data.datasets[0].data = novoDoughnut;
             chartFreqInstance.update();
@@ -501,6 +647,15 @@
             document.getElementById('badgeFiltroAtivo').classList.add('hidden');
             chartFreqInstance.data.datasets[0].data = dadosFrequencia.valores;
             chartFreqInstance.update();
+        }
+
+        // Funções de Modais dos Cartões
+        function abrirModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).classList.add('hidden');
         }
 
         // Exportar CSV
@@ -529,5 +684,5 @@
         }
     </script>
 </body>
-                </html>
+</html>
                     
